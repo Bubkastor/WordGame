@@ -9,4 +9,39 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="bubok.wordgame.Cheat">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="427dp"
+            android:id="@+id/listViewCheat"
+            tools:listitem="@android:layout/simple_list_item_2" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="1">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextMessage"
+                android:layout_weight="0.98"
+                android:inputType="text" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/send"
+                android:id="@+id/buttonSend" />
+        </LinearLayout>
+
+    </LinearLayout>
 </RelativeLayout>
