@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WordGame</string>
+    <string name="login">Login</string>
+    <string name="btnEnter">Enter</string>
 </resources>
