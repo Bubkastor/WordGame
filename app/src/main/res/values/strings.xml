@@ -3,4 +3,7 @@
     <string name="login">Login</string>
     <string name="btnEnter">Enter</string>
     <string name="send">Send</string>
+    <string name="URLCheat">http://parseserver-732k4-env.us-east-1.elasticbeanstalk.com:9090</string>
+    <string name="URLCheatTest">http://192.168.0.101:9090</string>
+
 </resources>
