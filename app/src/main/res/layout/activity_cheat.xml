@@ -7,42 +7,71 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+
     tools:context="bubok.wordgame.Cheat">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_height="200dp"
+        android:id="@+id/contMedia"
+        android:windowSoftInputMode="adjustResize"
+        android:layout_alignParentTop="true">
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="427dp"
-            android:id="@+id/listViewCheat"
-            tools:listitem="@android:layout/simple_list_item_2" />
-
-        <LinearLayout
-            android:orientation="horizontal"
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:weightSum="1">
+            android:id="@+id/imageView"
+            android:contentDescription="Show picture"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentBottom="true" />
 
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/editTextMessage"
-                android:layout_weight="0.98"
-                android:inputType="text" />
+    </RelativeLayout>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/send"
-                android:onClick="buttonSendClick"
-                android:id="@+id/buttonSend" />
-        </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/contCheat"
+        android:layout_above="@+id/llSend"
+        android:layout_below="@+id/contMedia">
 
-    </LinearLayout>
+        <ListView
+            android:id="@+id/listViewCheat"
+            android:transcriptMode="alwaysScroll"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/llSend"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:layout_height="wrap_content" >
+        <EditText
+            android:id="@+id/editTextMessage"
+            android:layout_toLeftOf="@+id/buttonSend"
+            android:layout_alignBottom="@+id/buttonSend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:imeOptions="actionSend"
+            />
+        <Button
+            android:id="@+id/buttonSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/send"
+            android:onClick="buttonSendClick"
+            android:textSize="18sp" >
+        </Button>
+    </RelativeLayout>
+
+
 </RelativeLayout>

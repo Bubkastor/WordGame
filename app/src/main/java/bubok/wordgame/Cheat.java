@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import org.json.JSONObject;
@@ -27,6 +28,7 @@ public class Cheat extends AppCompatActivity {
     private Button buttonSend;
     private EditText editTextMessage;
     private MessageAdapter messageAdapter;
+    private ImageView imageView;
     private String URL;
     private Socket mSocket;
 
@@ -35,7 +37,7 @@ public class Cheat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
-        URL = getResources().getString(R.string.URLCheatTest);
+        URL = getResources().getString(R.string.URLCheat);
         Log.i("STRING", "URL: " + URL);
         {
             try {
@@ -47,7 +49,7 @@ public class Cheat extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        login = intent.getStringExtra(Login.EXTRA_MESSAGE);
+        login = intent.getStringExtra(Login.EXTRA_MESSAGE_LOGIN);
 
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
@@ -93,6 +95,9 @@ public class Cheat extends AppCompatActivity {
         listViewCheat = (ListView) findViewById(R.id.listViewCheat);
         buttonSend = (Button) findViewById(R.id.buttonSend);
         editTextMessage = (EditText) findViewById(R.id.editTextMessage);
+        imageView = (ImageView) findViewById(R.id.imageView);
+
+        imageView.setImageResource(R.drawable.cat);
 
         ArrayList<Message> arrayList = new ArrayList<Message>();
         messageAdapter = new MessageAdapter(this, arrayList);

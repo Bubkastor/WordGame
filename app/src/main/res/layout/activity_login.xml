@@ -27,4 +27,14 @@
         android:layout_below="@+id/editTextLogin"
         android:layout_centerHorizontal="true"
         android:onClick="ButtonEnterClick" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:id="@+id/buttonRegister"
+        android:layout_below="@+id/buttonEnter"
+        android:layout_centerHorizontal="true"
+        android:onClick="ButtonRegisterClick" />
 </RelativeLayout>
