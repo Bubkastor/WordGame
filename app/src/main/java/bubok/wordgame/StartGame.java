@@ -12,16 +12,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
+import io.socket.client.Socket;
+
 public class StartGame extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    public LinearLayout titleLinear;
-    public LinearLayout buttonMediaLinear;
-    public LinearLayout mediaLinear;
-    public ImageView imageViewPrev;
-
-    public Bitmap prevImage;
+    private LinearLayout titleLinear;
+    private LinearLayout buttonMediaLinear;
+    private LinearLayout mediaLinear;
+    private ImageView imageViewPrev;
+    private Socket mSocket;
+    private static Bitmap prevImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,5 +72,14 @@ public class StartGame extends AppCompatActivity {
         prevImage = (Bitmap) extras.get("data");
         imageViewPrev.setImageBitmap(prevImage);
     }
+
+    public void buttonAddFrendsClick(View v){
+        Intent intent = new Intent(this, ListUsers.class);
+        startActivity(intent);
+
+    };
+    public void StartGame(View v){
+
+    };
 
 }

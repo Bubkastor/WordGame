@@ -123,7 +123,8 @@
             android:text="@string/AddFrends"
             android:id="@+id/buttonAddFrends"
             android:background="@color/colorButton"
-            android:elegantTextHeight="false" />
+            android:elegantTextHeight="false"
+            android:onClick="buttonAddFrendsClick" />
     </LinearLayout>
 
     <LinearLayout

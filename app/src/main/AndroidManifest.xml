@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".Cheat" />
         <activity android:name=".main" />
-        <activity android:name=".StartGame"></activity>
+        <activity android:name=".StartGame" />
+        <activity android:name=".ListUsers"></activity>
     </application>
 
 </manifest>

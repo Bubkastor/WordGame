@@ -20,11 +20,12 @@ import io.socket.emitter.Emitter;
 public class main extends AppCompatActivity {
     public final static String EXTRA_MESSAGE_USED_ACCOUNT = "bubok.wodgame.notregister";
     public final static String EXTRA_MESSAGE_USED_ERROR = "bubok.wodgame.error";
-
+    public final static String EXTRA_MESSAGE_USED_SOCKET = "bubok.wodgame.socket";
     private String URL;
-    private String login;
-    Boolean isRegister;
-    private Socket mSocket;
+    public static String login;
+    private Boolean isRegister;
+
+    public static Socket mSocket;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -21,6 +21,7 @@
     <string name="TitleAcceptSend">Потвердили участие: </string>
     <string name="imgPreview">Preview image</string>
     <string name="inviteUser">Invite test</string>
+    <string name="OK">Ok</string>
 
 
 </resources>
