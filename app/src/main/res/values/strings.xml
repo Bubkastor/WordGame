@@ -11,6 +11,15 @@
     <string name="newGame">New Game</string>
     <string name="buttonCheat">Cheat</string>
     <string name="ShowImg">Show picture</string>
+    <string name="photo">photo</string>
+    <string name="video">video</string>
+    <string name="audio">audio</string>
+    <string name="titleChose">Выберите уже что-нибудь!</string>
+    <string name="srcWordToltip">Загадайте слово</string>
+    <string name="AddFrends">Добавить/Удалить игроков</string>
+    <string name="titleInvSend">Приглашений выслано: </string>
+    <string name="TitleAcceptSend">Потвердили участие: </string>
+    <string name="imgPreview">Preview image</string>
 
 
 </resources>

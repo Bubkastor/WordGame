@@ -7,6 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:screenOrientation="locked"
     tools:context="bubok.wordgame.Login">
 
     <LinearLayout
@@ -32,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/TextLinear"
-        android:id="@+id/buttonLinear"
+        android:id="@+id/buttonMediaLinear"
         android:layout_alignParentStart="false"
         android:layout_alignParentEnd="false"
         android:layout_alignParentTop="false"
