@@ -3,13 +3,13 @@
     <string name="login">Login</string>
     <string name="btnEnter">Enter</string>
     <string name="send">Send</string>
-    <string name="URLCheat">http://192.168.0.103:9090/cheat</string>
-    <string name="URLOnline">http://192.168.0.103:9090</string>
+    <string name="URLCheat">http://192.168.1.2:9090/cheat</string>
+    <string name="URLOnline">http://192.168.1.2:9090</string>
     <string name="register">Registration</string>
     <string name="GetAllUser">Get all users</string>
     <string name="GetOnlineUser">Get Online User</string>
     <string name="newGame">New Game</string>
-    <string name="buttonCheat">Cheat</string>
+    <string name="buttonChat">chat</string>
     <string name="ShowImg">Show picture</string>
     <string name="photo">photo</string>
     <string name="video">video</string>
@@ -20,6 +20,7 @@
     <string name="titleInvSend">Приглашений выслано: </string>
     <string name="TitleAcceptSend">Потвердили участие: </string>
     <string name="imgPreview">Preview image</string>
+    <string name="inviteUser">Invite test</string>
 
 
 </resources>

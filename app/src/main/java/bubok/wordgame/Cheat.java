@@ -1,10 +1,12 @@
 package bubok.wordgame;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +18,7 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -54,7 +57,8 @@ public class Cheat extends AppCompatActivity {
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                mSocket.emit("add user", login);
+
+                mSocket.emit("add user", login, "room1");
             }
         }).on("joined", new Emitter.Listener() {
             @Override
@@ -103,18 +107,24 @@ public class Cheat extends AppCompatActivity {
         messageAdapter = new MessageAdapter(this, arrayList);
         listViewCheat.setAdapter(messageAdapter);
     }
-    private void AddMessageInCheat(String login, String message){
+    private synchronized void AddMessageInCheat(String login, String message){
         Message message1 = new Message(login, message);
         messageAdapter.add(message1);
-        messageAdapter.notifyDataSetChanged();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                messageAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
-    public void buttonSendClick(View v){
+    public void buttonSendClick(View v) {
         Log.i("CHEAT", "send");
         String message = editTextMessage.getText().toString();
         editTextMessage.setText("");
         try{
-            mSocket.emit("message", message);
+            mSocket.emit("message", message, "room1");
+
         } catch (Exception ex){
             Log.i("CHEAT", "ERROR: " + ex.getMessage());
         }

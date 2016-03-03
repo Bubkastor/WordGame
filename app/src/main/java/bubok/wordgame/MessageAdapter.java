@@ -63,4 +63,6 @@ public class MessageAdapter extends BaseAdapter {
     public void add(Message message){
         messages.add(message);
     }
+
+
 }

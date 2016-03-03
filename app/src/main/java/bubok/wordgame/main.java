@@ -1,5 +1,7 @@
 package bubok.wordgame;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -74,6 +76,38 @@ public class main extends AppCompatActivity {
                 }
 
             }
+        }).on("invite", new Emitter.Listener(){
+            @Override
+            public void call(Object... args) {
+
+                final JSONObject answer = (JSONObject) args[0];
+                try {
+                    String room = answer.getString("title").toString();
+                    Log.i("INVITE", room);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (!isFinishing()){
+                                new AlertDialog.Builder(main.this)
+                                        .setTitle("Invite")
+                                        .setMessage("You invite play game")
+                                        .setCancelable(false)
+                                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Log.i("DIALOG", "a");
+                                            }
+                                        }).create().show();
+                            }
+                        }
+                    });
+
+                } catch (Exception ex) {
+                    Log.i("SOCKET", "ERROR: " + ex.getMessage());
+                }
+
+            }
         });
         mSocket.connect();
     }
@@ -96,7 +130,11 @@ public class main extends AppCompatActivity {
     }
     public void buttonCheatClick(View v){
         Intent intent = new Intent(this, Cheat.class);
+        intent.putExtra(Login.EXTRA_MESSAGE_LOGIN, login);
         startActivity(intent);
+    }
+    public void buttonInviteUser(View v){
+        mSocket.emit("invite", "room1");
     }
 
 }
