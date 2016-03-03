@@ -6,6 +6,11 @@
     <string name="URLCheat">http://192.168.0.103:9090/cheat</string>
     <string name="URLOnline">http://192.168.0.103:9090</string>
     <string name="register">Registration</string>
+    <string name="GetAllUser">Get all users</string>
+    <string name="GetOnlineUser">Get Online User</string>
+    <string name="newGame">New Game</string>
+    <string name="buttonCheat">Cheat</string>
+    <string name="ShowImg">Show picture</string>
 
 
 </resources>

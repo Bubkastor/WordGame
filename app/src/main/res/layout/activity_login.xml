@@ -9,32 +9,50 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="bubok.wordgame.Login">
 
-    <EditText
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/editTextLogin"
-        android:hint="@string/login"/>
+        android:id="@+id/TextLinear"
+        android:gravity="center_horizontal">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btnEnter"
-        android:id="@+id/buttonEnter"
-        android:layout_below="@+id/editTextLogin"
-        android:layout_centerHorizontal="true"
-        android:onClick="ButtonEnterClick" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/editTextLogin"
+            android:hint="@string/login"/>
+    </LinearLayout>
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/register"
-        android:id="@+id/buttonRegister"
-        android:layout_below="@+id/buttonEnter"
-        android:layout_centerHorizontal="true"
-        android:onClick="ButtonRegisterClick" />
+        android:layout_below="@+id/TextLinear"
+        android:id="@+id/buttonLinear"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentBottom="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:gravity="center">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btnEnter"
+            android:id="@+id/buttonEnter"
+            android:onClick="ButtonEnterClick" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+            android:id="@+id/buttonRegister"
+            android:onClick="ButtonRegisterClick" />
+    </LinearLayout>
 </RelativeLayout>

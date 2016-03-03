@@ -9,4 +9,36 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="bubok.wordgame.main">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/GetAllUser"
+            android:id="@+id/buttonGetAllUsers"
+            android:onClick="buttonGetAllUsersClick" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/GetOnlineUser"
+            android:id="@+id/buttonGetOnline" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/newGame"
+            android:id="@+id/buttonCreateGame"
+            android:onClick="buttonNewGameClick" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonCheat"
+            android:id="@+id/buttonCheat"
+            android:onClick="buttonCheatClick" />
+    </LinearLayout>
 </RelativeLayout>

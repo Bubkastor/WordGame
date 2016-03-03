@@ -21,7 +21,8 @@ public class Login extends AppCompatActivity {
         editTextlogin = (EditText) findViewById(R.id.editTextLogin);
         if (intent.getExtras() != null) {
             Boolean registerLogin = intent.getExtras().getBoolean(main.EXTRA_MESSAGE_USED_ACCOUNT);
-            if (registerLogin) editTextlogin.setError("This login is already registered");
+            String message = intent.getExtras().getString(main.EXTRA_MESSAGE_USED_ERROR);
+            if (registerLogin) editTextlogin.setError(message);
         }
 
     }
