@@ -15,12 +15,14 @@ import android.widget.ListView;
 
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
 
 import io.socket.client.IO;
+import io.socket.client.Manager;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
@@ -33,6 +35,7 @@ public class Cheat extends AppCompatActivity {
     private MessageAdapter messageAdapter;
     private ImageView imageView;
     private String URL;
+    private String namespaceSocket;
     private Socket mSocket;
 
 
@@ -40,25 +43,24 @@ public class Cheat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
-        URL = getResources().getString(R.string.URLCheat);
-        Log.i("STRING", "URL: " + URL);
+        URL = getResources().getString(R.string.URLOnline);
+        namespaceSocket = getResources().getString(R.string.URLNamespace);
+        Log.i("STRING", "URL + namespaceSocket: " + URL + namespaceSocket);
         {
             try {
-                mSocket = IO.socket(URL);
+                Manager manager = new Manager(new URI(URL));
+                mSocket = manager.socket(namespaceSocket);
             } catch (URISyntaxException e) {
                 Log.i("SOCKET", "ERROR: " + e.getMessage());
             }
         }
-
-
         Intent intent = getIntent();
-        login = intent.getStringExtra(Login.EXTRA_MESSAGE_LOGIN);
+        login = intent.getStringExtra(Login.EXTRA_MESSAGE_TOKEN);
 
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-
-                mSocket.emit("add user", login, "room1");
+                mSocket.emit("add user", login);
             }
         }).on("joined", new Emitter.Listener() {
             @Override
@@ -123,7 +125,7 @@ public class Cheat extends AppCompatActivity {
         String message = editTextMessage.getText().toString();
         editTextMessage.setText("");
         try{
-            mSocket.emit("message", message, "room1");
+            mSocket.emit("message", message);
 
         } catch (Exception ex){
             Log.i("CHEAT", "ERROR: " + ex.getMessage());

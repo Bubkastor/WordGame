@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -18,9 +21,9 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 public class main extends AppCompatActivity {
-    public final static String EXTRA_MESSAGE_USED_ACCOUNT = "bubok.wodgame.notregister";
-    public final static String EXTRA_MESSAGE_USED_ERROR = "bubok.wodgame.error";
-    public final static String EXTRA_MESSAGE_USED_SOCKET = "bubok.wodgame.socket";
+    public final static String EXTRA_MESSAGE_USED_ACCOUNT = "bubok.wordgame.notregister";
+    public final static String EXTRA_MESSAGE_USED_ERROR = "bubok.wordgame.error";
+    public final static String EXTRA_MESSAGE_USED_SOCKET = "bubok.wordgame.socket";
     private String URL;
     public static String login;
     private Boolean isRegister;
@@ -31,13 +34,26 @@ public class main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(
+                    AccessToken oldAccessToken,
+                    AccessToken currentAccessToken) {
+
+                if (currentAccessToken == null){
+                    Intent intent = new Intent(main.this, Login.class);
+                    startActivity(intent);
+                }
+            }
+        };
         Intent intent = getIntent();
-        login = intent.getStringExtra(Login.EXTRA_MESSAGE_LOGIN);
-        isRegister = intent.getExtras().getBoolean(Login.EXTRA_MESSAGE_REGISTER);
+        login = intent.getStringExtra(Login.EXTRA_MESSAGE_TOKEN);
         URL = getResources().getString(R.string.URLOnline);
+        Log.i("URL", URL);
         {
             try {
                 mSocket = IO.socket(URL);
+
             } catch (URISyntaxException e) {
                 Log.i("SOCKET", "ERROR: " + e.getMessage());
             }
@@ -46,11 +62,8 @@ public class main extends AppCompatActivity {
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                if (isRegister) {
-                    mSocket.emit("register", login);
-                } else {
-                    mSocket.emit("login", login);
-                }
+                Log.i("SOCKET", "connection");
+                mSocket.emit("login", login);
 
             }
         }).on("message", new Emitter.Listener(){
@@ -131,7 +144,7 @@ public class main extends AppCompatActivity {
     }
     public void buttonCheatClick(View v){
         Intent intent = new Intent(this, Cheat.class);
-        intent.putExtra(Login.EXTRA_MESSAGE_LOGIN, login);
+        intent.putExtra(Login.EXTRA_MESSAGE_TOKEN, login);
         startActivity(intent);
     }
     public void buttonInviteUser(View v){

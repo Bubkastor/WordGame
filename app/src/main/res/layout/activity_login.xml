@@ -11,49 +11,19 @@
     tools:context="bubok.wordgame.Login">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/TextLinear"
-        android:gravity="center_horizontal">
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/editTextLogin"
-            android:hint="@string/login"/>
-    </LinearLayout>
-
-    <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/TextLinear"
-        android:id="@+id/buttonMediaLinear"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentBottom="false"
-        android:layout_alignWithParentIfMissing="false"
-        android:gravity="center">
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
 
-        <Button
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btnEnter"
-            android:id="@+id/buttonEnter"
-            android:onClick="ButtonEnterClick" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/register"
-            android:id="@+id/buttonRegister"
-            android:onClick="ButtonRegisterClick" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp" />
     </LinearLayout>
+
+
 </RelativeLayout>

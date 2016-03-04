@@ -1,10 +1,14 @@
 <resources>
+    <string name="facebook_app_id">1683999828523747</string>
     <string name="app_name">WordGame</string>
     <string name="login">Login</string>
     <string name="btnEnter">Enter</string>
     <string name="send">Send</string>
-    <string name="URLCheat">http://192.168.1.2:9090/cheat</string>
-    <string name="URLOnline">http://192.168.1.2:9090</string>
+
+    <string name="URLOnline">http://server20160304034355.azurewebsites.net</string>
+    <string name="URLNamespace">/chat</string>
+    <string name="TestURLOnline">http://192.168.1.4:3000</string>
+
     <string name="register">Registration</string>
     <string name="GetAllUser">Get all users</string>
     <string name="GetOnlineUser">Get Online User</string>
