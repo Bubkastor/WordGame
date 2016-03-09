@@ -1,12 +1,23 @@
 package bubok.wordgame;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.ImageView;
+
+import java.net.URL;
+
 /**
  * Created by bubok on 01.03.2016.
  */
 public class Message {
-    public Message(String username, String message) {
+    public Message(String avatar, String username, String message, String idMessage, String status) {
         Username = username;
         Message = message;
+        Avatar = avatar;
+        IDMessage = idMessage;
+        Status= status;
     }
 
     public String getMessage() {
@@ -25,7 +36,45 @@ public class Message {
         Username = username;
     }
 
+    public String getAvatar() {
+        return Avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        Avatar = avatar;
+    }
+
+    String Avatar;
     String Username;
     String Message;
+    String IDMessage;
+    String Status;
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
+    }
+
+    public String getIDMessage() {
+        return IDMessage;
+    }
+
+    public void setIDMessage(String IDMessage) {
+        this.IDMessage = IDMessage;
+    }
+
+    public Bitmap getAvatarBitmap() {
+        return AvatarBitmap;
+    }
+
+    public void setAvatarBitmap(Bitmap avatarBitmap) {
+        AvatarBitmap = avatarBitmap;
+    }
+
+    Bitmap AvatarBitmap;
+
 
 }

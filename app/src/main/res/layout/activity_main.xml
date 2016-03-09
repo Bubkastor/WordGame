@@ -18,15 +18,8 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/GetAllUser"
-            android:id="@+id/buttonGetAllUsers"
-            android:onClick="buttonGetAllUsersClick" />
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/GetOnlineUser"
-            android:onClick="buttonGetOnlineUsersClick"
+            android:text="@string/startGame"
+            android:onClick="buttonCreateGame"
             android:id="@+id/buttonGetOnline" />
 
         <Button
@@ -40,23 +33,28 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/buttonChat"
-            android:id="@+id/buttonCheat"
-            android:onClick="buttonCheatClick" />
+            android:id="@+id/buttonChat"
+            android:onClick="buttonChatClick" />
 
         <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/inviteUser"
             android:id="@+id/buttonInvite"
-            android:layout_gravity="center_horizontal"
-            android:onClick="buttonInviteUser" />
+            android:onClick="buttonInviteClick" />
+
         <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
+            android:id="@+id/login_button_exit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imageView2"
+            android:src="@drawable/photo" />
     </LinearLayout>
 </RelativeLayout>
