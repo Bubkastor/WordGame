@@ -135,6 +135,11 @@ public class main extends AppCompatActivity {
             }
         });
         //
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
         mSocket.connect();
     }
 
@@ -153,7 +158,7 @@ public class main extends AppCompatActivity {
         startActivity(intent);
     }
     public void buttonInviteClick(View v){
-        mSocket.emit("go chat");
+        mSocket.emit("go chat", "image");
     }
 
     public void buttonChatClick(View v){
@@ -164,6 +169,16 @@ public class main extends AppCompatActivity {
 
     private String GetPathAvatar(String id){
         return "https://graph.facebook.com/" + id + "/picture?type=large";
+    }
+    @Override
+    public void onPause(){
+        //mSocket.disconnect();
+        super.onPause();
+    }
+    @Override
+    public void onStop(){
+
+        super.onStop();
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

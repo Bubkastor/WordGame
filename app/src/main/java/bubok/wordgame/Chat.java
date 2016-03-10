@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.Buffer;
@@ -48,7 +49,7 @@ public class Chat extends AppCompatActivity {
     private String token = "";
     public static Socket mSocket;
     private Bitmap bMap;
-    private File mBufferFile;
+    private File videoFile;
     private MediaController mediaController;
 
     @Override
@@ -77,8 +78,9 @@ public class Chat extends AppCompatActivity {
         editTextMessage = (EditText) findViewById(R.id.editTextMessage);
         imageView = (ImageView) findViewById(R.id.imageViewChat);
         videoView = (VideoView) findViewById(R.id.videoViewChat);
-        mediaController = (MediaController)findViewById(R.id.mediaController);
+        mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
+
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -92,10 +94,11 @@ public class Chat extends AppCompatActivity {
         }).on("joined", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.i("CHAT", "USER JOINED");
+
                 JSONObject answer = (JSONObject) args[0];
                 try {
-                    //AddMessageInCheat(answer.getString("avatar"), answer.getString("username"), "Connected");
+                    String username = answer.getString("username");
+                    Log.i("CHAT", "USER JOINED: " +username);
                 } catch (Exception ex) {
                     Log.i("CHAT", "ERROR: " + ex.getMessage());
                 }
@@ -252,7 +255,6 @@ public class Chat extends AppCompatActivity {
 
     private  void SetImageView(byte[] decodedBytes){
         bMap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-
         Handler handler = new Handler(getBaseContext().getMainLooper());
         handler.post(new Runnable() {
             @Override
@@ -264,23 +266,22 @@ public class Chat extends AppCompatActivity {
     }
 
     private void SetVideoView(byte[] decodedBytes, String contentType) throws IOException{
-        String filename = "video.3gp";
-        FileOutputStream outputStream;
 
-        try {
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(decodedBytes);
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mBufferFile = getTempFile(this, filename);
+        videoFile = new File(this.getFilesDir() + File.separator + "test." + contentType);
+        OutputStream myOutputStream = new FileOutputStream(videoFile);
+        myOutputStream.write(decodedBytes);
+        myOutputStream.flush();
+        myOutputStream.close();
+
+
+
         Handler handler = new Handler(getBaseContext().getMainLooper());
         handler.post(new Runnable() {
             @Override
             public void run() {
                 videoView.setVisibility(ImageView.VISIBLE);
-                videoView.setVideoPath(mBufferFile.getAbsolutePath());
+                Log.i("VIDEO", videoFile.getAbsolutePath());
+                videoView.setVideoPath(videoFile.getAbsolutePath());
 
             }
         });
@@ -297,5 +298,10 @@ public class Chat extends AppCompatActivity {
             Log.i("GET FILE", e.getMessage());
         }
         return file;
+    }
+
+    public void onPause(){
+        //mSocket.disconnect();
+        super.onPause();
     }
 }

@@ -8,7 +8,9 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:screenOrientation="portrait"
-    tools:context="bubok.wordgame.StartGame">
+    tools:context="bubok.wordgame.StartGame"
+    android:scrollIndicators="right"
+    android:nestedScrollingEnabled="true">
 
     <LinearLayout
         android:orientation="vertical"
@@ -74,11 +76,12 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/mediaLayout">
+            android:id="@+id/mediaLayout"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:id="@+id/imageViewPrev"
                 android:scaleType="fitStart"
                 android:contentDescription="@string/imgPreview"
@@ -201,7 +204,8 @@
                 android:layout_alignParentBottom="false"
                 android:layout_alignParentRight="false"
                 android:layout_alignWithParentIfMissing="false"
-                android:allowUndo="false" />
+                android:allowUndo="false"
+                android:onClick="StartGame" />
         </RelativeLayout>
 
     </RelativeLayout>
