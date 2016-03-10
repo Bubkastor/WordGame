@@ -28,7 +28,7 @@ public class main extends AppCompatActivity {
     public final static String EXTRA_MESSAGE_USED_GAME = "bubok.wordgame.game";
     public final static String EXTRA_MESSAGE_USED_TOKEN = "bubok.wordgame.token";
     private String URL;
-    private String token;
+    private static String token;
     private String game;
     private Boolean isRegister;
     private ImageView profile_pic;
@@ -54,7 +54,9 @@ public class main extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        token = intent.getStringExtra(Login.EXTRA_MESSAGE_TOKEN);
+        if (intent.getExtras() != null ){
+            token = intent.getStringExtra(Login.EXTRA_MESSAGE_TOKEN);
+        }
         URL = getResources().getString(R.string.URLOnline);
         {
             try {

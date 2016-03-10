@@ -11,22 +11,34 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:id="@+id/contMedia"
         android:windowSoftInputMode="adjustResize"
         android:layout_alignParentTop="true">
 
         <ImageView
             android:layout_width="fill_parent"
-            android:layout_height="200dp"
-            android:id="@+id/imageView"
+            android:layout_height="match_parent"
+            android:id="@+id/imageViewChat"
             android:contentDescription="@string/ShowImg"
             android:layout_alignParentEnd="false"
             android:layout_alignParentBottom="false"
             android:layout_alignParentTop="true"
             android:scaleType="fitStart"
             android:foregroundGravity="top"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:visibility="gone" />
+
+        <VideoView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/videoViewChat"
+            android:visibility="gone" />
+
+        <MediaController
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mediaController" />
 
     </RelativeLayout>
 

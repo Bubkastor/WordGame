@@ -74,8 +74,7 @@ public class StartGame extends AppCompatActivity {
     }
 
     public void buttonAddFrendsClick(View v){
-        Intent intent = new Intent(this, ListUsers.class);
-        startActivity(intent);
+
 
     };
     public void StartGame(View v){
