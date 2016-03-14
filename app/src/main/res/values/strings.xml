@@ -5,7 +5,7 @@
     <string name="btnEnter">Enter</string>
     <string name="send">Send</string>
 
-    <string name="URLOnline">http://192.168.1.4:3000</string>
+    <string name="URLOnline">http://server20160304034355.azurewebsites.net</string>
     <string name="URLNamespace">/chat</string>
     <string name="URLNamespace1">http://server20160304034355.azurewebsites.net</string>
     <string name="TestURLOnline">http://192.168.1.4:3000</string>
@@ -34,6 +34,7 @@
     <string name="correctly">Correctly</string>
     <string name="message">asd</string>
     <string name="mainScreen">На главный экран</string>
+    <string name="game">Игра</string>
 
 
 </resources>

@@ -88,7 +88,9 @@ public class Chat extends AppCompatActivity {
                 try{
                     answer.put("token", token);
                     answer.put("game", mGame);
-                }catch (Exception ex){}
+                }catch (Exception ex){
+                    Log.i("CHAT", ex.getMessage());
+                }
                 mSocket.emit("add user", answer);
             }
         }).on("joined", new Emitter.Listener() {
@@ -124,11 +126,11 @@ public class Chat extends AppCompatActivity {
             public void call(Object... args) {
                 Log.i("CHAT", "USER LEFT");
                 JSONObject answer = (JSONObject) args[0];
-                try {
+                //try {
                     //AddMessageInCheat(answer.getString("avatar"), answer.getString("username"), "Left");
-                } catch (Exception ex) {
-                    Log.i("CHAT", "ERROR: " + ex.getMessage());
-                }
+                //} catch (Exception ex) {
+                //    Log.i("CHAT", "ERROR: " + ex.getMessage());
+                //}
             }
         }).on("close game", new Emitter.Listener() {
             @Override
@@ -184,7 +186,7 @@ public class Chat extends AppCompatActivity {
 
         imageView.setImageResource(R.drawable.cat);
 
-        ArrayList<Message> arrayList = new ArrayList<Message>();
+        ArrayList<Message> arrayList = new ArrayList<>();
         messageAdapter = new MessageAdapter(this, arrayList);
         listViewCheat.setAdapter(messageAdapter);
     }
@@ -273,8 +275,6 @@ public class Chat extends AppCompatActivity {
         myOutputStream.flush();
         myOutputStream.close();
 
-
-
         Handler handler = new Handler(getBaseContext().getMainLooper());
         handler.post(new Runnable() {
             @Override
@@ -288,20 +288,7 @@ public class Chat extends AppCompatActivity {
 
     }
 
-    public File getTempFile(Context context, String url) {
-        File file = null;
-        try {
-            String fileName = Uri.parse(url).getLastPathSegment();
-            file = File.createTempFile(fileName, null, context.getCacheDir());
-        }
-        catch (IOException e) {
-            Log.i("GET FILE", e.getMessage());
-        }
-        return file;
-    }
-
     public void onPause(){
-        //mSocket.disconnect();
         super.onPause();
     }
 }

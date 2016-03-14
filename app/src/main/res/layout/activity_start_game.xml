@@ -59,7 +59,9 @@
                 android:src="@drawable/video"
                 android:contentDescription="@string/video"
                 android:scaleType="fitCenter"
-                style="?android:attr/borderlessButtonStyle"/>
+                style="?android:attr/borderlessButtonStyle"
+                android:onClick="buttonAddVideoClick"
+                android:nestedScrollingEnabled="false" />
 
             <ImageButton
                 android:layout_width="100dp"
@@ -86,12 +88,12 @@
                 android:scaleType="fitStart"
                 android:contentDescription="@string/imgPreview"
                 android:adjustViewBounds="true"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <VideoView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/videoView"
+                android:layout_height="200dp"
+                android:id="@+id/videoViewPrev"
                 android:visibility="gone" />
         </LinearLayout>
 
@@ -194,7 +196,7 @@
             <Button
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:text="New Button"
+                android:text="@string/game"
                 android:id="@+id/buttonRunGame"
                 android:background="@drawable/oval_button"
                 android:layout_alignParentEnd="false"

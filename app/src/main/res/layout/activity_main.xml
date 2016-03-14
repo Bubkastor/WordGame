@@ -19,29 +19,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/startGame"
-            android:onClick="buttonCreateGame"
-            android:id="@+id/buttonGetOnline" />
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/newGame"
-            android:id="@+id/buttonCreateGame"
-            android:onClick="buttonNewGameClick" />
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/buttonChat"
-            android:id="@+id/buttonChat"
-            android:onClick="buttonChatClick" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/inviteUser"
-            android:id="@+id/buttonInvite"
-            android:onClick="buttonInviteClick" />
+            android:onClick="buttonNewGameClick"
+            android:id="@+id/buttonGetOnline"
+            android:nestedScrollingEnabled="false" />
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button_exit"

@@ -145,7 +145,7 @@ public class MessageAdapter extends BaseAdapter {
                 likeView.setVisibility(ImageView.GONE);
                 dislikeView.setVisibility(ImageView.GONE);
                 break;
-        };
+        }
         return row;
     }
 

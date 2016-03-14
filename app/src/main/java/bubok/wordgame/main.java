@@ -1,6 +1,8 @@
 package bubok.wordgame;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -24,7 +27,6 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 public class main extends AppCompatActivity {
-    public final static String EXTRA_MESSAGE_USED_ERROR = "bubok.wordgame.error";
     public final static String EXTRA_MESSAGE_USED_GAME = "bubok.wordgame.game";
     public final static String EXTRA_MESSAGE_USED_TOKEN = "bubok.wordgame.token";
     private String URL;
@@ -37,6 +39,7 @@ public class main extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
         setContentView(R.layout.activity_main);
 
         profile_pic = (ImageView) findViewById(R.id.imageView2);
@@ -51,7 +54,6 @@ public class main extends AppCompatActivity {
                 }
             }
         };
-
 
         Intent intent = getIntent();
         if (intent.getExtras() != null ){
@@ -86,7 +88,6 @@ public class main extends AppCompatActivity {
                 } catch (Exception ex) {
                     Log.i("Error", ex.getMessage());
                 }
-                ;
             }
         }).on("info", new Emitter.Listener() {
             @Override
@@ -109,7 +110,7 @@ public class main extends AppCompatActivity {
 
                 final JSONObject answer = (JSONObject) args[0];
                 try {
-                    String room = answer.getString("title").toString();
+                    String room = answer.getString("title");
                     Log.i("INVITE", room);
 
                 } catch (Exception ex) {
@@ -122,7 +123,7 @@ public class main extends AppCompatActivity {
             public void call(Object... args) {
                 final JSONObject answer = (JSONObject) args[0];
                 try {
-                    String game = answer.getString("game").toString();
+                    String game = answer.getString("game");
                     Intent intent = new Intent(main.this, Chat.class);
                     intent.putExtra(EXTRA_MESSAGE_USED_TOKEN, token);
                     intent.putExtra(EXTRA_MESSAGE_USED_GAME, game);
@@ -134,52 +135,20 @@ public class main extends AppCompatActivity {
 
             }
         });
-        //
+        Log.i("MAIN", "onCreate");
+        if (!mSocket.connected())
+            mSocket.connect();
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        mSocket.connect();
-    }
-
-    public void buttonCreateGame(View v){
-        JSONObject game_Info = new JSONObject();
-        try{
-            game_Info.put("LEADER_ID", token);
-            game_Info.put("WORD", "cat" );
-        }
-        catch (Exception ex){
-
-        }
-    }
     public void buttonNewGameClick(View v){
         Intent intent = new Intent(this, StartGame.class);
-        startActivity(intent);
-    }
-    public void buttonInviteClick(View v){
-        mSocket.emit("go chat", "image");
-    }
-
-    public void buttonChatClick(View v){
-        Intent intent = new Intent(this, Chat.class);
-        intent.putExtra(Login.EXTRA_MESSAGE_TOKEN, token);
         startActivity(intent);
     }
 
     private String GetPathAvatar(String id){
         return "https://graph.facebook.com/" + id + "/picture?type=large";
     }
-    @Override
-    public void onPause(){
-        //mSocket.disconnect();
-        super.onPause();
-    }
-    @Override
-    public void onStop(){
 
-        super.onStop();
-    }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
