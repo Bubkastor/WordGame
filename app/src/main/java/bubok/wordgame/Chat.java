@@ -1,10 +1,16 @@
 package bubok.wordgame;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Movie;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +18,10 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.MediaController;
@@ -36,12 +44,14 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 public class Chat extends AppCompatActivity {
+
     public final static String EXTRA_MESSAGE_WINGAME = "bubok.wordgame.WINGAME";
     private ListView listViewCheat;
     private Button buttonSend;
     private EditText editTextMessage;
     private MessageAdapter messageAdapter;
-    private ImageView imageView;
+    private ImageButton imageView;
+    private ImageView fullScreenView;
     private VideoView videoView;
     private String URL;
     private String namespaceSocket;
@@ -51,6 +61,10 @@ public class Chat extends AppCompatActivity {
     private Bitmap bMap;
     private File videoFile;
     private MediaController mediaController;
+
+    private Animator mCurrentAnimator;
+    private int mShortAnimationDuration;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +90,31 @@ public class Chat extends AppCompatActivity {
         listViewCheat = (ListView) findViewById(R.id.listViewCheat);
         buttonSend = (Button) findViewById(R.id.buttonSend);
         editTextMessage = (EditText) findViewById(R.id.editTextMessage);
-        imageView = (ImageView) findViewById(R.id.imageViewChat);
+        imageView = (ImageButton) findViewById(R.id.imageViewChat);
+        fullScreenView = (ImageView) findViewById(R.id.fullScreenView);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomImageFromThumb(imageView);
+            }
+        });
+        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
         videoView = (VideoView) findViewById(R.id.videoViewChat);
         mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
 
+        imageView.setImageResource(R.drawable.cat);
+
+        initSocket();
+
+        ArrayList<Message> arrayList = new ArrayList<>();
+        messageAdapter = new MessageAdapter(this, arrayList);
+        listViewCheat.setAdapter(messageAdapter);
+    }
+
+    private void initSocket(){
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -127,7 +161,7 @@ public class Chat extends AppCompatActivity {
                 Log.i("CHAT", "USER LEFT");
                 JSONObject answer = (JSONObject) args[0];
                 //try {
-                    //AddMessageInCheat(answer.getString("avatar"), answer.getString("username"), "Left");
+                //AddMessageInCheat(answer.getString("avatar"), answer.getString("username"), "Left");
                 //} catch (Exception ex) {
                 //    Log.i("CHAT", "ERROR: " + ex.getMessage());
                 //}
@@ -165,7 +199,7 @@ public class Chat extends AppCompatActivity {
                     Log.i("CHAT INFO ERR", ex.getMessage());
                 }
             }
-        }).on("change status message",new Emitter.Listener() {
+        }).on("change status message", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 Log.i("CHAT", "change status message");
@@ -183,12 +217,120 @@ public class Chat extends AppCompatActivity {
         mSocket.connect();
 
         mSocket.emit("get info game", mGame);
+    }
 
-        imageView.setImageResource(R.drawable.cat);
+    private void zoomImageFromThumb(final View thumbView) {
+        if (mCurrentAnimator != null) {
+            mCurrentAnimator.cancel();
+        }
 
-        ArrayList<Message> arrayList = new ArrayList<>();
-        messageAdapter = new MessageAdapter(this, arrayList);
-        listViewCheat.setAdapter(messageAdapter);
+        final ImageView expandedImageView = (ImageView) findViewById(R.id.fullScreenView);
+        expandedImageView.setImageBitmap(bMap);
+
+        final Rect startBounds = new Rect();
+        final Rect finalBounds = new Rect();
+        final Point globalOffset = new Point();
+
+        thumbView.getGlobalVisibleRect(startBounds);
+        findViewById(R.id.container)
+                .getGlobalVisibleRect(finalBounds, globalOffset);
+        startBounds.offset(-globalOffset.x, -globalOffset.y);
+        finalBounds.offset(-globalOffset.x, -globalOffset.y);
+
+
+        float startScale;
+        if ((float) finalBounds.width() / finalBounds.height()
+                > (float) startBounds.width() / startBounds.height()) {
+            // Extend start bounds horizontally
+            startScale = (float) startBounds.height() / finalBounds.height();
+            float startWidth = startScale * finalBounds.width();
+            float deltaWidth = (startWidth - startBounds.width()) / 2;
+            startBounds.left -= deltaWidth;
+            startBounds.right += deltaWidth;
+        } else {
+            // Extend start bounds vertically
+            startScale = (float) startBounds.width() / finalBounds.width();
+            float startHeight = startScale * finalBounds.height();
+            float deltaHeight = (startHeight - startBounds.height()) / 2;
+            startBounds.top -= deltaHeight;
+            startBounds.bottom += deltaHeight;
+        }
+
+        thumbView.setAlpha(0f);
+        expandedImageView.setVisibility(View.VISIBLE);
+
+        expandedImageView.setPivotX(0f);
+        expandedImageView.setPivotY(0f);
+
+        AnimatorSet set = new AnimatorSet();
+        set
+                .play(ObjectAnimator.ofFloat(expandedImageView, View.X,
+                        startBounds.left, finalBounds.left))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.Y,
+                        startBounds.top, finalBounds.top))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X,
+                        startScale, 1f)).with(ObjectAnimator.ofFloat(expandedImageView,
+                View.SCALE_Y, startScale, 1f));
+        set.setDuration(mShortAnimationDuration);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCurrentAnimator = null;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mCurrentAnimator = null;
+            }
+        });
+        set.start();
+        mCurrentAnimator = set;
+
+        final float startScaleFinal = startScale;
+        expandedImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mCurrentAnimator != null) {
+                    mCurrentAnimator.cancel();
+                }
+
+                // Animate the four positioning/sizing properties in parallel,
+                // back to their original values.
+                AnimatorSet set = new AnimatorSet();
+                set.play(ObjectAnimator
+                        .ofFloat(expandedImageView, View.X, startBounds.left))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImageView,
+                                        View.Y,startBounds.top))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImageView,
+                                        View.SCALE_X, startScaleFinal))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImageView,
+                                        View.SCALE_Y, startScaleFinal));
+                set.setDuration(mShortAnimationDuration);
+                set.setInterpolator(new DecelerateInterpolator());
+                set.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        thumbView.setAlpha(1f);
+                        expandedImageView.setVisibility(View.GONE);
+                        mCurrentAnimator = null;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        thumbView.setAlpha(1f);
+                        expandedImageView.setVisibility(View.GONE);
+                        mCurrentAnimator = null;
+                    }
+                });
+                set.start();
+                mCurrentAnimator = set;
+            }
+        });
+
     }
 
     private synchronized void ChangeStatus(String id, String status){
