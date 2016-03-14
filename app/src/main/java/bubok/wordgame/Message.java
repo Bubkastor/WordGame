@@ -1,17 +1,11 @@
 package bubok.wordgame;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.ImageView;
-
-import java.net.URL;
 
 /**
  * Created by bubok on 01.03.2016.
  */
-public class Message {
+class Message {
     public Message(String avatar, String username, String message, String idMessage, String status) {
         Username = username;
         Message = message;
@@ -44,11 +38,11 @@ public class Message {
         Avatar = avatar;
     }
 
-    String Avatar;
-    String Username;
-    String Message;
-    String IDMessage;
-    String Status;
+    private String Avatar;
+    private String Username;
+    private String Message;
+    private String IDMessage;
+    private String Status;
 
     public String getStatus() {
         return Status;
@@ -74,7 +68,7 @@ public class Message {
         AvatarBitmap = avatarBitmap;
     }
 
-    Bitmap AvatarBitmap;
+    private Bitmap AvatarBitmap;
 
 
 }

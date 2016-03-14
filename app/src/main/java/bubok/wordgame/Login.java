@@ -1,22 +1,13 @@
 package bubok.wordgame;
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.LruCache;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -27,18 +18,13 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 
 public class Login extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE_TOKEN = "bubok.wordgame.TOKEN";
     public final static String EXTRA_MESSAGE_PROFILE = "bubok.wordgame.PROFILE";
-    CallbackManager callbackManager;
+    private CallbackManager callbackManager;
     private AccessToken accessToken;
-    private LoginButton loginButton;
     private Profile mProfile;
     public static  LruCache<String, Bitmap> mMemoryCache;
     private ProfileTracker profileTracker;
@@ -48,7 +34,7 @@ public class Login extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
-        loginButton = (LoginButton) findViewById(R.id.login_button);
+        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("user_friends");
         loginButton.setReadPermissions("public_profile");
 
@@ -103,7 +89,8 @@ public class Login extends AppCompatActivity {
             OpenMainScreen();
         }
     }
-    void OpenMainScreen(){
+
+    private void OpenMainScreen() {
         Intent intent = new Intent(Login.this, main.class);
         intent.putExtra(EXTRA_MESSAGE_TOKEN, accessToken.getToken());
         mProfile = Profile.getCurrentProfile();

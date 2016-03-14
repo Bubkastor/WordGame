@@ -3,7 +3,6 @@ package bubok.wordgame;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.TwoLineListItem;
 
 import org.json.JSONObject;
 
@@ -24,7 +22,7 @@ import java.util.ArrayList;
 /**
  * Created by bubok on 01.03.2016.
  */
-public class MessageAdapter extends BaseAdapter {
+class MessageAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<Message> messages;
@@ -81,6 +79,7 @@ public class MessageAdapter extends BaseAdapter {
                     sendData.put("id", messages.get(position).getIDMessage());
                     sendData.put("status", "1");
                 } catch (Exception ex) {
+                    Log.i("JSON", ex.getMessage());
                 }
                 Chat.mSocket.emit("change status message", sendData);
             }
@@ -93,6 +92,7 @@ public class MessageAdapter extends BaseAdapter {
                     sendData.put("id", messages.get(position).getIDMessage());
                     sendData.put("status", "2");
                 } catch (Exception ex) {
+                    Log.i("JSON", ex.getMessage());
                 }
                 Chat.mSocket.emit("change status message", sendData);
             }
@@ -105,6 +105,7 @@ public class MessageAdapter extends BaseAdapter {
                 try {
                     sendData.put("id", messages.get(position).getIDMessage());
                 } catch (Exception ex) {
+                    Log.i("JSON", ex.getMessage());
                 }
                 Chat.mSocket.emit("message correct", sendData);
             }

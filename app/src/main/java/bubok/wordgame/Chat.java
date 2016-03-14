@@ -4,22 +4,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Movie;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,11 +27,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.Buffer;
 import java.util.ArrayList;
 
 import io.socket.client.Manager;
@@ -46,21 +39,15 @@ import io.socket.emitter.Emitter;
 public class Chat extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE_WINGAME = "bubok.wordgame.WINGAME";
-    private ListView listViewCheat;
-    private Button buttonSend;
     private EditText editTextMessage;
     private MessageAdapter messageAdapter;
     private ImageButton imageView;
-    private ImageView fullScreenView;
     private VideoView videoView;
-    private String URL;
-    private String namespaceSocket;
     private String mGame;
     private String token = "";
     public static Socket mSocket;
     private Bitmap bMap;
     private File videoFile;
-    private MediaController mediaController;
 
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
@@ -71,8 +58,8 @@ public class Chat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        URL = getResources().getString(R.string.URLOnline);
-        namespaceSocket = getResources().getString(R.string.URLNamespace);
+        String URL = getResources().getString(R.string.URLOnline);
+        String namespaceSocket = getResources().getString(R.string.URLNamespace);
 
         Log.i("STRING", "URL + namespaceSocket: " + URL + namespaceSocket);
         {
@@ -87,11 +74,9 @@ public class Chat extends AppCompatActivity {
         token = intent.getStringExtra(main.EXTRA_MESSAGE_USED_TOKEN);
         mGame = intent.getStringExtra(main.EXTRA_MESSAGE_USED_GAME);
 
-        listViewCheat = (ListView) findViewById(R.id.listViewCheat);
-        buttonSend = (Button) findViewById(R.id.buttonSend);
+        ListView listViewCheat = (ListView) findViewById(R.id.listViewCheat);
         editTextMessage = (EditText) findViewById(R.id.editTextMessage);
         imageView = (ImageButton) findViewById(R.id.imageViewChat);
-        fullScreenView = (ImageView) findViewById(R.id.fullScreenView);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +87,7 @@ public class Chat extends AppCompatActivity {
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         videoView = (VideoView) findViewById(R.id.videoViewChat);
-        mediaController = new MediaController(this);
+        MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
 
         imageView.setImageResource(R.drawable.cat);
@@ -159,7 +144,7 @@ public class Chat extends AppCompatActivity {
             @Override
             public void call(Object... args) {
                 Log.i("CHAT", "USER LEFT");
-                JSONObject answer = (JSONObject) args[0];
+                //JSONObject answer = (JSONObject) args[0];
                 //try {
                 //AddMessageInCheat(answer.getString("avatar"), answer.getString("username"), "Left");
                 //} catch (Exception ex) {

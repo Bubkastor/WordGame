@@ -8,15 +8,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import org.json.JSONObject;
@@ -26,11 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.RandomAccessFile;
-import java.security.PrivateKey;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
-import io.socket.client.Socket;
 
 public class StartGame extends AppCompatActivity {
 
@@ -39,8 +33,8 @@ public class StartGame extends AppCompatActivity {
     }
 
     public final static String EXTRA_MESSAGE_USERS_INVITE = "bubok.wordgame.users.invite";
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int REQUEST_VIDEO_CAPTURE = 2;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_VIDEO_CAPTURE = 2;
 
     private LinearLayout titleLinear;
     private LinearLayout buttonMediaLinear;
@@ -53,9 +47,7 @@ public class StartGame extends AppCompatActivity {
     private byte[] videoByte;
     private TYPE_MEDIA media;
     private List<String> usersInvite;
-    private Socket mSocket;
 
-    private Uri fileUri;
     private static File mediaFile;
 
 
@@ -91,7 +83,7 @@ public class StartGame extends AppCompatActivity {
 
     public void buttonAddVideoClick(View v){
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        fileUri = getOutputMediaFileUri(REQUEST_VIDEO_CAPTURE);
+        Uri fileUri = getOutputMediaFileUri(REQUEST_VIDEO_CAPTURE);
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
@@ -153,7 +145,7 @@ public class StartGame extends AppCompatActivity {
     }
 
     private  void ShowPreviewVideo(Intent data){
-        ChangeVisableMediaConteiner();
+        ChangeVisibleMediaConteiner();
         videoByte =  VideoToByte(data);
         try{
             RandomAccessFile f = new RandomAccessFile(mediaFile, "r");
@@ -174,7 +166,7 @@ public class StartGame extends AppCompatActivity {
         byte[] result = "byte".getBytes();
         Uri videoUri = data.getData();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        FileInputStream fileInputStream = null;
+        FileInputStream fileInputStream;
         try {
             fileInputStream = new FileInputStream(videoUri.getPath());
 
@@ -190,7 +182,7 @@ public class StartGame extends AppCompatActivity {
         return result;
     }
 
-    private void ChangeVisableMediaConteiner()  {
+    private void ChangeVisibleMediaConteiner() {
         int optVisable;
         if (titleLinear.getVisibility() == LinearLayout.VISIBLE){
             optVisable = LinearLayout.GONE;
@@ -202,7 +194,7 @@ public class StartGame extends AppCompatActivity {
     }
 
     private void ShowPreviewPhoto(Intent data){
-        ChangeVisableMediaConteiner();
+        ChangeVisibleMediaConteiner();
         Bundle extras = data.getExtras();
         prevImage = (Bitmap) extras.get("data");
         mediaLinear.setVisibility(View.VISIBLE);
@@ -211,11 +203,10 @@ public class StartGame extends AppCompatActivity {
         media = TYPE_MEDIA.IMAGE;
     }
 
-    public byte[] BitMapToByte(Bitmap bitmap){
+    private byte[] BitMapToByte(Bitmap bitmap) {
         ByteArrayOutputStream baos = new  ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b = baos.toByteArray();
-        return b;
+        return baos.toByteArray();
     }
 
     public void buttonAddFrendsClick(View v){
@@ -223,7 +214,7 @@ public class StartGame extends AppCompatActivity {
 
     }
 
-    public void StartGame(View v){
+    public void startGame(View v) {
         byte [] data = "not empty".getBytes();
         String typeMedia = "";
         String type = "";

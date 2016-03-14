@@ -207,7 +207,7 @@
                 android:layout_alignParentRight="false"
                 android:layout_alignWithParentIfMissing="false"
                 android:allowUndo="false"
-                android:onClick="StartGame" />
+                android:onClick="startGame" />
         </RelativeLayout>
 
     </RelativeLayout>

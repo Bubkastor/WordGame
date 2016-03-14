@@ -2,16 +2,14 @@ package bubok.wordgame;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -29,21 +27,17 @@ import io.socket.emitter.Emitter;
 public class main extends AppCompatActivity {
     public final static String EXTRA_MESSAGE_USED_GAME = "bubok.wordgame.game";
     public final static String EXTRA_MESSAGE_USED_TOKEN = "bubok.wordgame.token";
-    private String URL;
     private static String token;
-    private String game;
-    private Boolean isRegister;
-    private ImageView profile_pic;
+
     public static Socket mSocket;
-    private String name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
         setContentView(R.layout.activity_main);
 
-        profile_pic = (ImageView) findViewById(R.id.imageView2);
-        AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+        new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(
                     AccessToken oldAccessToken,
@@ -59,7 +53,7 @@ public class main extends AppCompatActivity {
         if (intent.getExtras() != null ){
             token = intent.getStringExtra(Login.EXTRA_MESSAGE_TOKEN);
         }
-        URL = getResources().getString(R.string.URLOnline);
+        String URL = getResources().getString(R.string.URLOnline);
         {
             try {
                 mSocket = IO.socket(URL);
@@ -94,7 +88,7 @@ public class main extends AppCompatActivity {
             public void call(Object... args) {
                 JSONObject answer = (JSONObject) args[0];
                 try {
-                    name = answer.getString("username");
+                    //String name = answer.getString("username");
                     String avatarUrl = answer.getString("avatar");
                     new DownloadImageTask((ImageView) findViewById(R.id.imageView2))
                             .execute(avatarUrl);
