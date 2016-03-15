@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,7 +17,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.MediaController;
@@ -39,25 +39,25 @@ import io.socket.emitter.Emitter;
 public class Chat extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE_WINGAME = "bubok.wordgame.WINGAME";
-    private EditText editTextMessage;
+
+    private Context context;
+
     private MessageAdapter messageAdapter;
-    private ImageButton imageView;
-    private VideoView videoView;
     private String mGame;
-    private String token = "";
+    private String token;
     public static Socket mSocket;
+
     private Bitmap bMap;
     private File videoFile;
 
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
+        context = Chat.this;
         String URL = getResources().getString(R.string.URLOnline);
         String namespaceSocket = getResources().getString(R.string.URLNamespace);
 
@@ -75,10 +75,8 @@ public class Chat extends AppCompatActivity {
         mGame = intent.getStringExtra(main.EXTRA_MESSAGE_USED_GAME);
 
         ListView listViewCheat = (ListView) findViewById(R.id.listViewCheat);
-        editTextMessage = (EditText) findViewById(R.id.editTextMessage);
-        imageView = (ImageButton) findViewById(R.id.imageViewChat);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.imageViewChat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 zoomImageFromThumb(imageView);
@@ -86,11 +84,7 @@ public class Chat extends AppCompatActivity {
         });
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        videoView = (VideoView) findViewById(R.id.videoViewChat);
-        MediaController mediaController = new MediaController(this);
-        videoView.setMediaController(mediaController);
 
-        imageView.setImageResource(R.drawable.cat);
 
         initSocket();
 
@@ -348,6 +342,7 @@ public class Chat extends AppCompatActivity {
 
     public void buttonSendClick(View v) {
         Log.i("CHEAT", "send");
+        EditText editTextMessage = (EditText) findViewById(R.id.editTextMessage);
         String message = editTextMessage.getText().toString();
         editTextMessage.setText("");
         JSONObject sendMessage = new JSONObject();
@@ -406,6 +401,9 @@ public class Chat extends AppCompatActivity {
         handler.post(new Runnable() {
             @Override
             public void run() {
+                VideoView videoView = (VideoView) findViewById(R.id.videoViewChat);
+                MediaController mediaController = new MediaController(context);
+                videoView.setMediaController(mediaController);
                 videoView.setVisibility(ImageView.VISIBLE);
                 Log.i("VIDEO", videoFile.getAbsolutePath());
                 videoView.setVideoPath(videoFile.getAbsolutePath());
