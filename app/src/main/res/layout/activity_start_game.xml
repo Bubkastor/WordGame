@@ -24,7 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/titleLinear"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="fill_parent"
@@ -40,7 +41,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:id="@+id/buttonMediaLinear">
+            android:id="@+id/buttonMediaLinear"
+            android:visibility="visible">
 
             <ImageButton
                 android:layout_width="100dp"
@@ -81,20 +83,34 @@
             android:id="@+id/mediaLayout"
             android:visibility="gone">
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="200dp"
-                android:id="@+id/imageViewPrev"
-                android:scaleType="fitStart"
-                android:contentDescription="@string/imgPreview"
-                android:adjustViewBounds="true"
-                android:visibility="gone" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <VideoView
-                android:layout_width="wrap_content"
-                android:layout_height="200dp"
-                android:id="@+id/videoViewPrev"
-                android:visibility="gone" />
+                <VideoView
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp"
+                    android:id="@+id/videoViewPrev"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="200dp"
+                    android:id="@+id/imageViewPrev"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="@string/imgPreview"
+                    android:adjustViewBounds="true"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/resetPrevView"
+                    android:src="@android:drawable/ic_delete"
+                    android:scaleType="fitCenter"
+                    android:layout_gravity="right|top" />
+            </FrameLayout>
+
         </LinearLayout>
 
     </LinearLayout>
@@ -128,8 +144,7 @@
             android:text="@string/AddFrends"
             android:id="@+id/buttonAddFrends"
             android:background="@color/colorButton"
-            android:elegantTextHeight="false"
-            android:onClick="buttonAddFrendsClick" />
+            android:elegantTextHeight="false" />
     </LinearLayout>
 
     <LinearLayout

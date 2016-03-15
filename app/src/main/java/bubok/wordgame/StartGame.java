@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -98,7 +99,13 @@ public class StartGame extends AppCompatActivity {
         imageViewPrev = (ImageView) findViewById(R.id.imageViewPrev);
         editTextSrcWord = (EditText) findViewById(R.id.editTextSrcWord);
         videoViewPrev = (VideoView) findViewById(R.id.videoViewPrev);
-
+        ImageButton resetPrevView = (ImageButton) findViewById(R.id.resetPrevView);
+        resetPrevView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearPrevView();
+            }
+        });
         mediaController = new MediaController(this);
         videoViewPrev.setMediaController(mediaController);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
@@ -106,10 +113,16 @@ public class StartGame extends AppCompatActivity {
         if(intent.getExtras()!= null){
             usersInvite = intent.getExtras().getStringArrayList(EXTRA_MESSAGE_USERS_INVITE);
         }
-
-
     }
 
+    private void clearPrevView() {
+        ChangeVisibleMediaConteiner();
+        mediaLinear.setVisibility(View.GONE);
+        imageViewPrev.setVisibility(View.GONE);
+        videoViewPrev.setVisibility(View.GONE);
+        prevImage = null;
+        media = null;
+    }
     private void galleryPhoto() {
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
@@ -280,9 +293,9 @@ public class StartGame extends AppCompatActivity {
     }
 
     public void startGame(View v) {
-        byte [] data = "not empty".getBytes();
-        String typeMedia = "";
-        String type = "";
+        byte[] data;
+        String typeMedia;
+        String type;
         switch (media){
             case IMAGE:
                 data = BitMapToByte(prevImage);
@@ -295,7 +308,8 @@ public class StartGame extends AppCompatActivity {
                 type = "video";
                 break;
             default:
-                break;
+                return;
+
         }
 
         String word = editTextSrcWord.getText().toString();
