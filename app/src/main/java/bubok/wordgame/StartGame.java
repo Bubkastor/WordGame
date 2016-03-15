@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -40,6 +42,8 @@ public class StartGame extends AppCompatActivity {
     public final static String EXTRA_MESSAGE_USERS_INVITE = "bubok.wordgame.users.invite";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_VIDEO_CAPTURE = 2;
+    private static final int REQUEST_IMAGE_GALLERY = 3;
+
 
     private LinearLayout titleLinear;
     private LinearLayout buttonMediaLinear;
@@ -77,7 +81,7 @@ public class StartGame extends AppCompatActivity {
         });
         builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
-                //todo галерея
+                galleryPhoto();
             }
         });
         builder.setCancelable(true);
@@ -106,15 +110,13 @@ public class StartGame extends AppCompatActivity {
 
     }
 
-    private void showChoicePhoto() {
-        builder.show();
+    private void galleryPhoto() {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
     }
 
-    ;
-
-    public void buttonAddPhotoClick() {
-        showChoicePhoto();
-
+    public void showChoicePhoto(View v) {
+        builder.show();
     }
 
     private void cameraPhoto() {
@@ -181,7 +183,11 @@ public class StartGame extends AppCompatActivity {
                 case REQUEST_VIDEO_CAPTURE:
                     ShowPreviewVideo(data);
                     break;
+                case REQUEST_IMAGE_GALLERY:
+                    ShowPreviewPhotoGallery(data);
+                    break;
                 default:
+
                     break;
             }
         }
@@ -237,6 +243,23 @@ public class StartGame extends AppCompatActivity {
         buttonMediaLinear.setVisibility(optVisable);
     }
 
+    private void ShowPreviewPhotoGallery(Intent data) {
+        ChangeVisibleMediaConteiner();
+
+        Uri selectedImage = data.getData();
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+
+        prevImage = BitmapFactory.decodeFile(picturePath);
+        mediaLinear.setVisibility(View.VISIBLE);
+        imageViewPrev.setVisibility(View.VISIBLE);
+        imageViewPrev.setImageBitmap(prevImage);
+        media = TYPE_MEDIA.IMAGE;
+    }
     private void ShowPreviewPhoto(Intent data){
         ChangeVisibleMediaConteiner();
         Bundle extras = data.getExtras();
