@@ -1,11 +1,15 @@
 package bubok.wordgame;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import org.json.JSONObject;
@@ -47,14 +52,41 @@ public class StartGame extends AppCompatActivity {
     private byte[] videoByte;
     private TYPE_MEDIA media;
     private List<String> usersInvite;
-
+    private AlertDialog.Builder builder;
     private static File mediaFile;
-
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_game);
+        context = StartGame.this;
+        String title = "Выбор картинки";
+        String message = "Выберите откуда взять картинку";
+        String button1String = "Камера";
+        String button2String = "Галерея";
+        builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                cameraPhoto();
+            }
+        });
+        builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                //todo галерея
+            }
+        });
+        builder.setCancelable(true);
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {
+                Toast.makeText(context, "Вы ничего не выбрали",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
 
         titleLinear = (LinearLayout) findViewById(R.id.titleLinear);
         buttonMediaLinear = (LinearLayout) findViewById(R.id.buttonMediaLinear);
@@ -74,9 +106,20 @@ public class StartGame extends AppCompatActivity {
 
     }
 
-    public void buttonAddPhotoClick(View v){
-        Intent takePhoto= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(takePhoto.resolveActivity((getPackageManager()))!= null){
+    private void showChoicePhoto() {
+        builder.show();
+    }
+
+    ;
+
+    public void buttonAddPhotoClick() {
+        showChoicePhoto();
+
+    }
+
+    private void cameraPhoto() {
+        Intent takePhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePhoto.resolveActivity((getPackageManager())) != null) {
             startActivityForResult(takePhoto, REQUEST_IMAGE_CAPTURE);
         }
     }
@@ -91,6 +134,7 @@ public class StartGame extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_VIDEO_CAPTURE);
         }
     }
+
     private static Uri getOutputMediaFileUri(int type){
 
         return Uri.fromFile(getOutputMediaFile(type));
@@ -209,9 +253,7 @@ public class StartGame extends AppCompatActivity {
         return baos.toByteArray();
     }
 
-    public void buttonAddFrendsClick(View v){
-
-
+    public void buttonAddFriendsClick(View v) {
     }
 
     public void startGame(View v) {
