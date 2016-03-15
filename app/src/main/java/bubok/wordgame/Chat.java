@@ -41,7 +41,7 @@ public class Chat extends AppCompatActivity {
     public final static String EXTRA_MESSAGE_WINGAME = "bubok.wordgame.WINGAME";
 
     private Context context;
-
+    private ImageView imageView;
     private MessageAdapter messageAdapter;
     private String mGame;
     private String token;
@@ -75,8 +75,8 @@ public class Chat extends AppCompatActivity {
         mGame = intent.getStringExtra(main.EXTRA_MESSAGE_USED_GAME);
 
         ListView listViewCheat = (ListView) findViewById(R.id.listViewCheat);
-
-        findViewById(R.id.imageViewChat).setOnClickListener(new View.OnClickListener() {
+        imageView = (ImageView) findViewById(R.id.imageViewChat);
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 zoomImageFromThumb(imageView);
