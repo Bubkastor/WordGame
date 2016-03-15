@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -49,7 +50,7 @@ public class Chat extends AppCompatActivity {
 
     private Bitmap bMap;
     private File videoFile;
-
+    private int heightDiff = 0;
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
 
@@ -58,6 +59,15 @@ public class Chat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         context = Chat.this;
+
+        final View activityRootView = findViewById(android.R.id.content);
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                activityRootView.getWindowVisibleDisplayFrame(r);
+                heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
+            }
+        });
         String URL = getResources().getString(R.string.URLOnline);
         String namespaceSocket = getResources().getString(R.string.URLNamespace);
 
@@ -83,8 +93,6 @@ public class Chat extends AppCompatActivity {
             }
         });
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-
 
         initSocket();
 
@@ -204,6 +212,7 @@ public class Chat extends AppCompatActivity {
         }
 
         final ImageView expandedImageView = (ImageView) findViewById(R.id.fullScreenView);
+        expandedImageView.setPadding(0,heightDiff,0,0);
         expandedImageView.setImageBitmap(bMap);
 
         final Rect startBounds = new Rect();
@@ -211,8 +220,7 @@ public class Chat extends AppCompatActivity {
         final Point globalOffset = new Point();
 
         thumbView.getGlobalVisibleRect(startBounds);
-        findViewById(R.id.container)
-                .getGlobalVisibleRect(finalBounds, globalOffset);
+        findViewById(R.id.container).getGlobalVisibleRect(finalBounds, globalOffset);
         startBounds.offset(-globalOffset.x, -globalOffset.y);
         finalBounds.offset(-globalOffset.x, -globalOffset.y);
 
@@ -230,6 +238,7 @@ public class Chat extends AppCompatActivity {
             // Extend start bounds vertically
             startScale = (float) startBounds.width() / finalBounds.width();
             float startHeight = startScale * finalBounds.height();
+            //todo change delta if open keyboard
             float deltaHeight = (startHeight - startBounds.height()) / 2;
             startBounds.top -= deltaHeight;
             startBounds.bottom += deltaHeight;
