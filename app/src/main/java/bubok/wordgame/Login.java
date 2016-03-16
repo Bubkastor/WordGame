@@ -96,6 +96,7 @@ public class Login extends AppCompatActivity {
         mProfile = Profile.getCurrentProfile();
         intent.putExtra(EXTRA_MESSAGE_PROFILE, mProfile);
         startActivity(intent);
+        finish();
     }
 
     @Override

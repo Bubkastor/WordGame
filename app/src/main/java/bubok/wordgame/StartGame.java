@@ -296,6 +296,8 @@ public class StartGame extends AppCompatActivity {
         byte[] data;
         String typeMedia;
         String type;
+        if(media == null)
+            return;
         switch (media){
             case IMAGE:
                 data = BitMapToByte(prevImage);

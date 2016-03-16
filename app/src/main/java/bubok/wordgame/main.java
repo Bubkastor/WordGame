@@ -86,6 +86,7 @@ public class main extends AppCompatActivity {
         }).on("info", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                Log.i("SOCKET", "info");
                 JSONObject answer = (JSONObject) args[0];
                 try {
                     //String name = answer.getString("username");
@@ -129,9 +130,19 @@ public class main extends AppCompatActivity {
 
             }
         });
-        Log.i("MAIN", "onCreate");
-        if (!mSocket.connected())
-            mSocket.connect();
+
+    }
+
+    @Override
+    public void onBackPressed(){
+        finish();
+        //super.onBackPressed();
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.i("Main", "connection");
+        mSocket.connect();
     }
 
     public void buttonNewGameClick(View v){
@@ -142,7 +153,6 @@ public class main extends AppCompatActivity {
     private String GetPathAvatar(String id){
         return "https://graph.facebook.com/" + id + "/picture?type=large";
     }
-
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
@@ -167,5 +177,11 @@ public class main extends AppCompatActivity {
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
         }
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        //mSocket.disconnect();
     }
 }

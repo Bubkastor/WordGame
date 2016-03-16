@@ -24,15 +24,18 @@
             </intent-filter>
         </activity>
         <activity android:name=".Chat"
+            android:parentActivityName=".main"
             android:configChanges="orientation|screenSize|fontScale"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="locked"/>
         <activity
             android:name=".main"
+            android:parentActivityName=".main"
             android:configChanges="orientation|screenSize|fontScale"
             android:screenOrientation="locked"/>
 
         <activity android:name=".StartGame"
+            android:parentActivityName=".main"
             android:configChanges="orientation|screenSize|fontScale"
             android:screenOrientation="locked"/>
         <activity
@@ -41,6 +44,7 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".WinGame"
+            android:parentActivityName=".main"
             android:configChanges="orientation|screenSize|fontScale"
             android:screenOrientation="locked"/>
     </application>
