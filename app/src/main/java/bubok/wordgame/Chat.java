@@ -14,13 +14,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import org.json.JSONObject;
@@ -43,6 +49,7 @@ public class Chat extends AppCompatActivity {
 
     private Context context;
     private ImageView imageView;
+    private EditText editTextMessage;
     private MessageAdapter messageAdapter;
     private String mGame;
     private String token;
@@ -66,6 +73,18 @@ public class Chat extends AppCompatActivity {
                 Rect r = new Rect();
                 activityRootView.getWindowVisibleDisplayFrame(r);
                 heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
+            }
+        });
+
+        editTextMessage = (EditText) findViewById(R.id.editTextMessage);
+        editTextMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    buttonSendClick(v);
+                    return true;
+                }
+                return false;
             }
         });
         String URL = getResources().getString(R.string.URLOnline);
@@ -205,6 +224,7 @@ public class Chat extends AppCompatActivity {
 
         mSocket.emit("get info game", mGame);
     }
+
 
     private void zoomImageFromThumb(final View thumbView) {
         if (mCurrentAnimator != null) {
@@ -350,8 +370,8 @@ public class Chat extends AppCompatActivity {
     }
 
     public void buttonSendClick(View v) {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         Log.i("CHEAT", "send");
-        EditText editTextMessage = (EditText) findViewById(R.id.editTextMessage);
         String message = editTextMessage.getText().toString();
         editTextMessage.setText("");
         JSONObject sendMessage = new JSONObject();
@@ -374,9 +394,9 @@ public class Chat extends AppCompatActivity {
             case "audio":
                 break;
             case "video":
-                try{
+                try {
                     SetVideoView(decodedBytes, contentType);
-                } catch (Exception ex){
+                } catch (Exception ex) {
                     Log.i("VIDEO", ex.getMessage());
                 }
 
@@ -398,7 +418,7 @@ public class Chat extends AppCompatActivity {
         });
     }
 
-    private void SetVideoView(byte[] decodedBytes, String contentType) throws IOException{
+    private void SetVideoView(byte[] decodedBytes, String contentType) throws IOException {
 
         videoFile = new File(this.getFilesDir() + File.separator + "test." + contentType);
         OutputStream myOutputStream = new FileOutputStream(videoFile);
