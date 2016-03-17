@@ -45,6 +45,7 @@ public class StartGame extends AppCompatActivity {
     }
 
     public final static String EXTRA_MESSAGE_USERS_INVITE = "bubok.wordgame.users.invite";
+    private static final String TAG = "START_GAME";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_VIDEO_CAPTURE = 2;
     private static final int REQUEST_IMAGE_GALLERY = 3;
@@ -257,7 +258,7 @@ public class StartGame extends AppCompatActivity {
             videoByte = new byte[(int)f.length()];
             f.read(videoByte);
         } catch (Exception ex){
-            Log.i("RandomAccessFile", ex.getMessage());
+            Log.i(TAG, ex.getMessage());
         }
         mediaLinear.setVisibility(View.VISIBLE);
         videoViewPrev.setVisibility(View.VISIBLE);
@@ -282,7 +283,7 @@ public class StartGame extends AppCompatActivity {
             }
             result = out.toByteArray();
         }catch (Exception ex){
-            Log.i("VIDEO", ex.getMessage());
+            Log.i(TAG, ex.getMessage());
         }
         return result;
     }
@@ -363,11 +364,11 @@ public class StartGame extends AppCompatActivity {
             sendData.put("WORD", word);
             sendData.put("CONTENT_TYPE", typeMedia);
             sendData.put("TYPE", type);
-            sendData.put("PLAYERS_IDS" , usersInvite);
-            main.mSocket.emit("start game", sendData);
+            sendData.put("PLAYERS_IDS", usersInvite);
             showProgress(true);
+            main.mSocket.emit("start game", sendData);
         } catch (Exception ex){
-            Log.i("START GAME", ex.getMessage());
+            Log.i(TAG, ex.getMessage());
         }
     }
 

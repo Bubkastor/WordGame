@@ -46,7 +46,7 @@ import io.socket.emitter.Emitter;
 public class Chat extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE_WINGAME = "bubok.wordgame.WINGAME";
-
+    private static final String TAG = "CHAT";
     private Context context;
     private ImageView imageView;
     private EditText editTextMessage;
@@ -90,13 +90,13 @@ public class Chat extends AppCompatActivity {
         String URL = getResources().getString(R.string.URLOnline);
         String namespaceSocket = getResources().getString(R.string.URLNamespace);
 
-        Log.i("STRING", "URL + namespaceSocket: " + URL + namespaceSocket);
+        Log.i(TAG, "URL + namespaceSocket: " + URL + namespaceSocket);
         {
             try {
                 Manager manager = new Manager(new URI(URL));
                 mSocket = manager.socket(namespaceSocket);
             } catch (URISyntaxException e) {
-                Log.i("SOCKET", "ERROR: " + e.getMessage());
+                Log.i(TAG, "ERROR: " + e.getMessage());
             }
         }
         Intent intent = getIntent();
@@ -129,7 +129,7 @@ public class Chat extends AppCompatActivity {
                     answer.put("token", token);
                     answer.put("game", mGame);
                 }catch (Exception ex){
-                    Log.i("CHAT", ex.getMessage());
+                    Log.i(TAG, ex.getMessage());
                 }
                 mSocket.emit("add user", answer);
             }
@@ -140,15 +140,15 @@ public class Chat extends AppCompatActivity {
                 JSONObject answer = (JSONObject) args[0];
                 try {
                     String username = answer.getString("username");
-                    Log.i("CHAT", "USER JOINED: " +username);
+                    Log.i(TAG, "USER JOINED: " +username);
                 } catch (Exception ex) {
-                    Log.i("CHAT", "ERROR: " + ex.getMessage());
+                    Log.i(TAG, "ERROR: " + ex.getMessage());
                 }
             }
         }).on("message", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.i("CHAT", "MESSAGE");
+                Log.i(TAG, "MESSAGE");
                 JSONObject answer = (JSONObject) args[0];
                 try {
                     AddMessageInCheat(
@@ -158,13 +158,13 @@ public class Chat extends AppCompatActivity {
                             answer.getString("idMessage"),
                             answer.getString("status"));
                 } catch (Exception ex) {
-                    Log.i("CHAT", "ERROR: " + ex.getMessage());
+                    Log.i(TAG, "ERROR: " + ex.getMessage());
                 }
             }
         }).on("user left", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.i("CHAT", "USER LEFT");
+                Log.i(TAG, "USER LEFT");
                 //JSONObject answer = (JSONObject) args[0];
                 //try {
                 //AddMessageInCheat(answer.getString("avatar"), answer.getString("username"), "Left");
@@ -175,24 +175,24 @@ public class Chat extends AppCompatActivity {
         }).on("close game", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.i("CHAT", "close chat");
+                Log.i(TAG, "close chat");
                 JSONObject answer = (JSONObject) args[0];
                 try {
                     String userWin = answer.getString("win");
                     String word = answer.getString("word");
                     String text = "Пользователь " + userWin + " победил загаданое слово " + word;
-                    Log.i("CHAT", text);
+                    Log.i(TAG, text);
 
                     CloseCheat(userWin, word);
                 } catch (Exception ex) {
-                    Log.i("CHAT", ex.getMessage());
+                    Log.i(TAG, ex.getMessage());
 
                 }
             }
         }).on("get info game", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.i("CHAT", "info");
+                Log.i(TAG, "info");
                 JSONObject answer = (JSONObject) args[0];
                 try {
                     String typeMedia = answer.getString("typeMedia");
@@ -202,13 +202,13 @@ public class Chat extends AppCompatActivity {
                     messageAdapter.setOptionPanel(isAdmin);
                     SetMediaContainer(typeMedia, contentType, decodedBytes);
                 } catch (Exception ex) {
-                    Log.i("CHAT INFO ERR", ex.getMessage());
+                    Log.i(TAG, ex.getMessage());
                 }
             }
         }).on("change status message", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.i("CHAT", "change status message");
+                Log.i(TAG, "change status message");
                 JSONObject answer = (JSONObject) args[0];
                 try {
                     String id = answer.getString("idMessage");
@@ -216,7 +216,7 @@ public class Chat extends AppCompatActivity {
                     ChangeStatus(id, status);
 
                 } catch (Exception ex) {
-                    Log.i("CHAT", ex.getMessage());
+                    Log.i(TAG, ex.getMessage());
                 }
             }
         });
@@ -372,7 +372,7 @@ public class Chat extends AppCompatActivity {
 
     public void buttonSendClick(View v) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        Log.i("CHEAT", "send");
+        Log.i(TAG, "send");
         String message = editTextMessage.getText().toString();
         editTextMessage.setText("");
         JSONObject sendMessage = new JSONObject();
@@ -382,7 +382,7 @@ public class Chat extends AppCompatActivity {
             mSocket.emit("message", sendMessage);
 
         } catch (Exception ex){
-            Log.i("CHEAT", "ERROR: " + ex.getMessage());
+            Log.i(TAG, "ERROR: " + ex.getMessage());
         }
     }
 
@@ -398,7 +398,7 @@ public class Chat extends AppCompatActivity {
                 try {
                     SetVideoView(decodedBytes, contentType);
                 } catch (Exception ex) {
-                    Log.i("VIDEO", ex.getMessage());
+                    Log.i(TAG, ex.getMessage());
                 }
                 break;
             default:
@@ -434,7 +434,7 @@ public class Chat extends AppCompatActivity {
                 MediaController mediaController = new MediaController(context);
                 videoView.setMediaController(mediaController);
                 videoView.setVisibility(ImageView.VISIBLE);
-                Log.i("VIDEO", videoFile.getAbsolutePath());
+                Log.i(TAG, videoFile.getAbsolutePath());
                 videoView.setVideoPath(videoFile.getAbsolutePath());
 
             }

@@ -23,6 +23,7 @@ public class Login extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE_TOKEN = "bubok.wordgame.TOKEN";
     public final static String EXTRA_MESSAGE_PROFILE = "bubok.wordgame.PROFILE";
+    private static final String TAG = "LOGIN";
     private CallbackManager callbackManager;
     private AccessToken accessToken;
     private Profile mProfile;
@@ -56,7 +57,7 @@ public class Login extends AppCompatActivity {
                 private ProfileTracker mProfileTracker;
                 @Override
                 public void onSuccess(LoginResult loginResult) {
-                    Log.i("FACEBOOK", "onSuccess");
+                    Log.i(TAG, "onSuccess");
                     if(Profile.getCurrentProfile() == null) {
                         mProfileTracker = new ProfileTracker() {
                             @Override
@@ -76,12 +77,12 @@ public class Login extends AppCompatActivity {
 
                 @Override
                 public void onCancel() {
-                    Log.i("FACEBOOK", "onCancel");
+                    Log.i(TAG, "onCancel");
                 }
 
                 @Override
                 public void onError(FacebookException exception) {
-                    Log.i("FACEBOOK", "onError");
+                    Log.i(TAG, "onError");
                 }
             });
         mProfile = Profile.getCurrentProfile();

@@ -5,7 +5,6 @@ import android.util.Log;
 
 import java.net.URISyntaxException;
 
-import bubok.wordgame.R;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 

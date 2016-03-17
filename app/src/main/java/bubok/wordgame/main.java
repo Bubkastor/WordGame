@@ -30,7 +30,7 @@ public class main extends AppCompatActivity {
     public static final String EXTRA_MESSAGE_USED_GAME = "bubok.wordgame.game";
     public static final String EXTRA_MESSAGE_USED_TOKEN = "bubok.wordgame.token";
     private static final String TAG_WORKER = "TAG_WORKER";
-
+    private static final String TAG = "MAIN";
     private static String token;
 
     public static Socket mSocket;
@@ -64,24 +64,22 @@ public class main extends AppCompatActivity {
         final WorkerFragment retainedWorkerFragment = (WorkerFragment) getFragmentManager().findFragmentByTag(TAG_WORKER);
 
         if (retainedWorkerFragment != null){
+            Log.i(TAG, "found fragment worker");
             socketModel = retainedWorkerFragment.getSocketModel();
         } else{
+            Log.i(TAG, "not found fragment worker");
             final WorkerFragment workerFragment = new WorkerFragment(getResources().getString(R.string.URLOnline));
             getFragmentManager().beginTransaction().
                     add(workerFragment, TAG_WORKER)
                     .commit();
             socketModel = workerFragment.getSocketModel();
+            initBehaviorSocket();
         }
+        Log.i(TAG, "onCreate");
 
+    }
 
-        //String URL = getResources().getString(R.string.URLOnline);
-        //{
-        //   try {
-        //        mSocket = IO.socket(URL);
-        //    } catch (URISyntaxException e) {
-        //        Log.i("SOCKET", "ERROR: " + e.getMessage());
-        //    }
-        //}
+    private void initBehaviorSocket(){
         mSocket = socketModel.getSocket();
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
@@ -91,7 +89,7 @@ public class main extends AppCompatActivity {
         }).on("not found", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.i("SOCKET", "not found");
+                Log.i(TAG, "not found");
                 JSONObject sendUserInfo = new JSONObject();
                 try {
                     Profile profile = Profile.getCurrentProfile();
@@ -100,13 +98,13 @@ public class main extends AppCompatActivity {
                     sendUserInfo.put("AVATAR", GetPathAvatar(profile.getId()));
                     mSocket.emit("login", sendUserInfo);
                 } catch (Exception ex) {
-                    Log.i("Error", ex.getMessage());
+                    Log.i(TAG, ex.getMessage());
                 }
             }
         }).on("info", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.i("SOCKET", "info");
+                Log.i(TAG, "info");
                 JSONObject answer = (JSONObject) args[0];
                 try {
                     //String name = answer.getString("username");
@@ -115,7 +113,7 @@ public class main extends AppCompatActivity {
                             .execute(avatarUrl);
 
                 } catch (Exception ex) {
-                    Log.i("SOCKET", "ERROR: " + ex.getMessage());
+                    Log.i(TAG, "ERROR: " + ex.getMessage());
                 }
 
             }
@@ -126,10 +124,10 @@ public class main extends AppCompatActivity {
                 final JSONObject answer = (JSONObject) args[0];
                 try {
                     String room = answer.getString("title");
-                    Log.i("INVITE", room);
+                    Log.i(TAG, room);
 
                 } catch (Exception ex) {
-                    Log.i("SOCKET", "ERROR: " + ex.getMessage());
+                    Log.i(TAG, "ERROR: " + ex.getMessage());
                 }
 
             }
@@ -142,7 +140,7 @@ public class main extends AppCompatActivity {
                     Intent intent = new Intent(main.this, Chat.class);
                     intent.putExtra(EXTRA_MESSAGE_USED_TOKEN, token);
                     intent.putExtra(EXTRA_MESSAGE_USED_GAME, game);
-                    Log.i("SOCKET", "Chat open");
+                    Log.i(TAG, "Chat open");
                     startActivity(intent);
                 } catch (Exception ex) {
                     Log.i("SOCKET", "ERROR: " + ex.getMessage());
@@ -150,7 +148,6 @@ public class main extends AppCompatActivity {
 
             }
         });
-
     }
 
     @Override
@@ -161,8 +158,7 @@ public class main extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-        Log.i("Main", "connection");
-        //mSocket.connect();
+        Log.i(TAG, "onResume");
     }
 
     public void buttonNewGameClick(View v){
@@ -202,6 +198,6 @@ public class main extends AppCompatActivity {
     @Override
     public void onPause(){
         super.onPause();
-        //mSocket.disconnect();
+        Log.i(TAG, "onPause");
     }
 }

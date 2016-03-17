@@ -22,6 +22,10 @@ public class WorkerFragment  extends Fragment{
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
+    @Override
+    public void finalize(){
+
+    }
 
     public SocketModel getSocketModel(){
         return socketModel;
