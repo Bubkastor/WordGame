@@ -2,22 +2,16 @@ package bubok.wordgame.Service;
 
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.net.nsd.NsdManager;
-import android.net.nsd.NsdServiceInfo;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
-import io.socket.client.IO;
 import io.socket.client.Manager;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -25,33 +19,38 @@ import io.socket.emitter.Emitter;
 /**
  * Created by bubok on 17.03.2016.
  */
+
 public class SocketService extends Service {
 
     private static final String TAG = "SOCKET_SERVICE";
 
-    private static Socket socket;
+    private static Socket mainSocket;
     private static Socket chatSocket;
     private static Manager manager;
-    private static boolean firstInitMainSocket;
-    private String hostIP;
 
-    private SocketIOListener mListener;
+    private SocketChatListener chatListener;
+    private SocketMainListener mainListener;
+
     private SocketIOBinder mBinder = new SocketIOBinder();
 
     public SocketService(){
         Log.i(TAG, "SocketService");
     }
-    @Override
-    public void onCreate() {
-        Log.i(TAG, "onCreate");
-        super.onCreate();
-
-        initializeDiscoveryListener();
-
-    }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand");
+        String url = "";
+        String chatNamespace = "";
+        try{
+            manager = new Manager(new URI(url));
+            mainSocket = manager.socket("/");
+            chatSocket= manager.socket(chatNamespace);
+        } catch (Exception ex){
+            Log.i("Error", ex.getMessage());
+        }
+
+        setupSocketMain();
+        setupSocketChat();
         return Service.START_NOT_STICKY;
     }
 
@@ -61,88 +60,175 @@ public class SocketService extends Service {
         Log.i(TAG, "onBind");
         return mBinder;
     }
-    public void initializeDiscoveryListener() {
-        hostIP = "http://server20160304034355.azurewebsites.net";
-        setupSocketIO();
+
+    private void setupSocketMain() {
+        mainSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                mainListener.onConnected();
+            }
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                mainListener.onDisconnect();
+            }
+        });
+        mainSocket.on("not found", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (mainListener != null) {
+                    mainListener.onNotFound(jsonObject);
+                }
+            }
+        });
+        mainSocket.on("info", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (mainListener != null) {
+                    mainListener.onInfo(jsonObject);
+                }
+            }
+        });
+        mainSocket.on("invite", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (mainListener != null) {
+                    mainListener.onInvite(jsonObject);
+                }
+            }
+        });
+        mainSocket.on("open chat", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (mainListener != null) {
+                    mainListener.onOpenChat(jsonObject);
+                }
+            }
+        });
+        mainSocket.connect();
     }
 
-    private void setupSocketIO() {
-        try {
-            Log.i("socket", hostIP);
-            socket = IO.socket(hostIP);
-            socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+    private void setupSocketChat(){
+        chatSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
-                @Override
-                public void call(Object... args) {
-                    Log.i("INFO", "connected");
-                    //StartListener
-                    mListener.onConnected();
-                }
-            }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                chatListener.onConnected();
+            }
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
-                @Override
-                public void call(Object... args) {
+            @Override
+            public void call(Object... args) {
+                chatListener.onDisconnect();
+            }
+        });
+        chatSocket.on("message", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (chatListener != null) {
+                    chatListener.onMessage(jsonObject);
                 }
-            });
-            socket.on("message", new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    JSONObject jsonObject = (JSONObject) args[0];
-                    if (mListener != null) {
-                        mListener.onMessage(jsonObject);
-                    }
+            }
+        });
+        chatSocket.on("joined", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (chatListener != null) {
+                    chatListener.onJoined(jsonObject);
                 }
-            });
-            socket.on("not found", new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    JSONObject jsonObject = (JSONObject) args[0];
-                    if (mListener != null) {
-                        mListener.onNotFound(jsonObject);
-                    }
+            }
+        });
+        chatSocket.on("user left", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (chatListener != null) {
+                    chatListener.onUserLeft(jsonObject);
                 }
-            });
-            socket.on("info", new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    JSONObject jsonObject = (JSONObject) args[0];
-                    if (mListener != null) {
-                        mListener.onInfo(jsonObject);
-                    }
+            }
+        });
+        chatSocket.on("close game", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (chatListener != null) {
+                    chatListener.onCloseGame(jsonObject);
                 }
-            });
+            }
+        });
+        chatSocket.on("get info game", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (chatListener != null) {
+                    chatListener.onInfoGame(jsonObject);
+                }
+            }
+        });
+        chatSocket.on("change status message", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (chatListener != null) {
+                    chatListener.onChangeStatusMessage(jsonObject);
+                }
+            }
+        });
+        chatSocket.connect();
+    };
 
-
-            socket.connect();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+    public void mainSend(String event, String message){
+        mainSocket.emit(event, message);
     }
-
-
-    public void send(String event, String message){
-        socket.emit(event, message);
+    public void mainSend(String event, JSONObject message){
+        mainSocket.emit(event, message);
     }
-    public void send(String event, JSONObject message){
-        socket.emit(event, message);
+    public void mainSend(String event){ mainSocket.emit(event);}
+
+    public void chatSend(String event, String message){
+        chatSocket.emit(event, message);
     }
-    public void send(String event){ socket.emit(event);}
+    public void chatSend(String event, JSONObject message){
+        chatSocket.emit(event, message);
+    }
+    public void chatSend(String event){ chatSocket.emit(event);}
 
     public class SocketIOBinder extends Binder {
         public SocketService getService(){
             return SocketService.this;
         }
 
-        public void setListener(SocketIOListener listener){
-            mListener = listener;
+        public void setMainListener(SocketMainListener listener){
+            mainListener = listener;
         }
+
+        public void setChatListener(SocketChatListener listener) { chatListener = listener; }
     }
 
-    public interface SocketIOListener{
+    public interface SocketMainListener{
         public void onConnected();
-        public void onMessage(JSONObject jsonObject);
         public void onNotFound(JSONObject jsonObject);
         public void onInfo(JSONObject jsonObject);
+        public void onOpenChat(JSONObject jsonObject);
+        public void onInvite(JSONObject jsonObject);
+        public void onDisconnect();
 
+    }
+
+    public interface SocketChatListener{
+        public void onConnected();
+        public void onMessage(JSONObject jsonObject);
+        public void onJoined(JSONObject jsonObject);
+        public void onUserLeft(JSONObject jsonObject);
+        public void onCloseGame(JSONObject jsonObject);
+        public void onInfoGame(JSONObject jsonObject);
+        public void onChangeStatusMessage(JSONObject jsonObject);
+        public void onDisconnect();
     }
 }
