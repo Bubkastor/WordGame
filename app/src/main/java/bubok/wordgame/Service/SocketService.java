@@ -39,8 +39,8 @@ public class SocketService extends Service {
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand");
-        String url = "";
-        String chatNamespace = "";
+        String url = intent.getStringExtra("url");
+        String chatNamespace = intent.getStringExtra("chatNamespace");
         try{
             manager = new Manager(new URI(url));
             mainSocket = manager.socket("/");
@@ -65,7 +65,9 @@ public class SocketService extends Service {
         mainSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                mainListener.onConnected();
+                if (mainListener != null) {
+                    mainListener.onConnected();
+                }
             }
         }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
             @Override
@@ -96,7 +98,7 @@ public class SocketService extends Service {
             public void call(Object... args) {
                 JSONObject jsonObject = (JSONObject) args[0];
                 if (mainListener != null) {
-                    mainListener.onInvite(jsonObject);
+                    mainListener.onInviteChat(jsonObject);
                 }
             }
         });
@@ -109,7 +111,7 @@ public class SocketService extends Service {
                 }
             }
         });
-        mainSocket.connect();
+            mainSocket.connect();
     }
 
     private void setupSocketChat(){
@@ -117,7 +119,9 @@ public class SocketService extends Service {
 
             @Override
             public void call(Object... args) {
+                if (chatListener != null) {
                 chatListener.onConnected();
+                }
             }
         }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
@@ -216,7 +220,7 @@ public class SocketService extends Service {
         public void onNotFound(JSONObject jsonObject);
         public void onInfo(JSONObject jsonObject);
         public void onOpenChat(JSONObject jsonObject);
-        public void onInvite(JSONObject jsonObject);
+        public void onInviteChat(JSONObject jsonObject);
         public void onDisconnect();
 
     }
