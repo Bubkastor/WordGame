@@ -87,18 +87,7 @@ public class Chat extends AppCompatActivity {
                 return false;
             }
         });
-        String URL = getResources().getString(R.string.URLOnline);
-        String namespaceSocket = getResources().getString(R.string.URLNamespace);
 
-        Log.i(TAG, "URL + namespaceSocket: " + URL + namespaceSocket);
-        {
-            try {
-                Manager manager = new Manager(new URI(URL));
-                mSocket = manager.socket(namespaceSocket);
-            } catch (URISyntaxException e) {
-                Log.i(TAG, "ERROR: " + e.getMessage());
-            }
-        }
         Intent intent = getIntent();
         token = intent.getStringExtra(main.EXTRA_MESSAGE_USED_TOKEN);
         mGame = intent.getStringExtra(main.EXTRA_MESSAGE_USED_GAME);
@@ -121,6 +110,7 @@ public class Chat extends AppCompatActivity {
     }
 
     private void initSocket(){
+
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -221,10 +211,8 @@ public class Chat extends AppCompatActivity {
             }
         });
         mSocket.connect();
-
         mSocket.emit("get info game", mGame);
     }
-
 
     private void zoomImageFromThumb(final View thumbView) {
         if (mCurrentAnimator != null) {
@@ -436,13 +424,13 @@ public class Chat extends AppCompatActivity {
                 videoView.setVisibility(ImageView.VISIBLE);
                 Log.i(TAG, videoFile.getAbsolutePath());
                 videoView.setVideoPath(videoFile.getAbsolutePath());
-
             }
         });
-
     }
 
-    public void onPause(){
-        super.onPause();
+    @Override
+    public void onStop(){
+        Log.i(TAG, "onStop");
+        super.onStop();
     }
 }
