@@ -20,16 +20,23 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import bubok.wordgame.Fragment.SocketModel;
+import bubok.wordgame.Fragment.WorkerFragment;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 public class main extends AppCompatActivity {
-    public final static String EXTRA_MESSAGE_USED_GAME = "bubok.wordgame.game";
-    public final static String EXTRA_MESSAGE_USED_TOKEN = "bubok.wordgame.token";
+    public static final String EXTRA_MESSAGE_USED_GAME = "bubok.wordgame.game";
+    public static final String EXTRA_MESSAGE_USED_TOKEN = "bubok.wordgame.token";
+    private static final String TAG_WORKER = "TAG_WORKER";
+
     private static String token;
 
     public static Socket mSocket;
+
+    private SocketModel socketModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +60,29 @@ public class main extends AppCompatActivity {
         if (intent.getExtras() != null ){
             token = intent.getStringExtra(Login.EXTRA_MESSAGE_TOKEN);
         }
-        String URL = getResources().getString(R.string.URLOnline);
-        {
-            try {
-                mSocket = IO.socket(URL);
 
-            } catch (URISyntaxException e) {
-                Log.i("SOCKET", "ERROR: " + e.getMessage());
-            }
+        final WorkerFragment retainedWorkerFragment = (WorkerFragment) getFragmentManager().findFragmentByTag(TAG_WORKER);
+
+        if (retainedWorkerFragment != null){
+            socketModel = retainedWorkerFragment.getSocketModel();
+        } else{
+            final WorkerFragment workerFragment = new WorkerFragment(getResources().getString(R.string.URLOnline));
+            getFragmentManager().beginTransaction().
+                    add(workerFragment, TAG_WORKER)
+                    .commit();
+            socketModel = workerFragment.getSocketModel();
         }
 
+
+        //String URL = getResources().getString(R.string.URLOnline);
+        //{
+        //   try {
+        //        mSocket = IO.socket(URL);
+        //    } catch (URISyntaxException e) {
+        //        Log.i("SOCKET", "ERROR: " + e.getMessage());
+        //    }
+        //}
+        mSocket = socketModel.getSocket();
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -142,7 +162,7 @@ public class main extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         Log.i("Main", "connection");
-        mSocket.connect();
+        //mSocket.connect();
     }
 
     public void buttonNewGameClick(View v){

@@ -30,7 +30,6 @@
             android:screenOrientation="locked"/>
         <activity
             android:name=".main"
-            android:parentActivityName=".main"
             android:configChanges="orientation|screenSize|fontScale"
             android:screenOrientation="locked"/>
 

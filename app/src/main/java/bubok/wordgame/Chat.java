@@ -356,6 +356,7 @@ public class Chat extends AppCompatActivity {
         String text = "Пользователь " + userWin + " победил загаданое слово " + word;
         intent.putExtra(EXTRA_MESSAGE_WINGAME, text);
         startActivity(intent);
+        finish();
     }
 
     private synchronized void AddMessageInCheat(String urlAvatar, String login, String message, String idMessage, String status){
@@ -399,7 +400,6 @@ public class Chat extends AppCompatActivity {
                 } catch (Exception ex) {
                     Log.i("VIDEO", ex.getMessage());
                 }
-
                 break;
             default:
                 break;

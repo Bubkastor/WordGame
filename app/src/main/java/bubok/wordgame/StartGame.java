@@ -1,5 +1,8 @@
 package bubok.wordgame;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +12,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
@@ -59,6 +63,8 @@ public class StartGame extends AppCompatActivity {
     private List<String> usersInvite;
     private AlertDialog.Builder builder;
     private static File mediaFile;
+    private View startGameProgress;
+    private View progressBarLayout;
     private Context context;
 
     @Override
@@ -99,6 +105,8 @@ public class StartGame extends AppCompatActivity {
         imageViewPrev = (ImageView) findViewById(R.id.imageViewPrev);
         editTextSrcWord = (EditText) findViewById(R.id.editTextSrcWord);
         videoViewPrev = (VideoView) findViewById(R.id.videoViewPrev);
+        startGameProgress = findViewById(R.id.startGameProgress);
+        progressBarLayout = findViewById(R.id.progressBarLayout);
         ImageButton resetPrevView = (ImageButton) findViewById(R.id.resetPrevView);
         resetPrevView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +120,40 @@ public class StartGame extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent.getExtras()!= null){
             usersInvite = intent.getExtras().getStringArrayList(EXTRA_MESSAGE_USERS_INVITE);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            startGameProgress.setVisibility(show ? View.GONE : View.VISIBLE);
+            progressBarLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            startGameProgress.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    //.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            startGameProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressBarLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+            startGameProgress.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    startGameProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+                    progressBarLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            //mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            //mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -323,9 +365,17 @@ public class StartGame extends AppCompatActivity {
             sendData.put("TYPE", type);
             sendData.put("PLAYERS_IDS" , usersInvite);
             main.mSocket.emit("start game", sendData);
+            showProgress(true);
         } catch (Exception ex){
             Log.i("START GAME", ex.getMessage());
         }
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        if(startGameProgress.getVisibility() == View.VISIBLE)
+            finish();
     }
 
 }
