@@ -4,9 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +41,8 @@ import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import bubok.wordgame.Service.SocketService;
+
 public class StartGame extends AppCompatActivity {
 
     enum TYPE_MEDIA{
@@ -49,7 +54,6 @@ public class StartGame extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_VIDEO_CAPTURE = 2;
     private static final int REQUEST_IMAGE_GALLERY = 3;
-
 
     private LinearLayout titleLinear;
     private LinearLayout buttonMediaLinear;
@@ -67,12 +71,19 @@ public class StartGame extends AppCompatActivity {
     private View startGameProgress;
     private View progressBarLayout;
     private Context context;
+    private boolean mBound;
+    private Intent service;
+
+    private static SocketService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_game);
         context = StartGame.this;
+
+        service = new Intent(this, SocketService.class);
+
         String title = "Выбор картинки";
         String message = "Выберите откуда взять картинку";
         String button1String = "Камера";
@@ -123,6 +134,71 @@ public class StartGame extends AppCompatActivity {
             usersInvite = intent.getExtras().getStringArrayList(EXTRA_MESSAGE_USERS_INVITE);
         }
     }
+
+    @Override
+    public void onStart() {
+        Log.i(TAG, "onStart");
+        super.onStart();
+        if (!mBound)
+            bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            SocketService.SocketIOBinder binder = (SocketService.SocketIOBinder) service;
+            mService = binder.getService();
+            binder.setMainListener(new SocketService.SocketMainListener() {
+                @Override
+                public void onConnected() {
+
+                }
+
+                @Override
+                public void onNotFound(JSONObject jsonObject) {
+
+                }
+
+                @Override
+                public void onInfo(JSONObject jsonObject) {
+
+                }
+
+                @Override
+                public void onOpenChat(JSONObject jsonObject) {
+                    Log.i(TAG, "Chat open");
+                    try {
+                        String game = jsonObject.getString("game");
+                        Intent intent = new Intent(StartGame.this, Chat.class);
+                        intent.putExtra(main.EXTRA_MESSAGE_USED_TOKEN, main.token);
+                        intent.putExtra(main.EXTRA_MESSAGE_USED_GAME, game);
+
+                        startActivity(intent);
+
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
+                }
+
+                @Override
+                public void onInviteChat(JSONObject jsonObject) {
+                    Log.i(TAG, "invite chat");
+                }
+
+                @Override
+                public void onDisconnect() {
+
+                }
+            });
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBound = false;
+        }
+    };
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
@@ -328,7 +404,8 @@ public class StartGame extends AppCompatActivity {
 
     private byte[] BitMapToByte(Bitmap bitmap) {
         ByteArrayOutputStream baos = new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
         return baos.toByteArray();
     }
 
@@ -344,7 +421,7 @@ public class StartGame extends AppCompatActivity {
         switch (media){
             case IMAGE:
                 data = BitMapToByte(prevImage);
-                typeMedia = "png";
+                typeMedia = "jpeg";
                 type = "image";
                 break;
             case VIDEO:
@@ -366,7 +443,7 @@ public class StartGame extends AppCompatActivity {
             sendData.put("TYPE", type);
             sendData.put("PLAYERS_IDS", usersInvite);
             showProgress(true);
-            main.mSocket.emit("start game", sendData);
+            mService.mainSend("start game", sendData);
         } catch (Exception ex){
             Log.i(TAG, ex.getMessage());
         }
@@ -374,9 +451,14 @@ public class StartGame extends AppCompatActivity {
 
     @Override
     public void onStop(){
+        Log.i(TAG, "onStop");
         super.onStop();
-        if(startGameProgress.getVisibility() == View.VISIBLE)
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+        if (startGameProgress.getVisibility() == View.VISIBLE) {
             finish();
+        }
     }
-
 }

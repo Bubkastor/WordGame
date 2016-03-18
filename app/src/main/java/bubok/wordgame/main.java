@@ -22,45 +22,72 @@ import com.facebook.Profile;
 
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.net.URL;
 
-
 import bubok.wordgame.Service.SocketService;
-import io.socket.client.IO;
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
+
 
 public class main extends AppCompatActivity {
+
     public static final String EXTRA_MESSAGE_USED_GAME = "bubok.wordgame.game";
     public static final String EXTRA_MESSAGE_USED_TOKEN = "bubok.wordgame.token";
-    private static final String TAG_WORKER = "TAG_WORKER";
     private static final String TAG = "MAIN";
-    private static String token;
-
-    public static Socket mSocket;
-
+    private boolean mBound;
+    private static Intent service;
+    public static String token;
 
     private static SocketService mService;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
+        setContentView(R.layout.activity_main);
+
+        service = new Intent(this, SocketService.class);
+        service.putExtra("url", getResources().getString(R.string.URL));
+        service.putExtra("chatNamespace", getResources().getString(R.string.ChatNamespace));
+
+        startService(service);
+
+        new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(
+                    AccessToken oldAccessToken,
+                    AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    Intent intent = new Intent(main.this, Login.class);
+                    startActivity(intent);
+                }
+            }
+        };
+        Intent intent = getIntent();
+        if (intent.getExtras() != null) {
+            token = intent.getStringExtra(Login.EXTRA_MESSAGE_TOKEN);
+        }
+
+        Log.i(TAG, "onCreate");
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i(TAG, "onNewIntent");
+        super.onNewIntent(intent);
+    }
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d(TAG, "MainActivity onServiceConnected");
+            Log.d(TAG, "onServiceConnected");
             SocketService.SocketIOBinder binder = (SocketService.SocketIOBinder) service;
             mService = binder.getService();
-            binder.setListener(new SocketService.SocketIOListener() {
+            binder.setMainListener(new SocketService.SocketMainListener() {
                 @Override
                 public void onConnected() {
-                    Log.i(TAG, "Connect");
-                    mService.send("login", token);
+                    Log.i(TAG, "onConnected");
+                    mService.mainSend("login", token);
                 }
-
-                @Override
-                public void onMessage(JSONObject jsonObject) {
-
-                }
-
                 @Override
                 public void onNotFound(JSONObject jsonObject) {
                     Log.i(TAG, "not found");
@@ -75,9 +102,8 @@ public class main extends AppCompatActivity {
                         Log.i(TAG, ex.getMessage());
                         return;
                     }
-                    mService.send("login", sendUserInfo);
+                    mService.mainSend("login", sendUserInfo);
                 }
-
                 @Override
                 public void onInfo(JSONObject jsonObject) {
                     Log.i(TAG, "info");
@@ -86,148 +112,45 @@ public class main extends AppCompatActivity {
                         String avatarUrl = jsonObject.getString("avatar");
                         new DownloadImageTask((ImageView) findViewById(R.id.imageView2))
                                 .execute(avatarUrl);
-
                     } catch (Exception ex) {
-                        Log.i(TAG, "ERROR: " + ex.getMessage());
+                        Log.i(TAG, ex.getMessage());
                     }
                 }
-            });
 
+                @Override
+                public void onOpenChat(JSONObject jsonObject) {
+                }
+
+                @Override
+                public void onInviteChat(JSONObject jsonObject) {
+                    Log.i(TAG, "invite chat");
+                    try {
+                        String game = jsonObject.getString("game");
+                        Intent intent = new Intent(main.this, Chat.class);
+                        intent.putExtra(EXTRA_MESSAGE_USED_TOKEN, token);
+                        intent.putExtra(EXTRA_MESSAGE_USED_GAME, game);
+
+                        startActivity(intent);
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
+                }
+
+                @Override
+                public void onDisconnect() {
+
+                }
+            });
+            mBound = true;
+            mService.mainSocketConnect();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "MainActivity onServiceDisconnected");
+            Log.d(TAG, "onServiceDisconnected");
+            mBound = false;
         }
     };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
-        setContentView(R.layout.activity_main);
-        Intent service = new Intent(this, SocketService.class);
-
-        startService(service);
-
-        bindService(service, mConnection, Context.BIND_AUTO_CREATE);
-
-
-        new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(
-                    AccessToken oldAccessToken,
-                    AccessToken currentAccessToken) {
-                if (currentAccessToken == null){
-                    Intent intent = new Intent(main.this, Login.class);
-                    startActivity(intent);
-                }
-            }
-        };
-
-        Intent intent = getIntent();
-        if (intent.getExtras() != null ){
-            token = intent.getStringExtra(Login.EXTRA_MESSAGE_TOKEN);
-        }
-        /*
-        final WorkerFragment retainedWorkerFragment = (WorkerFragment) getFragmentManager().findFragmentByTag(TAG_WORKER);
-
-        if (retainedWorkerFragment != null){
-            Log.i(TAG, "found fragment worker");
-            socketModel = retainedWorkerFragment.getSocketModel();
-        } else{
-            Log.i(TAG, "not found fragment worker");
-            String url = getResources().getString(R.string.URLOnline);
-            String chat = getResources().getString(R.string.URLNamespace);
-            Bundle bundle = new Bundle();
-            bundle.putString("url", url);
-            bundle.putString("chat", chat);
-            final WorkerFragment workerFragment = new WorkerFragment(bundle);
-            getFragmentManager().beginTransaction().
-                    add(workerFragment, TAG_WORKER)
-                    .commit();
-            socketModel = workerFragment.getSocketModel();
-            initBehaviorSocket();
-        }
-        Log.i(TAG, "onCreate");
-        */
-    }
-
-    private void initBehaviorSocket(){
-        mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.i(TAG, "Connect");
-                mSocket.emit("login", token);
-            }
-        }).on("not found", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.i(TAG, "not found");
-                JSONObject sendUserInfo = new JSONObject();
-                try {
-                    Profile profile = Profile.getCurrentProfile();
-                    sendUserInfo.put("NAME", profile.getName());
-                    sendUserInfo.put("FB", token);
-                    sendUserInfo.put("AVATAR", GetPathAvatar(profile.getId()));
-                    mSocket.emit("login", sendUserInfo);
-                } catch (Exception ex) {
-                    Log.i(TAG, ex.getMessage());
-                }
-            }
-        }).on("info", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.i(TAG, "info");
-                JSONObject answer = (JSONObject) args[0];
-                try {
-                    //String name = answer.getString("username");
-                    String avatarUrl = answer.getString("avatar");
-                    new DownloadImageTask((ImageView) findViewById(R.id.imageView2))
-                            .execute(avatarUrl);
-
-                } catch (Exception ex) {
-                    Log.i(TAG, "ERROR: " + ex.getMessage());
-                }
-
-            }
-        }).on("invite", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-
-                final JSONObject answer = (JSONObject) args[0];
-                try {
-                    String room = answer.getString("title");
-                    Log.i(TAG, room);
-
-                } catch (Exception ex) {
-                    Log.i(TAG, "ERROR: " + ex.getMessage());
-                }
-
-            }
-        }).on("open chat", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                final JSONObject answer = (JSONObject) args[0];
-                try {
-                    String game = answer.getString("game");
-                    Intent intent = new Intent(main.this, Chat.class);
-                    intent.putExtra(EXTRA_MESSAGE_USED_TOKEN, token);
-                    intent.putExtra(EXTRA_MESSAGE_USED_GAME, game);
-                    Log.i(TAG, "Chat open");
-                    startActivity(intent);
-                } catch (Exception ex) {
-                    Log.i("SOCKET", "ERROR: " + ex.getMessage());
-                }
-
-            }
-        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.i(TAG, "Disconnected");
-            }
-        });
-    }
 
     @Override
     public void onBackPressed(){
@@ -235,9 +158,13 @@ public class main extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-        Log.i(TAG, "onResume");
+    public void onStart() {
+        Log.i(TAG, "onStart");
+        super.onStart();
+        if (!mBound) {
+            bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+        }
+
     }
 
     public void buttonNewGameClick(View v){
@@ -257,13 +184,13 @@ public class main extends AppCompatActivity {
         }
 
         protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
+            String url = urls[0];
             Bitmap mIcon11 = null;
             try {
-                URL newurl = new URL(urldisplay);
-                mIcon11 = BitmapFactory.decodeStream(newurl.openConnection() .getInputStream());
+                URL newUrl = new URL(url);
+                mIcon11 = BitmapFactory.decodeStream(newUrl.openConnection().getInputStream());
             } catch (Exception e) {
-                Log.e("Error", e.getMessage());
+                Log.e(TAG, e.getMessage());
                 e.printStackTrace();
             }
             return mIcon11;
@@ -280,6 +207,16 @@ public class main extends AppCompatActivity {
         Log.i(TAG, "onPause");
     }
 
+    @Override
+    protected void onStop() {
+        Log.i(TAG, "onStop");
+        super.onStop();
+
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
     @Override
     public void onDestroy(){
         Log.i(TAG, "onDestroy");

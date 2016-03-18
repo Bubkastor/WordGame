@@ -44,9 +44,9 @@ public class SocketService extends Service {
         try{
             manager = new Manager(new URI(url));
             mainSocket = manager.socket("/");
-            chatSocket= manager.socket(chatNamespace);
+            chatSocket = manager.socket(chatNamespace);
         } catch (Exception ex){
-            Log.i("Error", ex.getMessage());
+            Log.i(TAG, ex.getMessage());
         }
 
         setupSocketMain();
@@ -72,7 +72,9 @@ public class SocketService extends Service {
         }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                mainListener.onDisconnect();
+                if (mainListener != null) {
+                    mainListener.onDisconnect();
+                }
             }
         });
         mainSocket.on("not found", new Emitter.Listener() {
@@ -111,7 +113,6 @@ public class SocketService extends Service {
                 }
             }
         });
-            mainSocket.connect();
     }
 
     private void setupSocketChat(){
@@ -127,7 +128,9 @@ public class SocketService extends Service {
 
             @Override
             public void call(Object... args) {
-                chatListener.onDisconnect();
+                if (chatListener != null) {
+                    chatListener.onDisconnect();
+                }
             }
         });
         chatSocket.on("message", new Emitter.Listener() {
@@ -184,7 +187,7 @@ public class SocketService extends Service {
                 }
             }
         });
-        chatSocket.connect();
+
     };
 
     public void mainSend(String event, String message){
@@ -195,6 +198,10 @@ public class SocketService extends Service {
     }
     public void mainSend(String event){ mainSocket.emit(event);}
 
+    public void mainSocketConnect() {
+        mainSocket.connect();
+    }
+
     public void chatSend(String event, String message){
         chatSocket.emit(event, message);
     }
@@ -203,7 +210,16 @@ public class SocketService extends Service {
     }
     public void chatSend(String event){ chatSocket.emit(event);}
 
+    public void chatSocketConnect() {
+        chatSocket.connect();
+    }
+
+    public void chatSocketDisconnect() {
+        chatSocket.disconnect();
+    }
+
     public class SocketIOBinder extends Binder {
+
         public SocketService getService(){
             return SocketService.this;
         }

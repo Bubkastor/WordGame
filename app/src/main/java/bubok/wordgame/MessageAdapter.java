@@ -81,7 +81,7 @@ class MessageAdapter extends BaseAdapter {
                 } catch (Exception ex) {
                     Log.i("JSON", ex.getMessage());
                 }
-                Chat.mSocket.emit("change status message", sendData);
+                Chat.mService.chatSend("change status message", sendData);
             }
         });
         ImageButton dislikeButton = (ImageButton) row.findViewById(R.id.dislikeViewButton);
@@ -94,7 +94,7 @@ class MessageAdapter extends BaseAdapter {
                 } catch (Exception ex) {
                     Log.i("JSON", ex.getMessage());
                 }
-                Chat.mSocket.emit("change status message", sendData);
+                Chat.mService.chatSend("change status message", sendData);
             }
         });
 
@@ -107,7 +107,7 @@ class MessageAdapter extends BaseAdapter {
                 } catch (Exception ex) {
                     Log.i("JSON", ex.getMessage());
                 }
-                Chat.mSocket.emit("message correct", sendData);
+                Chat.mService.chatSend("message correct", sendData);
             }
         });
 

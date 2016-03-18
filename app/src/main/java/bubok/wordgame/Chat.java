@@ -4,14 +4,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -39,6 +42,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+import bubok.wordgame.Service.SocketService;
 import io.socket.client.Manager;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -53,7 +57,6 @@ public class Chat extends AppCompatActivity {
     private MessageAdapter messageAdapter;
     private String mGame;
     private String token;
-    public static Socket mSocket;
 
     private Bitmap bMap;
     private File videoFile;
@@ -61,12 +64,16 @@ public class Chat extends AppCompatActivity {
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
 
+    private Intent service;
+    public static SocketService mService;
+    private boolean mBound;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         context = Chat.this;
-
+        service = new Intent(this, SocketService.class);
         final View activityRootView = findViewById(android.R.id.content);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
@@ -102,116 +109,134 @@ public class Chat extends AppCompatActivity {
         });
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        initSocket();
 
         ArrayList<Message> arrayList = new ArrayList<>();
         messageAdapter = new MessageAdapter(this, arrayList);
         listViewCheat.setAdapter(messageAdapter);
     }
 
-    private void initSocket(){
-
-        mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject answer = new JSONObject();
-                try{
-                    answer.put("token", token);
-                    answer.put("game", mGame);
-                }catch (Exception ex){
-                    Log.i(TAG, ex.getMessage());
-                }
-                mSocket.emit("add user", answer);
-            }
-        }).on("joined", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-
-                JSONObject answer = (JSONObject) args[0];
-                try {
-                    String username = answer.getString("username");
-                    Log.i(TAG, "USER JOINED: " +username);
-                } catch (Exception ex) {
-                    Log.i(TAG, "ERROR: " + ex.getMessage());
-                }
-            }
-        }).on("message", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.i(TAG, "MESSAGE");
-                JSONObject answer = (JSONObject) args[0];
-                try {
-                    AddMessageInCheat(
-                            answer.getString("avatar"),
-                            answer.getString("username"),
-                            answer.getString("message"),
-                            answer.getString("idMessage"),
-                            answer.getString("status"));
-                } catch (Exception ex) {
-                    Log.i(TAG, "ERROR: " + ex.getMessage());
-                }
-            }
-        }).on("user left", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.i(TAG, "USER LEFT");
-                //JSONObject answer = (JSONObject) args[0];
-                //try {
-                //AddMessageInCheat(answer.getString("avatar"), answer.getString("username"), "Left");
-                //} catch (Exception ex) {
-                //    Log.i("CHAT", "ERROR: " + ex.getMessage());
-                //}
-            }
-        }).on("close game", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.i(TAG, "close chat");
-                JSONObject answer = (JSONObject) args[0];
-                try {
-                    String userWin = answer.getString("win");
-                    String word = answer.getString("word");
-                    String text = "Пользователь " + userWin + " победил загаданое слово " + word;
-                    Log.i(TAG, text);
-
-                    CloseCheat(userWin, word);
-                } catch (Exception ex) {
-                    Log.i(TAG, ex.getMessage());
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(TAG, "onServiceConnected");
+            SocketService.SocketIOBinder binder = (SocketService.SocketIOBinder) service;
+            mService = binder.getService();
+            binder.setChatListener(new SocketService.SocketChatListener() {
+                @Override
+                public void onConnected() {
+                    JSONObject answer = new JSONObject();
+                    try {
+                        answer.put("token", token);
+                        answer.put("game", mGame);
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
+                    mService.chatSend("add user", answer);
 
                 }
-            }
-        }).on("get info game", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.i(TAG, "info");
-                JSONObject answer = (JSONObject) args[0];
-                try {
-                    String typeMedia = answer.getString("typeMedia");
-                    String contentType = answer.getString("contentType");
-                    byte[] decodedBytes = (byte[]) answer.get("data");
-                    Boolean isAdmin = answer.getBoolean("admin");
-                    messageAdapter.setOptionPanel(isAdmin);
-                    SetMediaContainer(typeMedia, contentType, decodedBytes);
-                } catch (Exception ex) {
-                    Log.i(TAG, ex.getMessage());
-                }
-            }
-        }).on("change status message", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.i(TAG, "change status message");
-                JSONObject answer = (JSONObject) args[0];
-                try {
-                    String id = answer.getString("idMessage");
-                    String status = answer.getString("status");
-                    ChangeStatus(id, status);
 
-                } catch (Exception ex) {
-                    Log.i(TAG, ex.getMessage());
+                @Override
+                public void onMessage(JSONObject jsonObject) {
+                    Log.i(TAG, "MESSAGE");
+                    try {
+                        AddMessageInCheat(
+                                jsonObject.getString("avatar"),
+                                jsonObject.getString("username"),
+                                jsonObject.getString("message"),
+                                jsonObject.getString("idMessage"),
+                                jsonObject.getString("status"));
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
                 }
-            }
-        });
-        mSocket.connect();
-        mSocket.emit("get info game", mGame);
+
+                @Override
+                public void onJoined(JSONObject jsonObject) {
+                    try {
+                        String username = jsonObject.getString("username");
+                        Log.i(TAG, "USER JOINED: " + username);
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
+                }
+
+                @Override
+                public void onUserLeft(JSONObject jsonObject) {
+                    try {
+                        Log.i(TAG, "USER LEFT: " + jsonObject.getString("username"));
+                    } catch (Exception ex) {
+
+                    }
+
+                }
+
+                @Override
+                public void onCloseGame(JSONObject jsonObject) {
+                    Log.i(TAG, "close chat");
+                    try {
+                        String userWin = jsonObject.getString("win");
+                        String word = jsonObject.getString("word");
+                        String text = "Пользователь " + userWin + " победил загаданое слово " + word;
+                        Log.i(TAG, text);
+                        CloseCheat(userWin, word);
+                        mService.chatSend("leave chat");
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+
+                    }
+                }
+
+                @Override
+                public void onInfoGame(JSONObject jsonObject) {
+                    Log.i(TAG, "info");
+                    try {
+                        String typeMedia = jsonObject.getString("typeMedia");
+                        String contentType = jsonObject.getString("contentType");
+                        byte[] decodedBytes = (byte[]) jsonObject.get("data");
+                        Boolean isAdmin = jsonObject.getBoolean("admin");
+                        messageAdapter.setOptionPanel(isAdmin);
+                        SetMediaContainer(typeMedia, contentType, decodedBytes);
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
+                }
+
+                @Override
+                public void onChangeStatusMessage(JSONObject jsonObject) {
+                    Log.i(TAG, "change status message");
+                    try {
+                        String id = jsonObject.getString("idMessage");
+                        String status = jsonObject.getString("status");
+                        ChangeStatus(id, status);
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
+                }
+
+                @Override
+                public void onDisconnect() {
+
+                }
+            });
+            mBound = true;
+            mService.chatSocketConnect();
+            mService.chatSend("get info game", mGame);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "onServiceDisconnected");
+            mBound = false;
+        }
+    };
+
+    @Override
+    public void onStart() {
+        Log.i(TAG, "onStart");
+        super.onStart();
+        if (!mBound)
+            bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     private void zoomImageFromThumb(final View thumbView) {
@@ -343,6 +368,7 @@ public class Chat extends AppCompatActivity {
         Intent intent = new Intent(Chat.this, WinGame.class);
         String text = "Пользователь " + userWin + " победил загаданое слово " + word;
         intent.putExtra(EXTRA_MESSAGE_WINGAME, text);
+        mService.chatSocketDisconnect();
         startActivity(intent);
         finish();
     }
@@ -367,7 +393,7 @@ public class Chat extends AppCompatActivity {
         try{
             sendMessage.put("message", message);
             sendMessage.put("game", mGame);
-            mSocket.emit("message", sendMessage);
+            mService.chatSend("message", sendMessage);
 
         } catch (Exception ex){
             Log.i(TAG, "ERROR: " + ex.getMessage());
@@ -428,9 +454,19 @@ public class Chat extends AppCompatActivity {
         });
     }
 
+    public void onBackPressed() {
+        mService.chatSocketDisconnect();
+        finish();
+    }
     @Override
     public void onStop(){
         Log.i(TAG, "onStop");
+        mService.chatSend("leave chat");
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+        ;
         super.onStop();
     }
 }
