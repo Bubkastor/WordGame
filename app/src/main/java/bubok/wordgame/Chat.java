@@ -12,9 +12,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -132,7 +134,6 @@ public class Chat extends AppCompatActivity {
                         Log.i(TAG, ex.getMessage());
                     }
                     mService.chatSend("add user", answer);
-
                 }
 
                 @Override
@@ -450,6 +451,8 @@ public class Chat extends AppCompatActivity {
                 videoView.setVisibility(ImageView.VISIBLE);
                 Log.i(TAG, videoFile.getAbsolutePath());
                 videoView.setVideoPath(videoFile.getAbsolutePath());
+
+
             }
         });
     }
@@ -466,7 +469,6 @@ public class Chat extends AppCompatActivity {
             unbindService(mConnection);
             mBound = false;
         }
-        ;
         super.onStop();
     }
 }

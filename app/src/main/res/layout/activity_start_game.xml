@@ -239,7 +239,10 @@
         android:background="#a5000000"
         android:visibility="gone"
         android:foregroundGravity="center"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_alignParentEnd="false"
+        android:clickable="false"
+        android:touchscreenBlocksFocus="true">
 
         <ProgressBar
             android:id="@+id/startGameProgress"

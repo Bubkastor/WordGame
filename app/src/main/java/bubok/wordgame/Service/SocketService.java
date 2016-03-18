@@ -54,11 +54,15 @@ public class SocketService extends Service {
         return Service.START_NOT_STICKY;
     }
 
-    @Nullable
-    @Override
+
     public IBinder onBind(Intent intent) {
         Log.i(TAG, "onBind");
         return mBinder;
+    }
+
+    public boolean onUnbind(Intent intent) {
+        Log.i(TAG, "onUnbind");
+        return super.onUnbind(intent);
     }
 
     private void setupSocketMain() {
@@ -80,9 +84,8 @@ public class SocketService extends Service {
         mainSocket.on("not found", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                JSONObject jsonObject = (JSONObject) args[0];
                 if (mainListener != null) {
-                    mainListener.onNotFound(jsonObject);
+                    mainListener.onNotFound();
                 }
             }
         });
@@ -202,6 +205,10 @@ public class SocketService extends Service {
         mainSocket.connect();
     }
 
+    public Boolean isConnected() {
+        return mainSocket.connected();
+    }
+
     public void chatSend(String event, String message){
         chatSocket.emit(event, message);
     }
@@ -233,7 +240,8 @@ public class SocketService extends Service {
 
     public interface SocketMainListener{
         public void onConnected();
-        public void onNotFound(JSONObject jsonObject);
+
+        public void onNotFound();
         public void onInfo(JSONObject jsonObject);
         public void onOpenChat(JSONObject jsonObject);
         public void onInviteChat(JSONObject jsonObject);

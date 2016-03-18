@@ -139,8 +139,7 @@ public class StartGame extends AppCompatActivity {
     public void onStart() {
         Log.i(TAG, "onStart");
         super.onStart();
-        if (!mBound)
-            bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+        bindService(service, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -156,7 +155,7 @@ public class StartGame extends AppCompatActivity {
                 }
 
                 @Override
-                public void onNotFound(JSONObject jsonObject) {
+                public void onNotFound() {
 
                 }
 
@@ -183,7 +182,7 @@ public class StartGame extends AppCompatActivity {
 
                 @Override
                 public void onInviteChat(JSONObject jsonObject) {
-                    Log.i(TAG, "invite chat");
+
                 }
 
                 @Override
@@ -295,8 +294,7 @@ public class StartGame extends AppCompatActivity {
 
         if(type == REQUEST_VIDEO_CAPTURE) {
 
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + ".mp4");
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_" + timeStamp + ".3gp");
 
         } else {
             return null;
@@ -328,7 +326,7 @@ public class StartGame extends AppCompatActivity {
 
     private  void ShowPreviewVideo(Intent data){
         ChangeVisibleMediaConteiner();
-        videoByte =  VideoToByte(data);
+        //videoByte =  VideoToByte(data);
         try{
             RandomAccessFile f = new RandomAccessFile(mediaFile, "r");
             videoByte = new byte[(int)f.length()];
@@ -339,8 +337,8 @@ public class StartGame extends AppCompatActivity {
         mediaLinear.setVisibility(View.VISIBLE);
         videoViewPrev.setVisibility(View.VISIBLE);
         videoViewPrev.setMediaController(mediaController);
-        Uri videoUri = data.getData();
-        videoViewPrev.setVideoURI(videoUri);
+        //Uri videoUri = data.getData();
+        videoViewPrev.setVideoPath(mediaFile.getAbsolutePath());
         media = TYPE_MEDIA.VIDEO;
     }
 
@@ -358,6 +356,8 @@ public class StartGame extends AppCompatActivity {
                 out.write(buf, 0, n);
             }
             result = out.toByteArray();
+            out.close();
+            fileInputStream.close();
         }catch (Exception ex){
             Log.i(TAG, ex.getMessage());
         }

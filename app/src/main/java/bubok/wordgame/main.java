@@ -89,7 +89,7 @@ public class main extends AppCompatActivity {
                     mService.mainSend("login", token);
                 }
                 @Override
-                public void onNotFound(JSONObject jsonObject) {
+                public void onNotFound() {
                     Log.i(TAG, "not found");
                     JSONObject sendUserInfo = new JSONObject();
                     try {
@@ -143,6 +143,8 @@ public class main extends AppCompatActivity {
             });
             mBound = true;
             mService.mainSocketConnect();
+            Log.i(TAG, "is connection +" + mService.isConnected());
+
         }
 
         @Override
@@ -161,9 +163,8 @@ public class main extends AppCompatActivity {
     public void onStart() {
         Log.i(TAG, "onStart");
         super.onStart();
-        if (!mBound) {
-            bindService(service, mConnection, Context.BIND_AUTO_CREATE);
-        }
+        bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+        Log.i(TAG, "bindService");
 
     }
 
@@ -202,18 +203,13 @@ public class main extends AppCompatActivity {
     }
 
     @Override
-    public void onPause(){
-        super.onPause();
-        Log.i(TAG, "onPause");
-    }
-
-    @Override
     protected void onStop() {
         Log.i(TAG, "onStop");
         super.onStop();
 
         if (mBound) {
             unbindService(mConnection);
+            Log.i(TAG, "unbindService");
             mBound = false;
         }
     }
