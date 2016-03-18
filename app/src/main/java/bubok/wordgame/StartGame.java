@@ -420,11 +420,13 @@ public class StartGame extends AppCompatActivity {
             return;
         switch (media){
             case IMAGE:
+                showProgress(true);
                 data = BitMapToByte(prevImage);
                 typeMedia = "jpeg";
                 type = "image";
                 break;
             case VIDEO:
+                showProgress(true);
                 data = videoByte;
                 typeMedia = "mp4";
                 type = "video";
@@ -442,7 +444,6 @@ public class StartGame extends AppCompatActivity {
             sendData.put("CONTENT_TYPE", typeMedia);
             sendData.put("TYPE", type);
             sendData.put("PLAYERS_IDS", usersInvite);
-            showProgress(true);
             mService.mainSend("start game", sendData);
         } catch (Exception ex){
             Log.i(TAG, ex.getMessage());
