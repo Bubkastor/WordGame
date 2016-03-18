@@ -30,11 +30,12 @@ import bubok.wordgame.Service.SocketService;
 public class main extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE_USED_GAME = "bubok.wordgame.game";
-    public static final String EXTRA_MESSAGE_USED_TOKEN = "bubok.wordgame.token";
+    public static final String EXTRA_MESSAGE_USED_ID_USER = "bubok.wordgame.id.user";
     private static final String TAG = "MAIN";
     private boolean mBound;
     private static Intent service;
     public static String token;
+    public static Profile profile;
 
     private static SocketService mService;
 
@@ -49,7 +50,8 @@ public class main extends AppCompatActivity {
         service.putExtra("chatNamespace", getResources().getString(R.string.ChatNamespace));
 
         startService(service);
-
+        bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+        Log.i(TAG, "bindService");
         new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(
@@ -64,17 +66,14 @@ public class main extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
             token = intent.getStringExtra(Login.EXTRA_MESSAGE_TOKEN);
-        }
 
+        }
+        profile = Profile.getCurrentProfile();
         Log.i(TAG, "onCreate");
 
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        Log.i(TAG, "onNewIntent");
-        super.onNewIntent(intent);
-    }
+
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
@@ -85,25 +84,24 @@ public class main extends AppCompatActivity {
             binder.setMainListener(new SocketService.SocketMainListener() {
                 @Override
                 public void onConnected() {
-                    Log.i(TAG, "onConnected");
-                    mService.mainSend("login", token);
                 }
+
                 @Override
                 public void onNotFound() {
                     Log.i(TAG, "not found");
                     JSONObject sendUserInfo = new JSONObject();
                     try {
-                        Profile profile = Profile.getCurrentProfile();
                         sendUserInfo.put("NAME", profile.getName());
                         sendUserInfo.put("FB", token);
-                        sendUserInfo.put("AVATAR", GetPathAvatar(profile.getId()));
-
+                        sendUserInfo.put("AVATAR", profile.getProfilePictureUri(800, 600).toString());
+                        sendUserInfo.put("USER_ID_FB", profile.getId());
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                         return;
                     }
                     mService.mainSend("login", sendUserInfo);
                 }
+
                 @Override
                 public void onInfo(JSONObject jsonObject) {
                     Log.i(TAG, "info");
@@ -127,7 +125,7 @@ public class main extends AppCompatActivity {
                     try {
                         String game = jsonObject.getString("game");
                         Intent intent = new Intent(main.this, Chat.class);
-                        intent.putExtra(EXTRA_MESSAGE_USED_TOKEN, token);
+                        intent.putExtra(EXTRA_MESSAGE_USED_ID_USER, profile.getId());
                         intent.putExtra(EXTRA_MESSAGE_USED_GAME, game);
 
                         startActivity(intent);
@@ -141,10 +139,8 @@ public class main extends AppCompatActivity {
 
                 }
             });
+            mService.mainSend("login", profile.getId());
             mBound = true;
-            mService.mainSocketConnect();
-            Log.i(TAG, "is connection +" + mService.isConnected());
-
         }
 
         @Override
@@ -155,6 +151,12 @@ public class main extends AppCompatActivity {
     };
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i(TAG, "onNewIntent");
+        super.onNewIntent(intent);
+    }
+
+    @Override
     public void onBackPressed(){
         finish();
     }
@@ -163,18 +165,17 @@ public class main extends AppCompatActivity {
     public void onStart() {
         Log.i(TAG, "onStart");
         super.onStart();
-        bindService(service, mConnection, Context.BIND_AUTO_CREATE);
-        Log.i(TAG, "bindService");
+    }
 
+    @Override
+    public void onResume() {
+        Log.i(TAG, "onResume");
+        super.onResume();
     }
 
     public void buttonNewGameClick(View v){
         Intent intent = new Intent(this, StartGame.class);
         startActivity(intent);
-    }
-
-    private String GetPathAvatar(String id){
-        return "https://graph.facebook.com/" + id + "/picture?type=large";
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

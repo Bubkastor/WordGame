@@ -241,8 +241,10 @@
         android:foregroundGravity="center"
         android:gravity="center"
         android:layout_alignParentEnd="false"
-        android:clickable="false"
-        android:touchscreenBlocksFocus="true">
+        android:clickable="true"
+        android:touchscreenBlocksFocus="true"
+        android:focusableInTouchMode="true"
+        android:focusable="true">
 
         <ProgressBar
             android:id="@+id/startGameProgress"

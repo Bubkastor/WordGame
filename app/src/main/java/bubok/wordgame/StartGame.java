@@ -170,7 +170,7 @@ public class StartGame extends AppCompatActivity {
                     try {
                         String game = jsonObject.getString("game");
                         Intent intent = new Intent(StartGame.this, Chat.class);
-                        intent.putExtra(main.EXTRA_MESSAGE_USED_TOKEN, main.token);
+                        intent.putExtra(main.EXTRA_MESSAGE_USED_ID_USER, main.profile.getId());
                         intent.putExtra(main.EXTRA_MESSAGE_USED_GAME, game);
 
                         startActivity(intent);
@@ -326,7 +326,6 @@ public class StartGame extends AppCompatActivity {
 
     private  void ShowPreviewVideo(Intent data){
         ChangeVisibleMediaConteiner();
-        //videoByte =  VideoToByte(data);
         try{
             RandomAccessFile f = new RandomAccessFile(mediaFile, "r");
             videoByte = new byte[(int)f.length()];
@@ -337,31 +336,8 @@ public class StartGame extends AppCompatActivity {
         mediaLinear.setVisibility(View.VISIBLE);
         videoViewPrev.setVisibility(View.VISIBLE);
         videoViewPrev.setMediaController(mediaController);
-        //Uri videoUri = data.getData();
         videoViewPrev.setVideoPath(mediaFile.getAbsolutePath());
         media = TYPE_MEDIA.VIDEO;
-    }
-
-    private byte[] VideoToByte(Intent data){
-        byte[] result = "byte".getBytes();
-        Uri videoUri = data.getData();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        FileInputStream fileInputStream;
-        try {
-            fileInputStream = new FileInputStream(videoUri.getPath());
-
-            byte[] buf = new byte[1024];
-            int n;
-            while (-1 != (n = fileInputStream.read(buf))) {
-                out.write(buf, 0, n);
-            }
-            result = out.toByteArray();
-            out.close();
-            fileInputStream.close();
-        }catch (Exception ex){
-            Log.i(TAG, ex.getMessage());
-        }
-        return result;
     }
 
     private void ChangeVisibleMediaConteiner() {
@@ -428,7 +404,7 @@ public class StartGame extends AppCompatActivity {
             case VIDEO:
                 showProgress(true);
                 data = videoByte;
-                typeMedia = "mp4";
+                typeMedia = "3gp";
                 type = "video";
                 break;
             default:

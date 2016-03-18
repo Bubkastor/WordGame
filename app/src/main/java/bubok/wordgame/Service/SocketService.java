@@ -51,6 +51,8 @@ public class SocketService extends Service {
 
         setupSocketMain();
         setupSocketChat();
+        mainSocket.connect();
+        chatSocket.connect();
         return Service.START_NOT_STICKY;
     }
 
@@ -203,6 +205,9 @@ public class SocketService extends Service {
 
     public void mainSocketConnect() {
         mainSocket.connect();
+    }
+    public void mainSocketDisconnect() {
+        mainSocket.disconnect();
     }
 
     public Boolean isConnected() {

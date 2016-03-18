@@ -20,6 +20,9 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -40,16 +43,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
+
 import java.util.ArrayList;
 
 import bubok.wordgame.Service.SocketService;
-import io.socket.client.Manager;
-import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 
-public class Chat extends AppCompatActivity {
+
+public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
 
     public final static String EXTRA_MESSAGE_WINGAME = "bubok.wordgame.WINGAME";
     private static final String TAG = "CHAT";
@@ -58,13 +58,17 @@ public class Chat extends AppCompatActivity {
     private EditText editTextMessage;
     private MessageAdapter messageAdapter;
     private String mGame;
-    private String token;
+    private String idUser;
 
     private Bitmap bMap;
     private File videoFile;
     private int heightDiff = 0;
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
+
+    private SurfaceView videoView;
+    private SurfaceHolder holder;
+    private MediaPlayer mp;
 
     private Intent service;
     public static SocketService mService;
@@ -98,7 +102,7 @@ public class Chat extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        token = intent.getStringExtra(main.EXTRA_MESSAGE_USED_TOKEN);
+        idUser = intent.getStringExtra(main.EXTRA_MESSAGE_USED_ID_USER);
         mGame = intent.getStringExtra(main.EXTRA_MESSAGE_USED_GAME);
 
         ListView listViewCheat = (ListView) findViewById(R.id.listViewCheat);
@@ -110,6 +114,12 @@ public class Chat extends AppCompatActivity {
             }
         });
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        videoView = (SurfaceView) findViewById(R.id.videoViewChat);
+
+        holder = videoView.getHolder();
+
+        holder.addCallback(Chat.this);;
+        mp = new MediaPlayer();
 
 
         ArrayList<Message> arrayList = new ArrayList<>();
@@ -126,14 +136,7 @@ public class Chat extends AppCompatActivity {
             binder.setChatListener(new SocketService.SocketChatListener() {
                 @Override
                 public void onConnected() {
-                    JSONObject answer = new JSONObject();
-                    try {
-                        answer.put("token", token);
-                        answer.put("game", mGame);
-                    } catch (Exception ex) {
-                        Log.i(TAG, ex.getMessage());
-                    }
-                    mService.chatSend("add user", answer);
+
                 }
 
                 @Override
@@ -220,7 +223,14 @@ public class Chat extends AppCompatActivity {
                 }
             });
             mBound = true;
-            mService.chatSocketConnect();
+            JSONObject answer = new JSONObject();
+            try {
+                answer.put("idUser", idUser);
+                answer.put("game", mGame);
+            } catch (Exception ex) {
+                Log.i(TAG, ex.getMessage());
+            }
+            mService.chatSend("add user", answer);
             mService.chatSend("get info game", mGame);
         }
 
@@ -369,7 +379,6 @@ public class Chat extends AppCompatActivity {
         Intent intent = new Intent(Chat.this, WinGame.class);
         String text = "Пользователь " + userWin + " победил загаданое слово " + word;
         intent.putExtra(EXTRA_MESSAGE_WINGAME, text);
-        mService.chatSocketDisconnect();
         startActivity(intent);
         finish();
     }
@@ -445,20 +454,30 @@ public class Chat extends AppCompatActivity {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                VideoView videoView = (VideoView) findViewById(R.id.videoViewChat);
+
+
                 MediaController mediaController = new MediaController(context);
-                videoView.setMediaController(mediaController);
+                //videoView.setMediaController(mediaController);
                 videoView.setVisibility(ImageView.VISIBLE);
                 Log.i(TAG, videoFile.getAbsolutePath());
-                videoView.setVideoPath(videoFile.getAbsolutePath());
+                //videoView.setVideoPath(videoFile.getAbsolutePath());
+                try {
+                    mp.setDataSource(videoFile.getAbsolutePath());
+                    mp.prepare();
 
-
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mp.start();
             }
         });
     }
 
     public void onBackPressed() {
-        mService.chatSocketDisconnect();
         finish();
     }
     @Override
@@ -471,4 +490,20 @@ public class Chat extends AppCompatActivity {
         }
         super.onStop();
     }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
+    }
+
 }

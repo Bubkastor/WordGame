@@ -8,6 +8,7 @@ import android.util.Log;
 import android.util.LruCache;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenSource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
