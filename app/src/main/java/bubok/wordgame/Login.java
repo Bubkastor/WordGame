@@ -9,6 +9,7 @@ import android.util.LruCache;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -23,13 +24,17 @@ import com.facebook.login.widget.LoginButton;
 public class Login extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE_TOKEN = "bubok.wordgame.TOKEN";
-    public final static String EXTRA_MESSAGE_PROFILE = "bubok.wordgame.PROFILE";
+    public final static String EXTRA_MESSAGE_ID_USER = "bubok.wordgame.id.user";
     private static final String TAG = "LOGIN";
     private CallbackManager callbackManager;
     private AccessToken accessToken;
     private Profile mProfile;
     public static  LruCache<String, Bitmap> mMemoryCache;
+    private String idUser;
+    private Profile profile;
     private ProfileTracker profileTracker;
+
+    private AccessTokenTracker accessTokenTracker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,24 +58,37 @@ public class Login extends AppCompatActivity {
             }
         };
 
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                // Set the access token using
+                // currentAccessToken when it's loaded or set.
+                Profile.fetchProfileForCurrentAccessToken();
+                AccessToken.setCurrentAccessToken(currentAccessToken);
+            }
+        };
+
+        accessTokenTracker.startTracking();
+
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                // App code
+                if (currentProfile != null) {
+                    Profile.setCurrentProfile(currentProfile);
+                    profile = currentProfile;
+                }
+
+            }
+        };
+        profileTracker.startTracking();
+
         LoginManager.getInstance().registerCallback(callbackManager,
             new FacebookCallback<LoginResult>() {
-                private ProfileTracker mProfileTracker;
                 @Override
                 public void onSuccess(LoginResult loginResult) {
                     Log.i(TAG, "onSuccess");
-                    if(Profile.getCurrentProfile() == null) {
-                        mProfileTracker = new ProfileTracker() {
-                            @Override
-                            protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
-                                // profile2 is the new profile
-                                Log.v("facebook - profile", profile2.getFirstName());
-                                mProfile = profile2;
-                                mProfileTracker.stopTracking();
-                            }
-                        };
-                    }
-                    mProfileTracker.startTracking();
+
                     accessToken = loginResult.getAccessToken();
 
                     OpenMainScreen();
@@ -88,15 +106,15 @@ public class Login extends AppCompatActivity {
             });
         mProfile = Profile.getCurrentProfile();
         if (accessToken != null) {
+
             OpenMainScreen();
         }
     }
 
     private void OpenMainScreen() {
         Intent intent = new Intent(Login.this, main.class);
-        intent.putExtra(EXTRA_MESSAGE_TOKEN, accessToken.getToken());
-        mProfile = Profile.getCurrentProfile();
-        intent.putExtra(EXTRA_MESSAGE_PROFILE, mProfile);
+        idUser = accessToken.getUserId();
+        intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
         startActivity(intent);
         finish();
     }
@@ -107,6 +125,18 @@ public class Login extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        profileTracker.stopTracking();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        accessTokenTracker.stopTracking();
+        profileTracker.stopTracking();
+    }
 }
 
 

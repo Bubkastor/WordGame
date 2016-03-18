@@ -170,7 +170,7 @@ public class StartGame extends AppCompatActivity {
                     try {
                         String game = jsonObject.getString("game");
                         Intent intent = new Intent(StartGame.this, Chat.class);
-                        intent.putExtra(main.EXTRA_MESSAGE_USED_ID_USER, main.profile.getId());
+                        intent.putExtra(main.EXTRA_MESSAGE_USED_ID_USER, main.idUSer);
                         intent.putExtra(main.EXTRA_MESSAGE_USED_GAME, game);
 
                         startActivity(intent);

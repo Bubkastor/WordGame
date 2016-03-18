@@ -34,8 +34,8 @@ public class main extends AppCompatActivity {
     private static final String TAG = "MAIN";
     private boolean mBound;
     private static Intent service;
-    public static String token;
-    public static Profile profile;
+    public static String idUSer;
+    private Profile profile;
 
     private static SocketService mService;
 
@@ -65,8 +65,7 @@ public class main extends AppCompatActivity {
         };
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
-            token = intent.getStringExtra(Login.EXTRA_MESSAGE_TOKEN);
-
+            idUSer = intent.getStringExtra(Login.EXTRA_MESSAGE_ID_USER);
         }
         profile = Profile.getCurrentProfile();
         Log.i(TAG, "onCreate");
@@ -92,7 +91,6 @@ public class main extends AppCompatActivity {
                     JSONObject sendUserInfo = new JSONObject();
                     try {
                         sendUserInfo.put("NAME", profile.getName());
-                        sendUserInfo.put("FB", token);
                         sendUserInfo.put("AVATAR", profile.getProfilePictureUri(800, 600).toString());
                         sendUserInfo.put("USER_ID_FB", profile.getId());
                     } catch (Exception ex) {
@@ -139,7 +137,7 @@ public class main extends AppCompatActivity {
 
                 }
             });
-            mService.mainSend("login", profile.getId());
+            mService.mainSend("login", idUSer);
             mBound = true;
         }
 
