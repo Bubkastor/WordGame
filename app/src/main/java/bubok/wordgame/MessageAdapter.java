@@ -55,6 +55,7 @@ class MessageAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return 0;
     }
+
     public  void ChangeStatus(String id, String status){
         for (Message message: messages)
             if (message.getIDMessage().equals(id)){
