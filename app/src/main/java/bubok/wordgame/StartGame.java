@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,7 +41,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import bubok.wordgame.Service.SocketService;
 
@@ -213,6 +218,26 @@ public class StartGame extends AppCompatActivity {
 
     private void openUsersOnline(JSONArray jsonArray) {
         Log.i(TAG, "openUsersOnline");
+        openUserList(jsonArray);
+    }
+
+    private void openUserList(JSONArray jsonArray) {
+        Intent intent = new Intent(StartGame.this, UserList.class);
+        ArrayList<User> inviteList = new ArrayList<>();
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                User itUser = new User(
+                        jsonArray.getJSONObject(i).getString("userId"),
+                        jsonArray.getJSONObject(i).getString("FIO"),
+                        jsonArray.getJSONObject(i).getString("avatar")
+                );
+                inviteList.add(itUser);
+            }
+        } catch (Exception ex) {
+            Log.i(TAG, ex.getMessage());
+        }
+        intent.putExtra("inviteList", inviteList);
+        startActivity(intent);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
