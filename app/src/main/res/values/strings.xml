@@ -35,5 +35,14 @@
     <string name="mainScreen">На главный экран</string>
     <string name="game">Игра</string>
 
+    <!--dialog -->
+    <string name="accept">Принять</string>
+    <string name="cancel">Отменить</string>
+
+    <string name="invite_title">Приглашение</string>
+    <string name="invite_message1">с рейтингом</string>
+    <string name="invite_message2">приглашает вас и и еще</string>
+    <string name="invite_message3">человек принять участие в игре</string>
+
 
 </resources>

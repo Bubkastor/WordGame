@@ -31,6 +31,7 @@ import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
@@ -133,6 +134,12 @@ public class StartGame extends AppCompatActivity {
         if(intent.getExtras()!= null){
             usersInvite = intent.getExtras().getStringArrayList(EXTRA_MESSAGE_USERS_INVITE);
         }
+        findViewById(R.id.buttonAddFrends).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mService.mainSend("user online");
+            }
+        });
     }
 
     @Override
@@ -189,6 +196,11 @@ public class StartGame extends AppCompatActivity {
                 public void onDisconnect() {
 
                 }
+
+                @Override
+                public void onUserOnline(JSONArray jsonArray) {
+                    openUsersOnline(jsonArray);
+                }
             });
             mBound = true;
         }
@@ -198,6 +210,10 @@ public class StartGame extends AppCompatActivity {
             mBound = false;
         }
     };
+
+    private void openUsersOnline(JSONArray jsonArray) {
+        Log.i(TAG, "openUsersOnline");
+    }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
@@ -383,9 +399,6 @@ public class StartGame extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 
         return baos.toByteArray();
-    }
-
-    public void buttonAddFriendsClick(View v) {
     }
 
     public void startGame(View v) {

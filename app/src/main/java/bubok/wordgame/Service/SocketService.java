@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URI;
@@ -103,8 +104,10 @@ public class SocketService extends Service {
         mainSocket.on("invite", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                Log.i(TAG, "invite");
                 JSONObject jsonObject = (JSONObject) args[0];
                 if (mainListener != null) {
+                    Log.i(TAG, "invite not null");
                     mainListener.onInviteChat(jsonObject);
                 }
             }
@@ -115,6 +118,15 @@ public class SocketService extends Service {
                 JSONObject jsonObject = (JSONObject) args[0];
                 if (mainListener != null) {
                     mainListener.onOpenChat(jsonObject);
+                }
+            }
+        });
+        mainSocket.on("user online", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONArray jsonArray = (JSONArray) args[0];
+                if (mainListener != null) {
+                    mainListener.onUserOnline(jsonArray);
                 }
             }
         });
@@ -245,13 +257,13 @@ public class SocketService extends Service {
 
     public interface SocketMainListener{
         public void onConnected();
-
         public void onNotFound();
         public void onInfo(JSONObject jsonObject);
         public void onOpenChat(JSONObject jsonObject);
         public void onInviteChat(JSONObject jsonObject);
         public void onDisconnect();
 
+        public void onUserOnline(JSONArray jsonArray);
     }
 
     public interface SocketChatListener{
