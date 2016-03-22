@@ -1,5 +1,6 @@
 package bubok.wordgame;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,7 +11,14 @@ import java.util.ArrayList;
  * Created by bubok on 21.03.2016.
  */
 public class UserAdapter extends BaseAdapter {
+
     private ArrayList<User> userArrayList;
+    private Context context;
+
+    UserAdapter(Context context, ArrayList<User> userArrayList) {
+        this.context = context;
+
+    }
 
     @Override
     public int getCount() {
