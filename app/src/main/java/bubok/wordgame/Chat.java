@@ -383,7 +383,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         finish();
     }
 
-    private synchronized void AddMessageInCheat(String urlAvatar, String login, String message, String idMessage, String status){
+    private void AddMessageInCheat(String urlAvatar, String login, String message, String idMessage, String status) {
         Message message1 = new Message(urlAvatar, login, message, idMessage, status);
         messageAdapter.add(message1);
         runOnUiThread(new Runnable() {
@@ -410,7 +410,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         }
     }
 
-    private synchronized void SetMediaContainer(String typeMedia, String contentType, byte[] decodedBytes ){
+    private void SetMediaContainer(String typeMedia, String contentType, byte[] decodedBytes) {
 
         switch (typeMedia){
             case "image":

@@ -123,12 +123,9 @@ class MessageAdapter extends BaseAdapter {
             RelativeLayout optionPanel = (RelativeLayout) row.findViewById(R.id.optionLayout);
             optionPanel.setVisibility(RelativeLayout.VISIBLE);
         }
-        if (messages.get(position).getAvatarBitmap() == null){
-            new DownloadImageTask(avatar, messages.get(position))
-                    .execute(messages.get(position).getAvatar());
-        }else{
-                avatar.setImageBitmap(messages.get(position).getAvatarBitmap());
-        }
+        new AsyncTasks.DownloadImageTask(avatar)
+                .execute(messages.get(position).getAvatar());
+
 
 
         message.setText(messages.get(position).getUsername() + "\n" + messages.get(position).getMessage());
@@ -154,39 +151,5 @@ class MessageAdapter extends BaseAdapter {
     public void add(Message message){
         messages.add(message);
     }
-
-    public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView viewImage;
-        Message message;
-        public DownloadImageTask(ImageView viewImage, Message message) {
-            this.message = message;
-            this.viewImage = viewImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String key = urls[0];
-            Bitmap mIcon11 = null;
-            if(Login.mMemoryCache.get(key) == null){
-                try {
-                    URL newUrl = new URL(urls[0]);
-                    mIcon11 = BitmapFactory.decodeStream(newUrl.openConnection().getInputStream());
-                    Login.mMemoryCache.put(key, mIcon11);
-                } catch (Exception e) {
-                    Log.e("Error", e.getMessage());
-                    e.printStackTrace();
-                }
-            } else {
-                mIcon11 = Login.mMemoryCache.get(key);
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            message.setAvatarBitmap(result);
-            viewImage.setImageBitmap(result);
-        }
-    }
-
-
 
 }
