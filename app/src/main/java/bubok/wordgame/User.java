@@ -10,6 +10,16 @@ public class User implements Serializable {
     private String name;
     private String avatar;
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
+    private boolean isSelected;
+
     public String getUserID() {
         return userID;
     }
@@ -39,5 +49,6 @@ public class User implements Serializable {
         this.userID = userID;
         this.name = name;
         this.avatar = avatar;
+        this.isSelected = false;
     }
 }
