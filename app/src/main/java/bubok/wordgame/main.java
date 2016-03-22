@@ -111,7 +111,7 @@ public class main extends AppCompatActivity {
                     try {
                         //String name = answer.getString("username");
                         String avatarUrl = jsonObject.getString("avatar");
-                        new DownloadImageTask((ImageView) findViewById(R.id.imageView2))
+                        new AsyncTasks.DownloadImageTask((ImageView) findViewById(R.id.imageView2))
                                 .execute(avatarUrl);
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
@@ -187,30 +187,6 @@ public class main extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String url = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                URL newUrl = new URL(url);
-                mIcon11 = BitmapFactory.decodeStream(newUrl.openConnection().getInputStream());
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 
     private void inviteChat(String leader, final String gameId, String leaderRaiting, String countInvite) {
 
