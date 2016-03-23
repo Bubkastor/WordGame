@@ -17,10 +17,12 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -151,6 +153,38 @@ public class StartGame extends AppCompatActivity {
         Log.i(TAG, "onStart");
         super.onStart();
         bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.i(TAG, "onBackPressed");
+        closeGame();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG, "onOptionsItemSelected");
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(StartGame.this);
+                closeGame();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    private void closeGame() {
+        Log.i(TAG, "closeGame");
+        try {
+            JSONObject sendData = new JSONObject();
+            sendData.put("gameId", gameId);
+            mService.send("cancel game", sendData);
+        } catch (Exception ex) {
+            Log.i(TAG, ex.getMessage());
+        }
+        finish();
     }
 
     @Override

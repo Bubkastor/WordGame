@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.content.Context;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -146,6 +147,19 @@ public class main extends AppCompatActivity {
                 }
 
                 @Override
+                public void onCancelGame() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showProgress(false);
+                            Toast toast = Toast.makeText(getApplicationContext(),
+                                    getString(R.string.toast_game_cancel), Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    });
+                }
+
+                @Override
                 public void onDisconnect() {
 
                 }
@@ -171,6 +185,7 @@ public class main extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
+        Log.i(TAG, "onBackPressed");
         finish();
     }
 

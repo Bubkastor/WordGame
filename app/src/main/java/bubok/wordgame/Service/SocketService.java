@@ -124,6 +124,14 @@ public class SocketService extends Service {
                 }
             }
         });
+        mainSocket.on("canceled game", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                if (mainListener != null) {
+                    mainListener.onCancelGame();
+                }
+            }
+        });
 
     }
 
@@ -303,6 +311,9 @@ public class SocketService extends Service {
         public void onInfo(JSONObject jsonObject);
         public void onOpenChat(JSONObject jsonObject);
         public void onInviteChat(JSONObject jsonObject);
+
+        public void onCancelGame();
+
         public void onDisconnect();
     }
 
