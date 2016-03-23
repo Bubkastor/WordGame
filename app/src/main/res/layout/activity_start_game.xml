@@ -196,7 +196,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:id="@+id/countAcceptSend"
+                    android:id="@+id/countInvAccept"
                     android:text="0"
                     android:layout_weight="0.71" />
             </LinearLayout>

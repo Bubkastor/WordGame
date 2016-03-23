@@ -43,6 +43,11 @@
     <string name="invite_message1">с рейтингом</string>
     <string name="invite_message2">приглашает вас и и еще</string>
     <string name="invite_message3">человек принять участие в игре</string>
+    <string name="invite">Пригласить</string>
+
+    <!--toast-->
+    <string name="toast_accept">принял приглашение</string>
+    <string name="toast_cancel">отказался от приглашение</string>
 
 
 </resources>

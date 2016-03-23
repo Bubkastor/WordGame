@@ -3,7 +3,6 @@ package bubok.wordgame;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,7 +17,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -38,14 +37,9 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 import bubok.wordgame.Service.SocketService;
 
@@ -61,6 +55,9 @@ public class StartGame extends AppCompatActivity {
     private static final int REQUEST_VIDEO_CAPTURE = 2;
     private static final int REQUEST_IMAGE_GALLERY = 3;
 
+    private TextView countInvSend;
+    private TextView countInvAccept;
+
     private LinearLayout titleLinear;
     private LinearLayout buttonMediaLinear;
     private LinearLayout mediaLinear;
@@ -71,7 +68,7 @@ public class StartGame extends AppCompatActivity {
     private MediaController mediaController;
     private byte[] videoByte;
     private TYPE_MEDIA media;
-    private List<String> usersInvite;
+    private ArrayList<String> usersInvite = new ArrayList<>();
     private AlertDialog.Builder builder;
     private static File mediaFile;
     private View startGameProgress;
@@ -80,6 +77,8 @@ public class StartGame extends AppCompatActivity {
     private boolean mBound;
     private Intent service;
 
+
+    private static String gameId = "";
     private static SocketService mService;
 
     @Override
@@ -89,6 +88,7 @@ public class StartGame extends AppCompatActivity {
         context = StartGame.this;
 
         service = new Intent(this, SocketService.class);
+
 
         String title = "Выбор картинки";
         String message = "Выберите откуда взять картинку";
@@ -125,6 +125,8 @@ public class StartGame extends AppCompatActivity {
         videoViewPrev = (VideoView) findViewById(R.id.videoViewPrev);
         startGameProgress = findViewById(R.id.startGameProgress);
         progressBarLayout = findViewById(R.id.progressBarLayout);
+        countInvSend = (TextView) findViewById(R.id.countInvSend);
+        countInvAccept = (TextView) findViewById(R.id.countInvAccept);
         ImageButton resetPrevView = (ImageButton) findViewById(R.id.resetPrevView);
         resetPrevView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,14 +137,11 @@ public class StartGame extends AppCompatActivity {
         mediaController = new MediaController(this);
         videoViewPrev.setMediaController(mediaController);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
-        Intent intent = getIntent();
-        if(intent.getExtras()!= null){
-            usersInvite = intent.getExtras().getStringArrayList(EXTRA_MESSAGE_USERS_INVITE);
-        }
+
         findViewById(R.id.buttonAddFrends).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.mainSend("user online");
+                mService.send("user online");
             }
         });
     }
@@ -154,33 +153,74 @@ public class StartGame extends AppCompatActivity {
         bindService(service, mConnection, Context.BIND_AUTO_CREATE);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i(TAG, "onNewIntent");
+        if (intent.getExtras() != null) {
+            usersInvite = intent.getExtras().getStringArrayList(EXTRA_MESSAGE_USERS_INVITE);
+            countInvSend.setText(Integer.toString(usersInvite.size()));
+            try {
+                JSONObject sendData = new JSONObject();
+                JSONArray players = new JSONArray(usersInvite);
+
+                sendData.put("PLAYERS_IDS", players);
+                sendData.put("gameId", gameId);
+                mService.send("send invite", sendData);
+            } catch (Exception ex) {
+                Log.i(TAG, ex.getMessage());
+            }
+        }
+
+        super.onNewIntent(intent);
+    }
+
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             SocketService.SocketIOBinder binder = (SocketService.SocketIOBinder) service;
             mService = binder.getService();
-            binder.setMainListener(new SocketService.SocketMainListener() {
+            binder.setGameListener(new SocketService.SocketStartGameListener() {
                 @Override
-                public void onConnected() {
-
+                public void onInitializeGame(JSONObject jsonObject) {
+                    Log.i(TAG, "onInitializeGame");
+                    try {
+                        gameId = jsonObject.getString("gameId");
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
                 }
 
                 @Override
-                public void onNotFound() {
+                public void onInvAccept(JSONObject jsonObject) {
+                    Log.i(TAG, "onInvAccept");
+                    try {
+                        String countPlayers = jsonObject.getString("countPlayers");
+                        String username = jsonObject.getString("user");
+                        acceptPlayer(username, countPlayers);
 
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
                 }
 
                 @Override
-                public void onInfo(JSONObject jsonObject) {
-
+                public void onInvCancel(JSONObject jsonObject) {
+                    Log.i(TAG, "onInvCancel");
+                    try {
+                        String countPlayers = jsonObject.getString("countPlayers");
+                        String username = jsonObject.getString("user");
+                        cancelPlayer(username, countPlayers);
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
                 }
 
                 @Override
                 public void onOpenChat(JSONObject jsonObject) {
                     Log.i(TAG, "Chat open");
                     try {
-                        String game = jsonObject.getString("game");
+                        String game = jsonObject.getString("gameId");
                         Intent intent = new Intent(StartGame.this, Chat.class);
                         intent.putExtra(main.EXTRA_MESSAGE_USED_ID_USER, main.idUSer);
                         intent.putExtra(main.EXTRA_MESSAGE_USED_GAME, game);
@@ -193,20 +233,12 @@ public class StartGame extends AppCompatActivity {
                 }
 
                 @Override
-                public void onInviteChat(JSONObject jsonObject) {
-
-                }
-
-                @Override
-                public void onDisconnect() {
-
-                }
-
-                @Override
                 public void onUserOnline(JSONArray jsonArray) {
                     openUsersOnline(jsonArray);
                 }
             });
+            if (gameId.equals(""))
+                mService.send("initialize game");
             mBound = true;
         }
 
@@ -216,12 +248,40 @@ public class StartGame extends AppCompatActivity {
         }
     };
 
-    private void openUsersOnline(JSONArray jsonArray) {
-        Log.i(TAG, "openUsersOnline");
-        openUserList(jsonArray);
+    private void cancelPlayer(final String username, final String countPlayers) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                countInvAccept.setText(countPlayers);
+                StringBuilder messageToast = new StringBuilder();
+                messageToast.append(username + " ");
+                messageToast.append(getString(R.string.toast_cancel));
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        messageToast.toString(), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
     }
 
-    private void openUserList(JSONArray jsonArray) {
+    private void acceptPlayer(final String username, final String countPlayers) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                countInvAccept.setText(countPlayers);
+                StringBuilder messageToast = new StringBuilder();
+                messageToast.append(username + " ");
+                messageToast.append(getString(R.string.toast_accept));
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        messageToast.toString(), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+
+    }
+
+    private void openUsersOnline(JSONArray jsonArray) {
+        Log.i(TAG, "openUsersOnline");
         Intent intent = new Intent(StartGame.this, UserList.class);
         ArrayList<User> inviteList = new ArrayList<>();
         try {
@@ -409,6 +469,7 @@ public class StartGame extends AppCompatActivity {
         imageViewPrev.setImageBitmap(prevImage);
         media = TYPE_MEDIA.IMAGE;
     }
+
     private void ShowPreviewPhoto(Intent data){
         ChangeVisibleMediaConteiner();
         Bundle extras = data.getExtras();
@@ -453,12 +514,13 @@ public class StartGame extends AppCompatActivity {
         String word = editTextSrcWord.getText().toString();
         JSONObject sendData = new JSONObject();
         try{
+            Log.i(TAG, "Start game");
+            sendData.put("gameId", gameId);
             sendData.put("DATA", data);
             sendData.put("WORD", word);
             sendData.put("CONTENT_TYPE", typeMedia);
             sendData.put("TYPE", type);
-            sendData.put("PLAYERS_IDS", usersInvite);
-            mService.mainSend("start game", sendData);
+            mService.send("start game", sendData);
         } catch (Exception ex){
             Log.i(TAG, ex.getMessage());
         }
@@ -467,13 +529,15 @@ public class StartGame extends AppCompatActivity {
     @Override
     public void onStop(){
         Log.i(TAG, "onStop");
-        super.onStop();
+
         if (mBound) {
+            mService.deleteGameListener();
             unbindService(mConnection);
             mBound = false;
         }
         if (startGameProgress.getVisibility() == View.VISIBLE) {
             finish();
         }
+        super.onStop();
     }
 }

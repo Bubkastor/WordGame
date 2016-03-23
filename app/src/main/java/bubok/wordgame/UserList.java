@@ -1,21 +1,42 @@
 package bubok.wordgame;
 
+import android.content.Intent;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
 public class UserList extends AppCompatActivity {
-
+    private UserAdapter userAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
-        ArrayList<User> userArrayList = (ArrayList<User>) getIntent().getExtras().getSerializable("inviteList");
-        ListView listView = (ListView) findViewById(R.id.listViewUser);
-        UserAdapter userAdapter = new UserAdapter(this, userArrayList);
-        listView.setAdapter(userAdapter);
+        ArrayList<User> userArrayList =
+                (ArrayList<User>) getIntent().getExtras().getSerializable("inviteList");
 
+        ListView listView = (ListView) findViewById(R.id.listViewUser);
+        userAdapter = new UserAdapter(this, userArrayList);
+        listView.setAdapter(userAdapter);
+        findViewById(R.id.inviteFriends).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openStartGame();
+            }
+        });
+    }
+
+    private void openStartGame() {
+        Intent intent = new Intent(UserList.this, StartGame.class);
+        intent.putExtra(StartGame.EXTRA_MESSAGE_USERS_INVITE, userAdapter.getCheckedUser());
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 }

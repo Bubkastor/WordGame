@@ -31,6 +31,7 @@ public class SocketService extends Service {
 
     private SocketChatListener chatListener;
     private SocketMainListener mainListener;
+    private SocketStartGameListener gameListener;
 
     private SocketIOBinder mBinder = new SocketIOBinder();
 
@@ -51,7 +52,9 @@ public class SocketService extends Service {
         }
 
         setupSocketMain();
+        setupStartGame();
         setupSocketChat();
+
         mainSocket.connect();
         chatSocket.connect();
         return Service.START_NOT_STICKY;
@@ -121,15 +124,7 @@ public class SocketService extends Service {
                 }
             }
         });
-        mainSocket.on("user online", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONArray jsonArray = (JSONArray) args[0];
-                if (mainListener != null) {
-                    mainListener.onUserOnline(jsonArray);
-                }
-            }
-        });
+
     }
 
     private void setupSocketChat(){
@@ -207,39 +202,80 @@ public class SocketService extends Service {
 
     };
 
-    public void mainSend(String event, String message){
+    private void setupStartGame() {
+        mainSocket.on("initialize game", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (gameListener != null)
+                    gameListener.onInitializeGame(jsonObject);
+            }
+        });
+        mainSocket.on("invite accepted", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (gameListener != null)
+                    gameListener.onInvAccept(jsonObject);
+            }
+        });
+        mainSocket.on("invite canceled", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (gameListener != null)
+                    gameListener.onInvCancel(jsonObject);
+            }
+        });
+        mainSocket.on("open chat", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                if (gameListener != null)
+                    gameListener.onOpenChat(jsonObject);
+            }
+        });
+        mainSocket.on("user online", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONArray jsonArray = (JSONArray) args[0];
+                if (gameListener != null)
+                    gameListener.onUserOnline(jsonArray);
+            }
+        });
+    }
+
+    public void send(String event, String message) {
         mainSocket.emit(event, message);
     }
-    public void mainSend(String event, JSONObject message){
+
+    public void send(String event, JSONObject message) {
         mainSocket.emit(event, message);
     }
-    public void mainSend(String event){ mainSocket.emit(event);}
 
-    public void mainSocketConnect() {
-        mainSocket.connect();
-    }
-    public void mainSocketDisconnect() {
-        mainSocket.disconnect();
+    public void send(String event) {
+        mainSocket.emit(event);
     }
 
-    public Boolean isConnected() {
-        return mainSocket.connected();
-    }
 
-    public void chatSend(String event, String message){
+    public void chatSend(String event, String message) {
         chatSocket.emit(event, message);
     }
-    public void chatSend(String event, JSONObject message){
+
+    public void chatSend(String event, JSONObject message) {
         chatSocket.emit(event, message);
     }
-    public void chatSend(String event){ chatSocket.emit(event);}
 
-    public void chatSocketConnect() {
-        chatSocket.connect();
+    public void chatSend(String event) {
+        chatSocket.emit(event);
     }
 
-    public void chatSocketDisconnect() {
-        chatSocket.disconnect();
+    public void deleteMainListener() {
+        mainListener = null;
+    }
+
+    public void deleteGameListener() {
+        gameListener = null;
     }
 
     public class SocketIOBinder extends Binder {
@@ -248,11 +284,17 @@ public class SocketService extends Service {
             return SocketService.this;
         }
 
-        public void setMainListener(SocketMainListener listener){
+        public void setMainListener(SocketMainListener listener) {
             mainListener = listener;
         }
 
+
         public void setChatListener(SocketChatListener listener) { chatListener = listener; }
+
+        public void setGameListener(SocketStartGameListener listener) {
+            gameListener = listener;
+        }
+
     }
 
     public interface SocketMainListener{
@@ -262,7 +304,16 @@ public class SocketService extends Service {
         public void onOpenChat(JSONObject jsonObject);
         public void onInviteChat(JSONObject jsonObject);
         public void onDisconnect();
+    }
 
+    public interface SocketStartGameListener {
+        public void onInitializeGame(JSONObject jsonObject);
+
+        public void onInvAccept(JSONObject jsonObject);
+
+        public void onInvCancel(JSONObject jsonObject);
+
+        public void onOpenChat(JSONObject jsonObject);
         public void onUserOnline(JSONArray jsonArray);
     }
 

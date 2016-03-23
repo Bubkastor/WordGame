@@ -1,23 +1,25 @@
 package bubok.wordgame;
 
-import android.app.Service;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.content.Context;
-import android.widget.Toast;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -25,8 +27,6 @@ import com.facebook.Profile;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.net.URL;
 
 import bubok.wordgame.Service.SocketService;
 
@@ -102,7 +102,7 @@ public class main extends AppCompatActivity {
                         Log.i(TAG, ex.getMessage());
                         return;
                     }
-                    mService.mainSend("login", sendUserInfo);
+                    mService.send("login", sendUserInfo);
                 }
 
                 @Override
@@ -120,6 +120,15 @@ public class main extends AppCompatActivity {
 
                 @Override
                 public void onOpenChat(JSONObject jsonObject) {
+                    Log.i(TAG, "onOpenChat");
+                    try {
+                        String gameId = jsonObject.getString("gameId");
+                        openChat(gameId);
+                    } catch (Exception ex) {
+                        Log.i(TAG, ex.getMessage());
+                    }
+
+
                 }
 
                 @Override
@@ -141,13 +150,9 @@ public class main extends AppCompatActivity {
 
                 }
 
-                @Override
-                public void onUserOnline(JSONArray jsonArray) {
-
-                }
 
             });
-            mService.mainSend("login", idUSer);
+            mService.send("login", idUSer);
             mBound = true;
         }
 
@@ -202,12 +207,29 @@ public class main extends AppCompatActivity {
         builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                openChat(gameId);
+                Log.i(TAG, "Accept invite");
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("gameId", gameId);
+                    mService.send("accept invitation", jsonObject);
+                    showProgress(true);
+                } catch (Exception ex) {
+                    Log.i(TAG, ex.getMessage());
+                }
+
             }
         });
         builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
-
+                Log.i(TAG, "Cancel invite");
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("gameId", gameId);
+                    mService.send("cancel invitation", jsonObject);
+                    showProgress(false);
+                } catch (Exception ex) {
+                    Log.i(TAG, ex.getMessage());
+                }
             }
         });
         runOnUiThread(new Runnable() {
@@ -216,7 +238,41 @@ public class main extends AppCompatActivity {
                 builder.show();
             }
         });
+    }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        final ProgressBar waitGame = (ProgressBar) findViewById(R.id.waitGame);
+        final RelativeLayout progressBarLayout = (RelativeLayout) findViewById(R.id.progressBarLayout);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            waitGame.setVisibility(show ? View.GONE : View.VISIBLE);
+            progressBarLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            waitGame.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    //.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            waitGame.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressBarLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+            waitGame.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    waitGame.setVisibility(show ? View.VISIBLE : View.GONE);
+                    progressBarLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            //mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            //mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
     }
 
     private String getMessageDialog(String leader, String leaderRaiting, String countInvite) {
@@ -228,6 +284,7 @@ public class main extends AppCompatActivity {
     }
 
     private void openChat(String gameId) {
+
         Intent intent = new Intent(main.this, Chat.class);
         intent.putExtra(EXTRA_MESSAGE_USED_ID_USER, profile.getId());
         intent.putExtra(EXTRA_MESSAGE_USED_GAME, gameId);
@@ -237,13 +294,15 @@ public class main extends AppCompatActivity {
     @Override
     protected void onStop() {
         Log.i(TAG, "onStop");
-        super.onStop();
-
         if (mBound) {
+            mService.deleteMainListener();
             unbindService(mConnection);
+
             Log.i(TAG, "unbindService");
             mBound = false;
         }
+        showProgress(false);
+        super.onStop();
     }
     @Override
     public void onDestroy(){
