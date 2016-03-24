@@ -31,16 +31,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Medium Text"
-                    android:id="@+id/textView2"
+                    android:text="Chat"
+                    android:id="@+id/textViewWord"
                     android:layout_margin="10dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Medium Text"
-                    android:id="@+id/textView4"
+                    android:text="01:34"
+                    android:id="@+id/textViewTime"
                     android:layout_margin="10dp" />
             </LinearLayout>
         </RelativeLayout>
@@ -87,12 +87,6 @@
                             android:text="Medium Text"
                             android:id="@+id/textViewWinerName" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Medium Text"
-                            android:id="@+id/textViewWinerSecondName" />
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -165,12 +159,6 @@
                             android:text="Medium Text"
                             android:id="@+id/textViewLeadName" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Medium Text"
-                            android:id="@+id/textViewLeadSecondName" />
                     </LinearLayout>
 
                 </RelativeLayout>

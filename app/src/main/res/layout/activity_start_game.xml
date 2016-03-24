@@ -34,7 +34,7 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/titleChose"
+                    android:text="@string/activity_SG_choise"
                     android:id="@+id/textView"
                     android:padding="10dp"
                     android:gravity="center_horizontal" />
@@ -52,7 +52,6 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:id="@+id/buttonAddPhoto"
-                    android:contentDescription="@string/photo"
                     android:src="@drawable/photo"
                     android:scaleType="fitCenter"
                     style="?android:attr/borderlessButtonStyle"
@@ -63,7 +62,6 @@
                     android:layout_height="100dp"
                     android:id="@+id/buttonAddVideo"
                     android:src="@drawable/video"
-                    android:contentDescription="@string/video"
                     android:scaleType="fitCenter"
                     style="?android:attr/borderlessButtonStyle"
                     android:onClick="buttonAddVideoClick"
@@ -73,7 +71,6 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:id="@+id/buttonAddAudio"
-                    android:contentDescription="@string/audio"
                     android:src="@drawable/audio"
                     android:nestedScrollingEnabled="false"
                     android:scaleType="fitCenter"
@@ -102,7 +99,6 @@
                         android:layout_height="200dp"
                         android:id="@+id/imageViewPrev"
                         android:scaleType="fitCenter"
-                        android:contentDescription="@string/imgPreview"
                         android:adjustViewBounds="true"
                         android:visibility="visible" />
 

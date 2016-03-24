@@ -1,36 +1,19 @@
 <resources>
     <string name="facebook_app_id">1683999828523747</string>
     <string name="app_name">WordGame</string>
-    <string name="login">Login</string>
-    <string name="btnEnter">Enter</string>
-    <string name="send">Send</string>
 
     <string name="URL">http://server20160304034355.azurewebsites.net</string>
     <string name="ChatNamespace">/chat</string>
+
     <string name="URLNamespace1">http://server20160304034355.azurewebsites.net</string>
     <string name="TestURLOnline">http://192.168.1.4:3000</string>
-    <string name="register">Registration</string>
-    <string name="GetAllUser">Get all users</string>
-    <string name="GetOnlineUser">Get Online User</string>
-    <string name="newGame">New Game</string>
-    <string name="buttonChat">chat</string>
-    <string name="ShowImg">Show picture</string>
-    <string name="photo">photo</string>
-    <string name="video">video</string>
-    <string name="audio">audio</string>
-    <string name="titleChose">Выберите уже что-нибудь!</string>
+
     <string name="srcWordToltip">Загадайте слово</string>
     <string name="AddFrends">Добавить/Удалить игроков</string>
     <string name="titleInvSend">Приглашений выслано: </string>
     <string name="TitleAcceptSend">Потвердили участие: </string>
-    <string name="imgPreview">Preview image</string>
-    <string name="inviteUser">Invite test</string>
-    <string name="OK">Ok</string>
-    <string name="startGame">Начать игру</string>
-    <string name="avatar">avatar</string>
-    <string name="like">like</string>
-    <string name="dislike">dislike</string>
-    <string name="correctly">Correctly</string>
+
+
     <string name="message">asd</string>
     <string name="mainScreen">На главный экран</string>
     <string name="game">Игра</string>
@@ -56,5 +39,18 @@
     <string name="activity_WG_rating">Вам понравился ведущий?</string>
     <string name="activity_WG_winer">Победитель</string>
     <string name="activity_WG_enigma">Загадывал</string>
+
+    <!--activity Main-->
+    <string name="activity_Main_start_game">начать игру</string>
+    <string name="activity_Main_statistics">статистика</string>
+    <string name="activity_Main_friends">Друзья из </string>
+    <string name="activity_Main_"></string>
+
+    <!--activity Chat-->
+    <string name="activity_Chat_send">отправить</string>
+
+    <!--activity Start Game-->
+    <string name="activity_SG_choise">Выберите уже что-нибудь!</string>
+
 
 </resources>

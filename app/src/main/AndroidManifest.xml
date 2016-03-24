@@ -58,7 +58,9 @@
             android:exported="false" />
 
         <activity android:name=".UserList" />
-
+        <activity android:name=".About" />
+        <activity android:name=".Statistics" />
+        <activity android:name=".SocialFriends"></activity>
     </application>
 
 </manifest>

@@ -14,7 +14,6 @@
             android:layout_height="50dp"
             android:id="@+id/avatar"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/avatar"
             android:layout_alignParentStart="false"
             android:adjustViewBounds="false"
             android:baselineAlignBottom="false"
@@ -63,7 +62,6 @@
                 android:id="@+id/likeViewButton"
                 android:src="@drawable/like"
                 android:scaleType="fitXY"
-                android:contentDescription="@string/like"
                 android:layout_alignParentEnd="false" />
 
             <ImageButton
@@ -71,7 +69,6 @@
                 android:layout_height="30dp"
                 android:id="@+id/dislikeViewButton"
                 android:src="@drawable/dislike"
-                android:contentDescription="@string/dislike"
                 android:layout_alignParentEnd="false"
                 android:scaleType="fitXY"
                 android:layout_toRightOf="@+id/likeViewButton" />
@@ -81,7 +78,6 @@
                 android:layout_height="30dp"
                 android:id="@+id/buttonCorrect"
                 android:layout_toRightOf="@+id/dislikeViewButton"
-                android:contentDescription="@string/correctly"
                 android:src="@android:drawable/star_big_on" />
 
         </RelativeLayout>
@@ -103,7 +99,6 @@
                 android:id="@+id/likeView"
                 android:src="@drawable/like"
                 android:scaleType="fitXY"
-                android:contentDescription="@string/like"
                 android:layout_alignParentEnd="false"
                 android:visibility="visible" />
 
@@ -112,7 +107,6 @@
                 android:layout_height="30dp"
                 android:id="@+id/dislikeView"
                 android:src="@drawable/dislike"
-                android:contentDescription="@string/dislike"
                 android:layout_alignParentEnd="false"
                 android:scaleType="fitXY"
                 android:layout_toRightOf="@+id/likeView"

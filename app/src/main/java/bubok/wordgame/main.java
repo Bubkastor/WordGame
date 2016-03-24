@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.content.Context;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -57,8 +58,6 @@ public class main extends AppCompatActivity {
         service.putExtra("chatNamespace", getResources().getString(R.string.ChatNamespace));
 
         startService(service);
-
-        Log.i(TAG, "bindService");
         new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(
@@ -76,6 +75,8 @@ public class main extends AppCompatActivity {
         }
         profile = Profile.getCurrentProfile();
         Log.i(TAG, "onCreate");
+
+        initButton();
 
     }
 
@@ -110,9 +111,9 @@ public class main extends AppCompatActivity {
                 public void onInfo(JSONObject jsonObject) {
                     Log.i(TAG, "info");
                     try {
-                        //String name = answer.getString("username");
+                        setName(jsonObject.getString("username"));
                         String avatarUrl = jsonObject.getString("avatar");
-                        new AsyncTasks.DownloadImageTask((ImageView) findViewById(R.id.imageView2))
+                        new AsyncTasks.DownloadImageTask((ImageView) findViewById(R.id.imageViewAvatar))
                                 .execute(avatarUrl);
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
@@ -177,6 +178,60 @@ public class main extends AppCompatActivity {
         }
     };
 
+    private void initButton() {
+        findViewById(R.id.buttonStartGame).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newGame(v);
+            }
+        });
+        findViewById(R.id.buttonStatistics).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                statistics(v);
+            }
+        });
+        findViewById(R.id.buttonLogo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                about(v);
+            }
+        });
+        findViewById(R.id.buttonFriends).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                socialFriends(v);
+            }
+        });
+
+
+    }
+
+    private void socialFriends(View v) {
+        Intent intent = new Intent(this, SocialFriends.class);
+        startActivity(intent);
+    }
+
+    private void statistics(View v) {
+        Intent intent = new Intent(this, Statistics.class);
+        startActivity(intent);
+    }
+
+    private void about(View v) {
+        Intent intent = new Intent(this, About.class);
+        startActivity(intent);
+    }
+
+    private void setName(final String name) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TextView textViewName = (TextView) findViewById(R.id.textViewName);
+                textViewName.setText(name);
+            }
+        });
+
+    }
     @Override
     protected void onNewIntent(Intent intent) {
         Log.i(TAG, "onNewIntent");
@@ -202,7 +257,7 @@ public class main extends AppCompatActivity {
         super.onResume();
     }
 
-    public void buttonNewGameClick(View v){
+    public void newGame(View v) {
         Intent intent = new Intent(this, StartGame.class);
         startActivity(intent);
     }
