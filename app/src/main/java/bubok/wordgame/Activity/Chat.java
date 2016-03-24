@@ -49,7 +49,12 @@ import bubok.wordgame.Service.SocketService;
 
 public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
 
-    public final static String EXTRA_MESSAGE_WINGAME = "bubok.wordgame.WINGAME";
+    public final static String EXTRA_MESSAGE_WIN_NAME = "bubok.wordgame.WIN.NAME";
+    public final static String EXTRA_MESSAGE_WIN_AVATAR = "bubok.wordgame.WIN.AVATAR";
+    public final static String EXTRA_MESSAGE_LEAD_NAME = "bubok.wordgame.LEAD.NAME";
+    public final static String EXTRA_MESSAGE_LEAD_AVATAR = "bubok.wordgame.LEAD.AVATAR";
+    public final static String EXTRA_MESSAGE_TIME = "bubok.wordgame.TIME";
+    public final static String EXTRA_MESSAGE_WORD = "bubok.wordgame.WORD";
     private static final String TAG = "CHAT";
     private Context context;
     private ImageView imageView;
@@ -176,11 +181,14 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
                 public void onCloseGame(JSONObject jsonObject) {
                     Log.i(TAG, "close chat");
                     try {
-                        String userWin = jsonObject.getString("win");
+                        String winerName = jsonObject.getString("winerName");
+                        String winerAvatar = jsonObject.getString("winerAvatar");
+                        String leaderAvatar = jsonObject.getString("leaderAvatar");
+                        String leaderName = jsonObject.getString("leaderName");
+                        String timeGame = jsonObject.getString("timeGame");
                         String word = jsonObject.getString("word");
-                        String text = "Пользователь " + userWin + " победил загаданое слово " + word;
-                        Log.i(TAG, text);
-                        CloseCheat(userWin, word);
+
+                        CloseCheat(winerName, winerAvatar, leaderName, leaderAvatar, timeGame, word);
                         mService.chatSend("leave chat");
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
@@ -370,10 +378,14 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         });
     }
 
-    private void CloseCheat(String userWin, String word) {
+    private void CloseCheat(String winerName, String winerAvatar, String leaderName, String leaderAvatar, String timeGame, String word) {
         Intent intent = new Intent(Chat.this, WinGame.class);
-        String text = "Пользователь " + userWin + " победил загаданое слово " + word;
-        intent.putExtra(EXTRA_MESSAGE_WINGAME, text);
+        intent.putExtra(EXTRA_MESSAGE_WIN_NAME, winerName);
+        intent.putExtra(EXTRA_MESSAGE_WIN_AVATAR, winerAvatar);
+        intent.putExtra(EXTRA_MESSAGE_LEAD_AVATAR, leaderAvatar);
+        intent.putExtra(EXTRA_MESSAGE_LEAD_NAME, leaderName);
+        intent.putExtra(EXTRA_MESSAGE_TIME, timeGame);
+        intent.putExtra(EXTRA_MESSAGE_WORD, word);
         startActivity(intent);
         finish();
     }

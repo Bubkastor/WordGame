@@ -82,7 +82,7 @@ public class StartGame extends AppCompatActivity {
     private Intent service;
 
 
-    private static String gameId = "";
+    private String gameId = "";
     private static SocketService mService;
 
     @Override
@@ -222,6 +222,7 @@ public class StartGame extends AppCompatActivity {
                     Log.i(TAG, "onInitializeGame");
                     try {
                         gameId = jsonObject.getString("gameId");
+                        Log.i(TAG, gameId);
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                     }
