@@ -5,7 +5,7 @@
     <string name="btnEnter">Enter</string>
     <string name="send">Send</string>
 
-    <string name="URL">http://192.168.1.7:3000</string>
+    <string name="URL">http://server20160304034355.azurewebsites.net</string>
     <string name="ChatNamespace">/chat</string>
     <string name="URLNamespace1">http://server20160304034355.azurewebsites.net</string>
     <string name="TestURLOnline">http://192.168.1.4:3000</string>
@@ -50,5 +50,11 @@
     <string name="toast_cancel">отказался от приглашение</string>
 
     <string name="toast_game_cancel">Ведуший отменил игру</string>
+
+    <!--activity Win Game-->
+    <string name="activity_WG_description_word">отгаданое слово</string>
+    <string name="activity_WG_rating">Вам понравился ведущий?</string>
+    <string name="activity_WG_winer">Победитель</string>
+    <string name="activity_WG_enigma">Загадывал</string>
 
 </resources>
