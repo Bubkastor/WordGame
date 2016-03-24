@@ -1,7 +1,6 @@
-package bubok.wordgame;
+package bubok.wordgame.Adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import bubok.wordgame.AsyncTasks.DownloadImageTask;
+import bubok.wordgame.R;
+import bubok.wordgame.Class.User;
+
 /**
  * Created by bubok on 21.03.2016.
  */
@@ -21,7 +24,7 @@ public class UserAdapter extends BaseAdapter {
     private ArrayList<User> userArrayList;
     private Context context;
 
-    UserAdapter(Context context, ArrayList<User> userArrayList) {
+    public UserAdapter(Context context, ArrayList<User> userArrayList) {
         this.context = context;
         this.userArrayList = userArrayList;
     }
@@ -73,7 +76,7 @@ public class UserAdapter extends BaseAdapter {
             }
         });
 
-        new AsyncTasks.DownloadImageTask(avatar).execute(userArrayList.get(position).getAvatar());
+        new DownloadImageTask(avatar).execute(userArrayList.get(position).getAvatar());
 
         return row;
     }

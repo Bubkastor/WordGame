@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:screenOrientation="portrait"
-    tools:context="bubok.wordgame.StartGame"
+    tools:context=".Activity.StartGame"
     android:scrollIndicators="right"
     android:nestedScrollingEnabled="true">
 

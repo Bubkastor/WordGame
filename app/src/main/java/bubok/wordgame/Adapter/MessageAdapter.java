@@ -1,9 +1,6 @@
-package bubok.wordgame;
+package bubok.wordgame.Adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +13,17 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
-import java.net.URL;
 import java.util.ArrayList;
+
+import bubok.wordgame.AsyncTasks.DownloadImageTask;
+import bubok.wordgame.Activity.Chat;
+import bubok.wordgame.Class.*;
+import bubok.wordgame.R;
 
 /**
  * Created by bubok on 01.03.2016.
  */
-class MessageAdapter extends BaseAdapter {
+public class MessageAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<Message> messages;
@@ -37,7 +38,7 @@ class MessageAdapter extends BaseAdapter {
 
     private boolean optionPanel;
 
-    MessageAdapter(Context context, ArrayList<Message> messages){
+    public MessageAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
         this.messages = messages;
     }
@@ -123,7 +124,7 @@ class MessageAdapter extends BaseAdapter {
             RelativeLayout optionPanel = (RelativeLayout) row.findViewById(R.id.optionLayout);
             optionPanel.setVisibility(RelativeLayout.VISIBLE);
         }
-        new AsyncTasks.DownloadImageTask(avatar)
+        new DownloadImageTask(avatar)
                 .execute(messages.get(position).getAvatar());
 
 

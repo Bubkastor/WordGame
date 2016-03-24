@@ -1,4 +1,4 @@
-package bubok.wordgame;
+package bubok.wordgame.Activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -43,7 +43,9 @@ import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import bubok.wordgame.R;
 import bubok.wordgame.Service.SocketService;
+import bubok.wordgame.Class.User;
 
 public class StartGame extends AppCompatActivity {
 
@@ -256,8 +258,8 @@ public class StartGame extends AppCompatActivity {
                     try {
                         String game = jsonObject.getString("gameId");
                         Intent intent = new Intent(StartGame.this, Chat.class);
-                        intent.putExtra(main.EXTRA_MESSAGE_USED_ID_USER, main.idUSer);
-                        intent.putExtra(main.EXTRA_MESSAGE_USED_GAME, game);
+                        intent.putExtra(Main.EXTRA_MESSAGE_USED_ID_USER, Main.idUSer);
+                        intent.putExtra(Main.EXTRA_MESSAGE_USED_GAME, game);
 
                         startActivity(intent);
 

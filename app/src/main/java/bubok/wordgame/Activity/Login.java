@@ -1,4 +1,4 @@
-package bubok.wordgame;
+package bubok.wordgame.Activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,7 +8,6 @@ import android.util.Log;
 import android.util.LruCache;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenSource;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -19,6 +18,8 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import bubok.wordgame.R;
 
 
 public class Login extends AppCompatActivity {
@@ -112,7 +113,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void OpenMainScreen() {
-        Intent intent = new Intent(Login.this, main.class);
+        Intent intent = new Intent(Login.this, Main.class);
         idUser = accessToken.getUserId();
         intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
         startActivity(intent);

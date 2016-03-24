@@ -1,11 +1,11 @@
-package bubok.wordgame;
+package bubok.wordgame.Class;
 
 import android.graphics.Bitmap;
 
 /**
  * Created by bubok on 01.03.2016.
  */
-class Message {
+public class Message {
     public Message(String avatar, String username, String message, String idMessage, String status) {
         Username = username;
         Message = message;
@@ -69,6 +69,5 @@ class Message {
     }
 
     private Bitmap AvatarBitmap;
-
 
 }

@@ -1,4 +1,4 @@
-package bubok.wordgame;
+package bubok.wordgame.Activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -16,11 +16,9 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -28,14 +26,11 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import org.json.JSONObject;
 
@@ -46,6 +41,9 @@ import java.io.OutputStream;
 
 import java.util.ArrayList;
 
+import bubok.wordgame.Adapter.MessageAdapter;
+import bubok.wordgame.Class.Message;
+import bubok.wordgame.R;
 import bubok.wordgame.Service.SocketService;
 
 
@@ -102,8 +100,8 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         });
 
         Intent intent = getIntent();
-        idUser = intent.getStringExtra(main.EXTRA_MESSAGE_USED_ID_USER);
-        mGame = intent.getStringExtra(main.EXTRA_MESSAGE_USED_GAME);
+        idUser = intent.getStringExtra(Main.EXTRA_MESSAGE_USED_ID_USER);
+        mGame = intent.getStringExtra(Main.EXTRA_MESSAGE_USED_GAME);
 
         ListView listViewCheat = (ListView) findViewById(R.id.listViewCheat);
         imageView = (ImageView) findViewById(R.id.imageViewChat);

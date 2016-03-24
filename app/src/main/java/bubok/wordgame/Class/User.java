@@ -1,4 +1,4 @@
-package bubok.wordgame;
+package bubok.wordgame.Class;
 
 import java.io.Serializable;
 

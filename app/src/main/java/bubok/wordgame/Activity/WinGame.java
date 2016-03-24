@@ -1,4 +1,4 @@
-package bubok.wordgame;
+package bubok.wordgame.Activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 
 import android.widget.TextView;
+
+import bubok.wordgame.R;
 
 public class WinGame extends AppCompatActivity {
     private static final String TAG = "WIN_GAME";

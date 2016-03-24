@@ -1,16 +1,16 @@
-package bubok.wordgame;
+package bubok.wordgame.Activity;
 
 import android.content.Intent;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import bubok.wordgame.Adapter.UserAdapter;
+import bubok.wordgame.R;
+import bubok.wordgame.Class.User;
 
 public class UserList extends AppCompatActivity {
     private UserAdapter userAdapter;
