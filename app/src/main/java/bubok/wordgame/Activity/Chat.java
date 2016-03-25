@@ -152,7 +152,8 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
                                 jsonObject.getString("username"),
                                 jsonObject.getString("message"),
                                 jsonObject.getString("idMessage"),
-                                jsonObject.getString("status"));
+                                jsonObject.getString("status"),
+                                jsonObject.getString("userId"));
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                     }
@@ -206,6 +207,8 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
                         String contentType = jsonObject.getString("contentType");
                         byte[] decodedBytes = (byte[]) jsonObject.get("data");
                         Boolean isAdmin = jsonObject.getBoolean("admin");
+                        String leaderId = jsonObject.getString("leaderId");
+                        messageAdapter.setLeaderId(leaderId);
                         messageAdapter.setOptionPanel(isAdmin);
                         SetMediaContainer(typeMedia, contentType, decodedBytes);
                     } catch (Exception ex) {
@@ -394,8 +397,8 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         finish();
     }
 
-    private void AddMessageInCheat(String urlAvatar, String login, String message, String idMessage, String status) {
-        Message message1 = new Message(urlAvatar, login, message, idMessage, status);
+    private void AddMessageInCheat(String urlAvatar, String login, String message, String idMessage, String status, String userId) {
+        Message message1 = new Message(urlAvatar, login, message, idMessage, status, userId);
         messageAdapter.add(message1);
         runOnUiThread(new Runnable() {
             @Override

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import bubok.wordgame.AsyncTasks.DownloadImageTask;
 import bubok.wordgame.Activity.Chat;
@@ -26,7 +27,17 @@ import bubok.wordgame.R;
 public class MessageAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<Message> messages;
+    private List<Message> messages;
+    private boolean optionPanel;
+    private String leaderId;
+
+    public String getLeaderId() {
+        return leaderId;
+    }
+
+    public void setLeaderId(String leaderId) {
+        this.leaderId = leaderId;
+    }
 
     public boolean isOptionPanel() {
         return optionPanel;
@@ -35,8 +46,6 @@ public class MessageAdapter extends BaseAdapter {
     public void setOptionPanel(boolean optionPanel) {
         this.optionPanel = optionPanel;
     }
-
-    private boolean optionPanel;
 
     public MessageAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
@@ -54,7 +63,7 @@ public class MessageAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     public  void ChangeStatus(String id, String status){
@@ -65,16 +74,41 @@ public class MessageAdapter extends BaseAdapter {
             }
 
     }
+
+    static class ViewHolder {
+        public ImageButton likeButton;
+        public ImageButton dislikeButton;
+        public ImageButton buttonCorrect;
+        public ImageView avatar;
+        public TextView message;
+        public RelativeLayout optionPanel;
+        public ImageView likeView;
+        public ImageView dislikeView;
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
 
-        View row = convertView;
-        if( convertView == null){
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.chat_row_layout, parent, false);
+            convertView = inflater.inflate(R.layout.chat_row_layout, parent, false);
+
+            holder = new ViewHolder();
+            holder.likeButton = (ImageButton) convertView.findViewById(R.id.likeViewButton);
+            holder.dislikeButton = (ImageButton) convertView.findViewById(R.id.dislikeViewButton);
+            holder.buttonCorrect = (ImageButton) convertView.findViewById(R.id.buttonCorrect);
+            holder.avatar = (ImageView) convertView.findViewById(R.id.avatar);
+            holder.message = (TextView) convertView.findViewById(R.id.textViewMessage);
+            holder.optionPanel = (RelativeLayout) convertView.findViewById(R.id.optionLayout);
+            holder.likeView = (ImageView) convertView.findViewById(R.id.likeView);
+            holder.dislikeView = (ImageView) convertView.findViewById(R.id.dislikeView);
+
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
-        ImageButton likeButton = (ImageButton) row.findViewById(R.id.likeViewButton);
-        likeButton.setOnClickListener(new View.OnClickListener() {
+        holder.likeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 JSONObject sendData = new JSONObject();
                 try {
@@ -86,8 +120,8 @@ public class MessageAdapter extends BaseAdapter {
                 Chat.mService.chatSend("change status message", sendData);
             }
         });
-        ImageButton dislikeButton = (ImageButton) row.findViewById(R.id.dislikeViewButton);
-        dislikeButton.setOnClickListener(new View.OnClickListener() {
+
+        holder.dislikeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 JSONObject sendData = new JSONObject();
                 try {
@@ -100,8 +134,7 @@ public class MessageAdapter extends BaseAdapter {
             }
         });
 
-        ImageButton buttonCorrect = (ImageButton) row.findViewById(R.id.buttonCorrect);
-        buttonCorrect.setOnClickListener(new View.OnClickListener() {
+        holder.buttonCorrect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 JSONObject sendData = new JSONObject();
                 try {
@@ -114,39 +147,34 @@ public class MessageAdapter extends BaseAdapter {
         });
 
 
-
-        ImageView avatar = (ImageView) row.findViewById(R.id.avatar);
-        TextView message = (TextView) row.findViewById(R.id.textViewMessage);
-
-
-
-        if(this.optionPanel){
-            RelativeLayout optionPanel = (RelativeLayout) row.findViewById(R.id.optionLayout);
-            optionPanel.setVisibility(RelativeLayout.VISIBLE);
+        if (this.optionPanel) {
+            if (!this.leaderId.equals(messages.get(position).getIdUser())) {
+                holder.optionPanel.setVisibility(RelativeLayout.VISIBLE);
+            } else {
+                holder.optionPanel.setVisibility(RelativeLayout.GONE);
+            }
         }
-        new DownloadImageTask(avatar)
+
+        new DownloadImageTask(holder.avatar)
                 .execute(messages.get(position).getAvatar());
 
+        holder.message.setText(messages.get(position).getUsername() + "\n" + messages.get(position).getMessage());
 
-
-        message.setText(messages.get(position).getUsername() + "\n" + messages.get(position).getMessage());
-        ImageView likeView = (ImageView) row.findViewById(R.id.likeView);
-        ImageView dislikeView = (ImageView) row.findViewById(R.id.dislikeView);
         switch (messages.get(position).getStatus()){
             case "1":
-                likeView.setVisibility(ImageView.VISIBLE);
-                dislikeView.setVisibility(ImageView.GONE);
+                holder.likeView.setVisibility(ImageView.VISIBLE);
+                holder.dislikeView.setVisibility(ImageView.GONE);
                 break;
             case "2":
-                dislikeView.setVisibility(ImageView.VISIBLE);
-                likeView.setVisibility(ImageView.GONE);
+                holder.dislikeView.setVisibility(ImageView.VISIBLE);
+                holder.likeView.setVisibility(ImageView.GONE);
                 break;
             default:
-                likeView.setVisibility(ImageView.GONE);
-                dislikeView.setVisibility(ImageView.GONE);
+                holder.likeView.setVisibility(ImageView.GONE);
+                holder.dislikeView.setVisibility(ImageView.GONE);
                 break;
         }
-        return row;
+        return convertView;
     }
 
     public void add(Message message){

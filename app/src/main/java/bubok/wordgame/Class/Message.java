@@ -6,12 +6,13 @@ import android.graphics.Bitmap;
  * Created by bubok on 01.03.2016.
  */
 public class Message {
-    public Message(String avatar, String username, String message, String idMessage, String status) {
+    public Message(String avatar, String username, String message, String idMessage, String status, String idUser) {
         Username = username;
         Message = message;
         Avatar = avatar;
         IDMessage = idMessage;
         Status= status;
+        IdUser = idUser;
     }
 
     public String getMessage() {
@@ -43,6 +44,15 @@ public class Message {
     private String Message;
     private String IDMessage;
     private String Status;
+    private String IdUser;
+
+    public String getIdUser() {
+        return IdUser;
+    }
+
+    public void setIdUser(String idUser) {
+        IdUser = idUser;
+    }
 
     public String getStatus() {
         return Status;
