@@ -51,6 +51,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
 
     public final static String EXTRA_MESSAGE_WIN_NAME = "bubok.wordgame.WIN.NAME";
     public final static String EXTRA_MESSAGE_WIN_AVATAR = "bubok.wordgame.WIN.AVATAR";
+    public final static String EXTRA_MESSAGE_LEAD_ID = "bubok.wordgame.LEAD.ID";
     public final static String EXTRA_MESSAGE_LEAD_NAME = "bubok.wordgame.LEAD.NAME";
     public final static String EXTRA_MESSAGE_LEAD_AVATAR = "bubok.wordgame.LEAD.AVATAR";
     public final static String EXTRA_MESSAGE_TIME = "bubok.wordgame.TIME";
@@ -184,11 +185,12 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
                         String winerName = jsonObject.getString("winerName");
                         String winerAvatar = jsonObject.getString("winerAvatar");
                         String leaderAvatar = jsonObject.getString("leaderAvatar");
+                        String leaderId = jsonObject.getString("leaderId");
                         String leaderName = jsonObject.getString("leaderName");
                         String timeGame = jsonObject.getString("timeGame");
                         String word = jsonObject.getString("word");
 
-                        CloseCheat(winerName, winerAvatar, leaderName, leaderAvatar, timeGame, word);
+                        CloseCheat(winerName, winerAvatar, leaderId, leaderName, leaderAvatar, timeGame, word);
                         mService.chatSend("leave chat");
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
@@ -378,12 +380,14 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         });
     }
 
-    private void CloseCheat(String winerName, String winerAvatar, String leaderName, String leaderAvatar, String timeGame, String word) {
+    private void CloseCheat(String winerName, String winerAvatar, String leaderId, String leaderName, String leaderAvatar, String timeGame, String word) {
         Intent intent = new Intent(Chat.this, WinGame.class);
         intent.putExtra(EXTRA_MESSAGE_WIN_NAME, winerName);
         intent.putExtra(EXTRA_MESSAGE_WIN_AVATAR, winerAvatar);
         intent.putExtra(EXTRA_MESSAGE_LEAD_AVATAR, leaderAvatar);
         intent.putExtra(EXTRA_MESSAGE_LEAD_NAME, leaderName);
+        intent.putExtra(EXTRA_MESSAGE_LEAD_ID, leaderId);
+
         intent.putExtra(EXTRA_MESSAGE_TIME, timeGame);
         intent.putExtra(EXTRA_MESSAGE_WORD, word);
         startActivity(intent);
