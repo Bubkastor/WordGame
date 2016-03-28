@@ -31,11 +31,11 @@
             android:layout_alignParentRight="false"
             android:foregroundGravity="center_vertical" />
 
-        <SurfaceView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/videoViewChat"
-            android:visibility="gone" />
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/webView"
+            android:visibility="visible" />
 
     </RelativeLayout>
 

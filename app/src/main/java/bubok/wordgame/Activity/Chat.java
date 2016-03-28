@@ -26,6 +26,9 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -70,9 +73,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
 
-    private SurfaceView videoView;
-    private SurfaceHolder holder;
-    private MediaPlayer mp;
+    private WebView webView;
 
     private Intent service;
     public static SocketService mService;
@@ -92,6 +93,12 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
                 heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
             }
         });
+
+        webView = (WebView) findViewById(R.id.webView);
+        String url = new String("http://192.168.1.2:8888/oceans.mp4");
+        WebChromeClient chromeClient = new WebChromeClient();
+        webView.setWebChromeClient(chromeClient);
+        webView.loadUrl(url);
 
         editTextMessage = (EditText) findViewById(R.id.editTextMessage);
         editTextMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -118,12 +125,6 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
             }
         });
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-        videoView = (SurfaceView) findViewById(R.id.videoViewChat);
-
-        holder = videoView.getHolder();
-
-        holder.addCallback(Chat.this);;
-        mp = new MediaPlayer();
 
 
         ArrayList<Message> arrayList = new ArrayList<>();
@@ -428,10 +429,10 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
 
         switch (typeMedia){
             case "image":
-                SetImageView(decodedBytes);
-                break;
+                //SetImageView(decodedBytes);
+                //break;
             case "audio":
-                break;
+                //break;
             case "video":
                 try {
                     SetVideoView(decodedBytes, contentType);
@@ -458,35 +459,18 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private void SetVideoView(byte[] decodedBytes, String contentType) throws IOException {
 
-        videoFile = new File(this.getFilesDir() + File.separator + "test." + contentType);
-        OutputStream myOutputStream = new FileOutputStream(videoFile);
-        myOutputStream.write(decodedBytes);
-        myOutputStream.flush();
-        myOutputStream.close();
+        //videoFile = new File(this.getFilesDir() + File.separator + "test." + contentType);
+        //OutputStream myOutputStream = new FileOutputStream(videoFile);
+        //myOutputStream.write(decodedBytes);
+        //myOutputStream.flush();
+        //myOutputStream.close();
 
         Handler handler = new Handler(getBaseContext().getMainLooper());
         handler.post(new Runnable() {
             @Override
             public void run() {
 
-
-                MediaController mediaController = new MediaController(context);
-                //videoView.setMediaController(mediaController);
-                videoView.setVisibility(ImageView.VISIBLE);
-                Log.i(TAG, videoFile.getAbsolutePath());
-                //videoView.setVideoPath(videoFile.getAbsolutePath());
-                try {
-                    mp.setDataSource(videoFile.getAbsolutePath());
-                    mp.prepare();
-
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } catch (IllegalStateException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mp.start();
+                webView.setVisibility(WebView.VISIBLE);
             }
         });
     }
