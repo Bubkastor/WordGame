@@ -44,7 +44,7 @@ import bubok.wordgame.R;
 import bubok.wordgame.Service.SocketService;
 
 
-public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
+public class Chat extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE_WIN_NAME = "bubok.wordgame.WIN.NAME";
     public final static String EXTRA_MESSAGE_WIN_AVATAR = "bubok.wordgame.WIN.AVATAR";
@@ -61,7 +61,6 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
     private String mGame;
     private String idUser;
 
-    private Bitmap bMap;
     private int heightDiff = 0;
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
@@ -71,8 +70,6 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
     private Intent service;
     public static SocketService mService;
     private boolean mBound;
-    private String urlVideo;
-    private String urlAudio;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,8 +86,6 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         });
 
         webView = (WebView) findViewById(R.id.webView);
-        urlVideo = new String("http://server20160304034355.azurewebsites.net/file/56fa4f222dd3d7082eac2a94");
-        urlAudio = new String("http://server20160304034355.azurewebsites.net/file/56fa4fcb2dd3d7082eac2a95");
         WebChromeClient chromeClient = new WebChromeClient();
         webView.setWebChromeClient(chromeClient);
 
@@ -198,14 +193,15 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
                 public void onInfoGame(JSONObject jsonObject) {
                     Log.i(TAG, "info");
                     try {
-                        String typeMedia = jsonObject.getString("typeMedia");
-                        String contentType = jsonObject.getString("contentType");
-                        byte[] decodedBytes = (byte[]) jsonObject.get("data");
+
+                        String id = jsonObject.getString("mediaId");
+                        String url = getString(R.string.URL) + getString(R.string.URL_Ffile) + id;
                         Boolean isAdmin = jsonObject.getBoolean("admin");
                         String leaderId = jsonObject.getString("leaderId");
+
                         messageAdapter.setLeaderId(leaderId);
                         messageAdapter.setOptionPanel(isAdmin);
-                        setMediaContainer(typeMedia, contentType, decodedBytes);
+                        setMediaContainer(url);
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                     }
@@ -262,8 +258,8 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         }
 
         final ImageView expandedImageView = (ImageView) findViewById(R.id.fullScreenView);
-        expandedImageView.setPadding(0,heightDiff,0,0);
-        expandedImageView.setImageBitmap(bMap);
+        expandedImageView.setPadding(0, heightDiff, 0, 0);
+//        expandedImageView.setImageBitmap(bMap);
 
         final Rect startBounds = new Rect();
         final Rect finalBounds = new Rect();
@@ -419,69 +415,18 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         }
     }
 
-    private void setMediaContainer(String typeMedia, String contentType, byte[] decodedBytes) {
-
-        switch (typeMedia){
-            case "image":
-                setImageView(decodedBytes);
-                break;
-            case "audio":
-                setAudio();
-                break;
-            case "video":
-                try {
-                    setVideoView(decodedBytes, contentType);
-                } catch (Exception ex) {
-                    Log.i(TAG, ex.getMessage());
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void setAudio() {
+    private void setMediaContainer(final String url) {
         Handler handler = new Handler(getBaseContext().getMainLooper());
         handler.post(new Runnable() {
             @Override
             public void run() {
-                webView.loadUrl(urlAudio);
-                webView.setVisibility(WebView.VISIBLE);
-            }
-        });
-
-    }
-
-    private void setImageView(byte[] decodedBytes) {
-        bMap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-        Handler handler = new Handler(getBaseContext().getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                imageView.setVisibility(ImageView.VISIBLE);
-                imageView.setImageBitmap(bMap);
-            }
-        });
-    }
-
-    private void setVideoView(byte[] decodedBytes, String contentType) throws IOException {
-
-        //videoFile = new File(this.getFilesDir() + File.separator + "test." + contentType);
-        //OutputStream myOutputStream = new FileOutputStream(videoFile);
-        //myOutputStream.write(decodedBytes);
-        //myOutputStream.flush();
-        //myOutputStream.close();
-
-        Handler handler = new Handler(getBaseContext().getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-
-                webView.loadUrl(urlVideo);
+                webView.loadUrl(url);
                 webView.setVisibility(WebView.VISIBLE);
             }
         });
     }
+
+
 
     public void onBackPressed() {
         finish();
@@ -495,21 +440,6 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
             mBound = false;
         }
         super.onStop();
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
     }
 
 }
