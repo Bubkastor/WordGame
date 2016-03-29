@@ -19,9 +19,7 @@ public class ServerRequestTask extends AsyncTask<String, Void, Boolean> {
 
     public ServerRequestTask(String sendDate) {
         this.sendDate = sendDate;
-    }
-
-    ;
+    };
 
     @Override
     protected Boolean doInBackground(String... params) {

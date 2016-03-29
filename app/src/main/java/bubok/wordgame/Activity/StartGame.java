@@ -3,7 +3,6 @@ package bubok.wordgame.Activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.VoiceInteractor;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,21 +11,18 @@ import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -34,37 +30,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.github.kittinunf.fuel.Fuel;
-import com.github.kittinunf.fuel.core.FuelError;
-import com.github.kittinunf.fuel.core.Handler;
-import com.github.kittinunf.fuel.core.Request;
-import com.github.kittinunf.fuel.core.Response;
+import net.gotev.uploadservice.MultipartUploadRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
+import bubok.wordgame.Class.SingleUploadBroadcastReceiver;
+import bubok.wordgame.Class.User;
 import bubok.wordgame.R;
 import bubok.wordgame.Service.SocketService;
-import bubok.wordgame.Class.User;
 
 
-public class StartGame extends AppCompatActivity {
+public class StartGame extends AppCompatActivity implements SingleUploadBroadcastReceiver.Delegate {
 
     enum TYPE_MEDIA{
         IMAGE, VIDEO, AUDIO
@@ -76,35 +59,40 @@ public class StartGame extends AppCompatActivity {
     private static final int REQUEST_VIDEO_CAPTURE = 2;
     private static final int REQUEST_IMAGE_GALLERY = 3;
 
-    private TextView countInvSend;
-    private TextView countInvAccept;
+    private View countInvSend;
+    private View countInvAccept;
+    private View startGameProgress;
+    private View progressBarLayout;
+    private View titleLinear;
+    private View buttonMediaLinear;
+    private View mediaLinear;
+    private View editTextSrcWord;
+    private View imageViewPrev;
+    private View videoViewPrev;
 
-    private LinearLayout titleLinear;
-    private LinearLayout buttonMediaLinear;
-    private LinearLayout mediaLinear;
-    private EditText editTextSrcWord;
-    private ImageView imageViewPrev;
-    private VideoView videoViewPrev;
-    private static Bitmap prevImage;
     private MediaController mediaController;
-    private byte[] videoByte;
+
     private TYPE_MEDIA media;
     private ArrayList<String> usersInvite = new ArrayList<>();
     private AlertDialog.Builder builder;
-    private static File mediaFile;
-    private View startGameProgress;
-    private View progressBarLayout;
+
     private Context context;
-    private boolean mBound;
+
     private Intent service;
 
+    private final SingleUploadBroadcastReceiver uploadReceiver =
+            new SingleUploadBroadcastReceiver();
 
+
+    private Uri mediaUri;
     private String gameId = "";
+    private String mediaID = "";
+
     private static SocketService mService;
+    private boolean mBound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_game);
@@ -112,22 +100,79 @@ public class StartGame extends AppCompatActivity {
 
         service = new Intent(this, SocketService.class);
 
+        initView();
+        initButton();
+        initDialog();
 
-        String title = "Выбор картинки";
-        String message = "Выберите откуда взять картинку";
-        String button1String = "Камера";
-        String button2String = "Галерея";
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
+    }
+
+    private void initButton() {
+        findViewById(R.id.buttonAddPhoto).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.show();
+            }
+        });
+
+        findViewById(R.id.buttonAddFrends).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mService.send("user online");
+            }
+        });
+
+        findViewById(R.id.resetPrevView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearPrevView();
+            }
+        });
+
+        findViewById(R.id.buttonRunGame).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startGame();
+            }
+        });
+
+        findViewById(R.id.buttonAddVideo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonAddVideoClick();
+            }
+        });
+    }
+
+    private void initView() {
+        titleLinear = findViewById(R.id.titleLinear);
+        buttonMediaLinear = findViewById(R.id.buttonMediaLinear);
+        mediaLinear = findViewById(R.id.mediaLayout);
+        imageViewPrev = findViewById(R.id.imageViewPrev);
+        editTextSrcWord = findViewById(R.id.editTextSrcWord);
+        videoViewPrev = findViewById(R.id.videoViewPrev);
+        startGameProgress = findViewById(R.id.startGameProgress);
+        progressBarLayout = findViewById(R.id.progressBarLayout);
+        countInvSend = findViewById(R.id.countInvSend);
+        countInvAccept = findViewById(R.id.countInvAccept);
+        mediaController = new MediaController(this);
+        ((VideoView) videoViewPrev).setMediaController(mediaController);
+    }
+
+    private void initDialog() {
+
         builder = new AlertDialog.Builder(context);
-        builder.setTitle(title);
-        builder.setMessage(message);
+        builder.setTitle(getString(R.string.photo_title));
+        builder.setMessage(getString(R.string.photo_message));
 
-        builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.photo_button1), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 cameraPhoto();
             }
         });
-        builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+
+        builder.setNegativeButton(getString(R.string.photo_button2), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
                 galleryPhoto();
             }
@@ -139,40 +184,13 @@ public class StartGame extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
             }
         });
-
-        titleLinear = (LinearLayout) findViewById(R.id.titleLinear);
-        buttonMediaLinear = (LinearLayout) findViewById(R.id.buttonMediaLinear);
-        mediaLinear = (LinearLayout) findViewById(R.id.mediaLayout);
-        imageViewPrev = (ImageView) findViewById(R.id.imageViewPrev);
-        editTextSrcWord = (EditText) findViewById(R.id.editTextSrcWord);
-        videoViewPrev = (VideoView) findViewById(R.id.videoViewPrev);
-        startGameProgress = findViewById(R.id.startGameProgress);
-        progressBarLayout = findViewById(R.id.progressBarLayout);
-        countInvSend = (TextView) findViewById(R.id.countInvSend);
-        countInvAccept = (TextView) findViewById(R.id.countInvAccept);
-        ImageButton resetPrevView = (ImageButton) findViewById(R.id.resetPrevView);
-        resetPrevView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearPrevView();
-            }
-        });
-        mediaController = new MediaController(this);
-        videoViewPrev.setMediaController(mediaController);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
-
-        findViewById(R.id.buttonAddFrends).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mService.send("user online");
-            }
-        });
     }
 
     @Override
     public void onStart() {
         Log.i(TAG, "onStart");
         super.onStart();
+        uploadReceiver.register(this);
         bindService(service, mConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -213,8 +231,8 @@ public class StartGame extends AppCompatActivity {
         Log.i(TAG, "onNewIntent");
         if (intent.getExtras() != null) {
             usersInvite = intent.getExtras().getStringArrayList(EXTRA_MESSAGE_USERS_INVITE);
-            countInvSend.setText(Integer.toString(usersInvite.size()));
             try {
+                ((TextView) countInvSend).setText(Integer.toString(usersInvite.size()));
                 JSONObject sendData = new JSONObject();
                 JSONArray players = new JSONArray(usersInvite);
 
@@ -308,9 +326,8 @@ public class StartGame extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                countInvAccept.setText(countPlayers);
-                StringBuilder messageToast = new StringBuilder();
-                messageToast.append(username + " ");
+                ((TextView) countInvAccept).setText(countPlayers);
+                StringBuilder messageToast = new StringBuilder(username + " ");
                 messageToast.append(getString(R.string.toast_cancel));
                 Toast toast = Toast.makeText(getApplicationContext(),
                         messageToast.toString(), Toast.LENGTH_SHORT);
@@ -324,9 +341,8 @@ public class StartGame extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                countInvAccept.setText(countPlayers);
-                StringBuilder messageToast = new StringBuilder();
-                messageToast.append(username + " ");
+                ((TextView) countInvAccept).setText(countPlayers);
+                StringBuilder messageToast = new StringBuilder(username + " ");
                 messageToast.append(getString(R.string.toast_accept));
                 Toast toast = Toast.makeText(getApplicationContext(),
                         messageToast.toString(), Toast.LENGTH_SHORT);
@@ -391,20 +407,16 @@ public class StartGame extends AppCompatActivity {
     }
 
     private void clearPrevView() {
-        ChangeVisibleMediaConteiner();
+        changeVisibleMediaContainer();
         mediaLinear.setVisibility(View.GONE);
         imageViewPrev.setVisibility(View.GONE);
         videoViewPrev.setVisibility(View.GONE);
-        prevImage = null;
         media = null;
     }
+
     private void galleryPhoto() {
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
-    }
-
-    public void showChoicePhoto(View v) {
-        builder.show();
     }
 
     private void cameraPhoto() {
@@ -414,50 +426,22 @@ public class StartGame extends AppCompatActivity {
         }
     }
 
-    public void buttonAddVideoClick(View v){
+    private void buttonAddVideoClick() {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        Uri fileUri = getOutputMediaFileUri(REQUEST_VIDEO_CAPTURE);
-
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
         if(intent.resolveActivity((getPackageManager()))!= null){
             startActivityForResult(intent, REQUEST_VIDEO_CAPTURE);
         }
     }
 
-    private static Uri getOutputMediaFileUri(int type){
-
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
-
-    private static File getOutputMediaFile(int type){
-
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "MyCameraVideo");
-
-        if (! mediaStorageDir.exists()){
-
-            if (! mediaStorageDir.mkdirs()){
-
-                Log.d("MyCameraVideo", "Failed to create directory MyCameraVideo.");
-                return null;
-            }
-        }
-
-        java.util.Date date= new java.util.Date();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                .format(date.getTime());
-
-
-        if(type == REQUEST_VIDEO_CAPTURE) {
-
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_" + timeStamp + ".3gp");
-
+    private void changeVisibleMediaContainer() {
+        int optVisible;
+        if (titleLinear.getVisibility() == LinearLayout.VISIBLE) {
+            optVisible = LinearLayout.GONE;
         } else {
-            return null;
+            optVisible = LinearLayout.VISIBLE;
         }
-
-        return mediaFile;
+        titleLinear.setVisibility(optVisible);
+        buttonMediaLinear.setVisibility(optVisible);
     }
 
     @Override
@@ -465,13 +449,13 @@ public class StartGame extends AppCompatActivity {
         if(resultCode == RESULT_OK){
             switch (requestCode){
                 case REQUEST_IMAGE_CAPTURE:
-                    ShowPreviewPhoto(data);
+                    showPreviewPhoto(data);
                     break;
                 case REQUEST_VIDEO_CAPTURE:
-                    ShowPreviewVideo(data);
+                    showPreviewVideo(data);
                     break;
                 case REQUEST_IMAGE_GALLERY:
-                    ShowPreviewPhotoGallery(data);
+                    showPreviewPhotoGallery(data);
                     break;
                 default:
 
@@ -481,111 +465,106 @@ public class StartGame extends AppCompatActivity {
 
     }
 
-    private  void ShowPreviewVideo(Intent data){
-        ChangeVisibleMediaConteiner();
-        try{
-            RandomAccessFile f = new RandomAccessFile(mediaFile, "r");
-            videoByte = new byte[(int)f.length()];
-            f.read(videoByte);
-        } catch (Exception ex){
-            Log.i(TAG, ex.getMessage());
-        }
+    private void showPreviewVideo(Intent data) {
+        changeVisibleMediaContainer();
         mediaLinear.setVisibility(View.VISIBLE);
         videoViewPrev.setVisibility(View.VISIBLE);
-        videoViewPrev.setMediaController(mediaController);
-        videoViewPrev.setVideoPath(mediaFile.getAbsolutePath());
+        Uri videoUri = data.getData();
+        ((VideoView) videoViewPrev).setMediaController(mediaController);
+        ((VideoView) videoViewPrev).setVideoURI(videoUri);
+
         media = TYPE_MEDIA.VIDEO;
     }
 
-    private void ChangeVisibleMediaConteiner() {
-        int optVisable;
-        if (titleLinear.getVisibility() == LinearLayout.VISIBLE){
-            optVisable = LinearLayout.GONE;
-        } else {
-            optVisable = LinearLayout.VISIBLE;
-        }
-        titleLinear.setVisibility(optVisable);
-        buttonMediaLinear.setVisibility(optVisable);
-    }
 
-    private void ShowPreviewPhotoGallery(Intent data) {
-        ChangeVisibleMediaConteiner();
+    private void showPreviewPhotoGallery(Intent data) {
+        changeVisibleMediaContainer();
+        mediaLinear.setVisibility(View.VISIBLE);
+        imageViewPrev.setVisibility(View.VISIBLE);
 
         Uri selectedImage = data.getData();
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+        ((ImageView) imageViewPrev).setImageURI(selectedImage);
+        mediaUri = selectedImage;
+        media = TYPE_MEDIA.IMAGE;
+    }
+
+    private void showPreviewPhoto(Intent data) {
+        changeVisibleMediaContainer();
+        mediaLinear.setVisibility(View.VISIBLE);
+        imageViewPrev.setVisibility(View.VISIBLE);
+
+        Bitmap photo = (Bitmap) data.getExtras().get("data");
+        ((ImageView) imageViewPrev).setImageBitmap(photo);
+        mediaUri = getImageUri(getApplicationContext(), photo);
+
+        media = TYPE_MEDIA.IMAGE;
+    }
+
+    private Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    private String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String picturePath = cursor.getString(columnIndex);
-        cursor.close();
-
-        prevImage = BitmapFactory.decodeFile(picturePath);
-        mediaLinear.setVisibility(View.VISIBLE);
-        imageViewPrev.setVisibility(View.VISIBLE);
-        imageViewPrev.setImageBitmap(prevImage);
-        media = TYPE_MEDIA.IMAGE;
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
     }
 
-    private void ShowPreviewPhoto(Intent data){
-        ChangeVisibleMediaConteiner();
-        Bundle extras = data.getExtras();
-        prevImage = (Bitmap) extras.get("data");
-        mediaLinear.setVisibility(View.VISIBLE);
-        imageViewPrev.setVisibility(View.VISIBLE);
-        imageViewPrev.setImageBitmap(prevImage);
-        media = TYPE_MEDIA.IMAGE;
-    }
+    private void startGame() {
 
-    private byte[] BitMapToByte(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
-        return baos.toByteArray();
-    }
-
-    public void startGame(View v) {
-        byte[] data;
-        String typeMedia;
-        String type;
         if(media == null)
             return;
+        sendServer();
+    }
+
+    public void sendServer() {
+        showProgress(true);
+        Cursor cursor = getContentResolver().query(mediaUri, null, null, null, null);
+        cursor.moveToFirst();
+        String folderPath = "";
+        int idx = 0;
+
         switch (media){
             case IMAGE:
-                showProgress(true);
-                data = BitMapToByte(prevImage);
-                typeMedia = "jpeg";
-                type = "image";
+                idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                folderPath = "img";
                 break;
             case VIDEO:
-                showProgress(true);
-                data = videoByte;
-                typeMedia = "3gp";
-                type = "video";
+                idx = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
+                folderPath = "video";
+                break;
+            case AUDIO:
+                idx = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+                folderPath = "audio";
                 break;
             default:
                 return;
-
         }
+        String mediaPath = cursor.getString(idx);
+        try {
+            File f = new File(mediaPath);
 
-        String word = editTextSrcWord.getText().toString();
-        JSONObject sendData = new JSONObject();
-        try{
-            Log.i(TAG, "Start game");
-            sendData.put("gameId", gameId);
-            sendData.put("DATA", data);
-            sendData.put("WORD", word);
-            sendData.put("CONTENT_TYPE", typeMedia);
-            sendData.put("TYPE", type);
-            mService.send("start game", sendData);
+            String uploadId = UUID.randomUUID().toString();
+            uploadReceiver.setDelegate(this);
+            uploadReceiver.setUploadID(uploadId);
+            new MultipartUploadRequest(context, uploadId, "http://192.168.1.7:3000/upload")
+                    .addFileToUpload(f.getAbsolutePath(), folderPath)
+                    .setMaxRetries(2)
+                    .startUpload();
         } catch (Exception ex){
             Log.i(TAG, ex.getMessage());
         }
     }
+
 
     @Override
     public void onStop(){
         Log.i(TAG, "onStop");
-
+        uploadReceiver.unregister(this);
         if (mBound) {
             mService.deleteGameListener();
             unbindService(mConnection);
@@ -595,5 +574,28 @@ public class StartGame extends AppCompatActivity {
             finish();
         }
         super.onStop();
+    }
+
+    @Override
+    public void onCompleted(int serverResponseCode, byte[] serverResponseBody) {
+        Log.i(TAG, "onCompleted");
+        try {
+            mediaID = new String(serverResponseBody, "UTF-8");
+            Log.i(TAG, mediaID);
+        } catch (Exception ex) {
+            Log.i(TAG, ex.getMessage());
+        }
+        String word = ((TextView) editTextSrcWord).getText().toString();
+        JSONObject sendData = new JSONObject();
+        try {
+            Log.i(TAG, "Start game");
+            sendData.put("gameId", gameId);
+            sendData.put("mediaId", mediaID);
+            sendData.put("WORD", word);
+            mService.send("start game", sendData);
+        } catch (Exception ex) {
+            Log.i(TAG, ex.getMessage());
+        }
+
     }
 }

@@ -31,6 +31,11 @@
     <string name="invite_message3">человек принять участие в игре</string>
     <string name="invite">Пригласить</string>
 
+    <string name="photo_title">Выбор картинки</string>
+    <string name="photo_message">Выберите откуда взять картинку</string>
+    <string name="photo_button1">Камера</string>
+    <string name="photo_button2">Галерея</string>
+
     <!--toast-->
     <string name="toast_accept">принял приглашение</string>
     <string name="toast_cancel">отказался от приглашение</string>

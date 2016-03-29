@@ -25,5 +25,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'io.socket:socket.io-client:0.7.0'
     compile 'com.facebook.android:facebook-android-sdk:4.10.0'
-    compile 'com.github.kittinunf.fuel:fuel-android:1.1.2' //for Android
+    //compile 'com.github.kittinunf.fuel:fuel-android:1.1.2'
+    compile 'net.gotev:uploadservice:2.0.1@aar'
 }

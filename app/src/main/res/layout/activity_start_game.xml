@@ -8,225 +8,228 @@
     android:scrollIndicators="right"
     android:nestedScrollingEnabled="true">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin">
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView2" >
 
-        <LinearLayout
-            android:orientation="vertical"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/MediaConentLinear"
-            android:paddingBottom="20dp">
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin">
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/titleLinear"
-                android:gravity="center_horizontal"
-                android:visibility="visible">
+                android:id="@+id/MediaConentLinear"
+                android:paddingBottom="20dp">
 
-                <TextView
-                    android:layout_width="fill_parent"
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/activity_SG_choise"
-                    android:id="@+id/textView"
-                    android:padding="10dp"
-                    android:gravity="center_horizontal" />
-            </LinearLayout>
+                    android:id="@+id/titleLinear"
+                    android:gravity="center_horizontal"
+                    android:visibility="visible">
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:id="@+id/buttonMediaLinear"
-                android:visibility="visible">
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/activity_SG_choise"
+                        android:id="@+id/textView"
+                        android:padding="10dp"
+                        android:gravity="center_horizontal" />
+                </LinearLayout>
 
-                <ImageButton
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/buttonAddPhoto"
-                    android:src="@drawable/photo"
-                    android:scaleType="fitCenter"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:onClick="showChoicePhoto" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/buttonMediaLinear"
+                    android:visibility="visible">
 
-                <ImageButton
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/buttonAddVideo"
-                    android:src="@drawable/video"
-                    android:scaleType="fitCenter"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:onClick="buttonAddVideoClick"
-                    android:nestedScrollingEnabled="false" />
+                    <ImageButton
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:id="@+id/buttonAddPhoto"
+                        android:src="@drawable/photo"
+                        android:scaleType="fitCenter"
+                        style="?android:attr/borderlessButtonStyle" />
 
-                <ImageButton
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/buttonAddAudio"
-                    android:src="@drawable/audio"
-                    android:nestedScrollingEnabled="false"
-                    android:scaleType="fitCenter"
-                    style="?android:attr/borderlessButtonStyle"/>
+                    <ImageButton
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:id="@+id/buttonAddVideo"
+                        android:src="@drawable/video"
+                        android:scaleType="fitCenter"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:nestedScrollingEnabled="false" />
+
+                    <ImageButton
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:id="@+id/buttonAddAudio"
+                        android:src="@drawable/audio"
+                        android:nestedScrollingEnabled="false"
+                        android:scaleType="fitCenter"
+                        style="?android:attr/borderlessButtonStyle"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/mediaLayout"
+                    android:visibility="gone">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <VideoView
+                            android:layout_width="wrap_content"
+                            android:layout_height="200dp"
+                            android:id="@+id/videoViewPrev"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:layout_width="fill_parent"
+                            android:layout_height="200dp"
+                            android:id="@+id/imageViewPrev"
+                            android:scaleType="fitCenter"
+                            android:adjustViewBounds="true"
+                            android:visibility="visible" />
+
+                        <ImageButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/resetPrevView"
+                            android:src="@android:drawable/ic_delete"
+                            android:scaleType="fitCenter"
+                            android:layout_gravity="right|top" />
+                    </FrameLayout>
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/mediaLayout"
-                android:visibility="gone">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/MediaConentLinear"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/wordLinear">
 
-                <FrameLayout
+                <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <VideoView
-                        android:layout_width="wrap_content"
-                        android:layout_height="200dp"
-                        android:id="@+id/videoViewPrev"
-                        android:visibility="gone" />
-
-                    <ImageView
-                        android:layout_width="fill_parent"
-                        android:layout_height="200dp"
-                        android:id="@+id/imageViewPrev"
-                        android:scaleType="fitCenter"
-                        android:adjustViewBounds="true"
-                        android:visibility="visible" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/resetPrevView"
-                        android:src="@android:drawable/ic_delete"
-                        android:scaleType="fitCenter"
-                        android:layout_gravity="right|top" />
-                </FrameLayout>
-
+                    android:layout_height="match_parent"
+                    android:id="@+id/editTextSrcWord"
+                    android:inputType="text"
+                    android:hint="@string/srcWordToltip" />
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/MediaConentLinear"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/wordLinear">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/editTextSrcWord"
-                android:inputType="text"
-                android:hint="@string/srcWordToltip" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/wordLinear"
-            android:id="@+id/buttonFrendLinear">
-
-            <Button
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/AddFrends"
-                android:id="@+id/buttonAddFrends"
-                android:background="@color/colorButton"
-                android:elegantTextHeight="false" />
-        </LinearLayout>
+                android:layout_below="@+id/wordLinear"
+                android:id="@+id/buttonFrendLinear">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/buttonFrendLinear"
-            android:id="@+id/InfoFrendsLinear">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:weightSum="1">
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <Button
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/titleInvSend"
-                    android:id="@+id/titleInvSend" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:id="@+id/countInvSend"
-                    android:text="0" />
+                    android:text="@string/AddFrends"
+                    android:id="@+id/buttonAddFrends"
+                    android:background="@color/colorButton"
+                    android:elegantTextHeight="false" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:weightSum="1">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/buttonFrendLinear"
+                android:id="@+id/InfoFrendsLinear">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/TitleAcceptSend"
-                    android:id="@+id/titleAcceptSend" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="1">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:id="@+id/countInvAccept"
-                    android:text="0"
-                    android:layout_weight="0.71" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/titleInvSend"
+                        android:id="@+id/titleInvSend" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/countInvSend"
+                        android:text="0" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/TitleAcceptSend"
+                        android:id="@+id/titleAcceptSend" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/countInvAccept"
+                        android:text="0"
+                        android:layout_weight="0.71" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/InfoFrendsLinear">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal">
+                android:layout_below="@+id/InfoFrendsLinear">
 
-                <Button
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:text="@string/game"
-                    android:id="@+id/buttonRunGame"
-                    android:background="@drawable/oval_button"
-                    android:layout_alignParentEnd="false"
-                    android:layout_alignParentStart="false"
-                    android:layout_alignParentTop="false"
-                    android:layout_alignParentLeft="false"
-                    android:layout_alignParentBottom="false"
-                    android:layout_alignParentRight="false"
-                    android:layout_alignWithParentIfMissing="false"
-                    android:allowUndo="false"
-                    android:onClick="startGame" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal">
+
+                    <Button
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:text="@string/game"
+                        android:id="@+id/buttonRunGame"
+                        android:background="@drawable/oval_button"
+                        android:layout_alignParentEnd="false"
+                        android:layout_alignParentStart="false"
+                        android:layout_alignParentTop="false"
+                        android:layout_alignParentLeft="false"
+                        android:layout_alignParentBottom="false"
+                        android:layout_alignParentRight="false"
+                        android:layout_alignWithParentIfMissing="false"
+                        android:allowUndo="false" />
+                </RelativeLayout>
+
             </RelativeLayout>
-
         </RelativeLayout>
-    </RelativeLayout>
+    </ScrollView>
 
     <RelativeLayout
         android:layout_width="fill_parent"

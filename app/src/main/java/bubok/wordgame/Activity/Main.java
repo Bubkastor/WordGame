@@ -8,8 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -26,9 +28,23 @@ import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.Profile;
 
+
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
+
+
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import bubok.wordgame.AsyncTasks.DownloadImageTask;
+import bubok.wordgame.Class.SingleUploadBroadcastReceiver;
 import bubok.wordgame.R;
 import bubok.wordgame.Service.SocketService;
 
@@ -45,6 +61,7 @@ public class Main extends AppCompatActivity {
     private Context context;
     private static SocketService mService;
     private AlertDialog.Builder builder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,8 +146,6 @@ public class Main extends AppCompatActivity {
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                     }
-
-
                 }
 
                 @Override
@@ -204,7 +219,6 @@ public class Main extends AppCompatActivity {
             }
         });
 
-
     }
 
     private void socialFriends(View v) {
@@ -253,6 +267,7 @@ public class Main extends AppCompatActivity {
     @Override
     public void onResume() {
         Log.i(TAG, "onResume");
+
         bindService(service, mConnection, Context.BIND_AUTO_CREATE);
         super.onResume();
     }
@@ -366,7 +381,6 @@ public class Main extends AppCompatActivity {
         if (mBound) {
             mService.deleteMainListener();
             unbindService(mConnection);
-
             Log.i(TAG, "unbindService");
             mBound = false;
         }
@@ -379,4 +393,7 @@ public class Main extends AppCompatActivity {
         Log.i(TAG, "onDestroy");
         super.onDestroy();
     }
+
+
+
 }
