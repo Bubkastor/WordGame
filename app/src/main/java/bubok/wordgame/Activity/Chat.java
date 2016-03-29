@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -20,7 +19,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -28,19 +26,15 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.MediaController;
 import android.widget.TextView;
 
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+
 
 import java.util.ArrayList;
 
@@ -68,7 +62,6 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
     private String idUser;
 
     private Bitmap bMap;
-    private File videoFile;
     private int heightDiff = 0;
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
@@ -78,7 +71,8 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
     private Intent service;
     public static SocketService mService;
     private boolean mBound;
-
+    private String urlVideo;
+    private String urlAudio;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,10 +89,10 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         });
 
         webView = (WebView) findViewById(R.id.webView);
-        String url = new String("http://192.168.1.2:8888/oceans.mp4");
+        urlVideo = new String("http://server20160304034355.azurewebsites.net/file/56fa4f222dd3d7082eac2a94");
+        urlAudio = new String("http://server20160304034355.azurewebsites.net/file/56fa4fcb2dd3d7082eac2a95");
         WebChromeClient chromeClient = new WebChromeClient();
         webView.setWebChromeClient(chromeClient);
-        webView.loadUrl(url);
 
         editTextMessage = (EditText) findViewById(R.id.editTextMessage);
         editTextMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -148,7 +142,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
                 public void onMessage(JSONObject jsonObject) {
                     Log.i(TAG, "MESSAGE");
                     try {
-                        AddMessageInCheat(
+                        addMessageInCheat(
                                 jsonObject.getString("avatar"),
                                 jsonObject.getString("username"),
                                 jsonObject.getString("message"),
@@ -192,7 +186,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
                         String timeGame = jsonObject.getString("timeGame");
                         String word = jsonObject.getString("word");
 
-                        CloseCheat(winerName, winerAvatar, leaderId, leaderName, leaderAvatar, timeGame, word);
+                        closeCheat(winerName, winerAvatar, leaderId, leaderName, leaderAvatar, timeGame, word);
                         mService.chatSend("leave chat");
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
@@ -211,7 +205,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
                         String leaderId = jsonObject.getString("leaderId");
                         messageAdapter.setLeaderId(leaderId);
                         messageAdapter.setOptionPanel(isAdmin);
-                        SetMediaContainer(typeMedia, contentType, decodedBytes);
+                        setMediaContainer(typeMedia, contentType, decodedBytes);
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                     }
@@ -223,7 +217,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
                     try {
                         String id = jsonObject.getString("idMessage");
                         String status = jsonObject.getString("status");
-                        ChangeStatus(id, status);
+                        changeStatus(id, status);
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                     }
@@ -374,7 +368,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
 
     }
 
-    private synchronized void ChangeStatus(String id, String status){
+    private void changeStatus(String id, String status) {
         messageAdapter.ChangeStatus(id, status);
         runOnUiThread(new Runnable() {
             @Override
@@ -384,7 +378,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         });
     }
 
-    private void CloseCheat(String winerName, String winerAvatar, String leaderId, String leaderName, String leaderAvatar, String timeGame, String word) {
+    private void closeCheat(String winerName, String winerAvatar, String leaderId, String leaderName, String leaderAvatar, String timeGame, String word) {
         Intent intent = new Intent(Chat.this, WinGame.class);
         intent.putExtra(EXTRA_MESSAGE_WIN_NAME, winerName);
         intent.putExtra(EXTRA_MESSAGE_WIN_AVATAR, winerAvatar);
@@ -398,7 +392,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         finish();
     }
 
-    private void AddMessageInCheat(String urlAvatar, String login, String message, String idMessage, String status, String userId) {
+    private void addMessageInCheat(String urlAvatar, String login, String message, String idMessage, String status, String userId) {
         Message message1 = new Message(urlAvatar, login, message, idMessage, status, userId);
         messageAdapter.add(message1);
         runOnUiThread(new Runnable() {
@@ -425,17 +419,18 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         }
     }
 
-    private void SetMediaContainer(String typeMedia, String contentType, byte[] decodedBytes) {
+    private void setMediaContainer(String typeMedia, String contentType, byte[] decodedBytes) {
 
         switch (typeMedia){
             case "image":
-                //SetImageView(decodedBytes);
-                //break;
+                setImageView(decodedBytes);
+                break;
             case "audio":
-                //break;
+                setAudio();
+                break;
             case "video":
                 try {
-                    SetVideoView(decodedBytes, contentType);
+                    setVideoView(decodedBytes, contentType);
                 } catch (Exception ex) {
                     Log.i(TAG, ex.getMessage());
                 }
@@ -445,7 +440,19 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         }
     }
 
-    private  void SetImageView(byte[] decodedBytes){
+    private void setAudio() {
+        Handler handler = new Handler(getBaseContext().getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                webView.loadUrl(urlAudio);
+                webView.setVisibility(WebView.VISIBLE);
+            }
+        });
+
+    }
+
+    private void setImageView(byte[] decodedBytes) {
         bMap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
         Handler handler = new Handler(getBaseContext().getMainLooper());
         handler.post(new Runnable() {
@@ -457,7 +464,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
         });
     }
 
-    private void SetVideoView(byte[] decodedBytes, String contentType) throws IOException {
+    private void setVideoView(byte[] decodedBytes, String contentType) throws IOException {
 
         //videoFile = new File(this.getFilesDir() + File.separator + "test." + contentType);
         //OutputStream myOutputStream = new FileOutputStream(videoFile);
@@ -470,6 +477,7 @@ public class Chat extends AppCompatActivity implements SurfaceHolder.Callback {
             @Override
             public void run() {
 
+                webView.loadUrl(urlVideo);
                 webView.setVisibility(WebView.VISIBLE);
             }
         });
