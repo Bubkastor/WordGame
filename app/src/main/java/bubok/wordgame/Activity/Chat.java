@@ -420,8 +420,9 @@ public class Chat extends AppCompatActivity {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                webView.loadUrl(url);
                 webView.setVisibility(WebView.VISIBLE);
+                webView.loadUrl(url);
+
             }
         });
     }

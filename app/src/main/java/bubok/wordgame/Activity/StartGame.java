@@ -472,7 +472,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         Uri videoUri = data.getData();
         ((VideoView) videoViewPrev).setMediaController(mediaController);
         ((VideoView) videoViewPrev).setVideoURI(videoUri);
-
+        mediaUri = videoUri;
         media = TYPE_MEDIA.VIDEO;
     }
 
@@ -551,7 +551,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             String uploadId = UUID.randomUUID().toString();
             uploadReceiver.setDelegate(this);
             uploadReceiver.setUploadID(uploadId);
-            new MultipartUploadRequest(context, uploadId, "http://192.168.1.7:3000/upload")
+            new MultipartUploadRequest(context, uploadId, getString(R.string.URL) + getString(R.string.URL_Upload))
                     .addFileToUpload(f.getAbsolutePath(), folderPath)
                     .setMaxRetries(2)
                     .startUpload();
