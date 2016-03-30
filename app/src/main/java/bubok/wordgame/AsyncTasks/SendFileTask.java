@@ -46,7 +46,6 @@ public class SendFileTask extends AsyncTask<String, Void, String> {
             fos.flush();
             fos.close();
 
-            //                .url("http://192.168.0.102:3000/img")
 
 
         } catch (Exception ex) {

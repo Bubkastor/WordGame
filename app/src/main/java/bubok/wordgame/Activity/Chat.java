@@ -8,10 +8,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -29,7 +30,9 @@ import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import org.json.JSONObject;
 
@@ -61,6 +64,8 @@ public class Chat extends AppCompatActivity {
     private String mGame;
     private String idUser;
 
+    private VideoView video;
+
     private int heightDiff = 0;
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
@@ -70,6 +75,8 @@ public class Chat extends AppCompatActivity {
     private Intent service;
     public static SocketService mService;
     private boolean mBound;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +121,12 @@ public class Chat extends AppCompatActivity {
             }
         });
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        video = (VideoView) findViewById(R.id.videoView);
+        MediaController mc = new MediaController(context);
+
+        video.setMediaController(mc);
+
 
 
         ArrayList<Message> arrayList = new ArrayList<>();
@@ -195,7 +208,7 @@ public class Chat extends AppCompatActivity {
                     try {
 
                         String id = jsonObject.getString("mediaId");
-                        String url = getString(R.string.URL) + getString(R.string.URL_Ffile) + id;
+                        String url = getString(R.string.URL) + "/file/" + id;
                         Boolean isAdmin = jsonObject.getBoolean("admin");
                         String leaderId = jsonObject.getString("leaderId");
 
@@ -420,8 +433,24 @@ public class Chat extends AppCompatActivity {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                webView.setVisibility(WebView.VISIBLE);
-                webView.loadUrl(url);
+                //webView.setVisibility(WebView.VISIBLE);
+                //webView.loadUrl(url);
+
+                Uri uri = Uri.parse(url);
+                Log.i(TAG, "uri " + uri.toString());
+                try {
+                    video.setVideoURI(uri);
+                } catch (Exception ex) {
+                    Log.i(TAG, ex.getMessage());
+                }
+
+                video.requestFocus();
+                video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    // Close the progress bar and play the video
+                    public void onPrepared(MediaPlayer mp) {
+                        video.start();
+                    }
+                });
 
             }
         });

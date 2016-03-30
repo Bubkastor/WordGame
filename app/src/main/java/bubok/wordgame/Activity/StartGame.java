@@ -156,6 +156,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         countInvSend = findViewById(R.id.countInvSend);
         countInvAccept = findViewById(R.id.countInvAccept);
         mediaController = new MediaController(this);
+        mediaController.setAnchorView(videoViewPrev);
+
         ((VideoView) videoViewPrev).setMediaController(mediaController);
     }
 
@@ -470,7 +472,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         mediaLinear.setVisibility(View.VISIBLE);
         videoViewPrev.setVisibility(View.VISIBLE);
         Uri videoUri = data.getData();
-        ((VideoView) videoViewPrev).setMediaController(mediaController);
         ((VideoView) videoViewPrev).setVideoURI(videoUri);
         mediaUri = videoUri;
         media = TYPE_MEDIA.VIDEO;
@@ -505,13 +506,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
-    }
-
-    private String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
     }
 
     private void startGame() {
@@ -559,7 +553,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             Log.i(TAG, ex.getMessage());
         }
     }
-
 
     @Override
     public void onStop(){
