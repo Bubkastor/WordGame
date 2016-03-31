@@ -17,6 +17,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
@@ -76,6 +79,10 @@ public class Chat extends AppCompatActivity {
     public static SocketService mService;
     private boolean mBound;
 
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +119,8 @@ public class Chat extends AppCompatActivity {
         idUser = intent.getStringExtra(Main.EXTRA_MESSAGE_USED_ID_USER);
         mGame = intent.getStringExtra(Main.EXTRA_MESSAGE_USED_GAME);
 
-        ListView listViewCheat = (ListView) findViewById(R.id.listViewCheat);
+        mRecyclerView = (RecyclerView) findViewById(R.id.listViewCheat);
+
         imageView = (ImageView) findViewById(R.id.imageViewChat);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,11 +135,56 @@ public class Chat extends AppCompatActivity {
 
         video.setMediaController(mc);
 
+        mRecyclerView.setHasFixedSize(false);
 
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         ArrayList<Message> arrayList = new ArrayList<>();
-        messageAdapter = new MessageAdapter(this, arrayList);
-        listViewCheat.setAdapter(messageAdapter);
+
+        messageAdapter = new MessageAdapter(arrayList);
+        mRecyclerView.setAdapter(messageAdapter);
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return true;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                JSONObject sendData = new JSONObject();
+                switch (direction) {
+                    case ItemTouchHelper.LEFT:
+                        try {
+                            sendData.put("id", messageAdapter.getItem(viewHolder.getAdapterPosition()).getIDMessage());
+                            sendData.put("status", "1");
+                        } catch (Exception ex) {
+                            Log.i("JSON", ex.getMessage());
+                        }
+                        Chat.mService.chatSend("change status message", sendData);
+                        Log.i(TAG, "Swipe LEFT");
+                        break;
+                    case ItemTouchHelper.RIGHT:
+                        Log.i(TAG, "Swipe RIGHT");
+                        try {
+                            sendData.put("id", messageAdapter.getItem(viewHolder.getAdapterPosition()).getIDMessage());
+                            sendData.put("status", "2");
+                        } catch (Exception ex) {
+                            Log.i("JSON", ex.getMessage());
+                        }
+                        Chat.mService.chatSend("change status message", sendData);
+                        break;
+                    default:
+                        break;
+                }
+                messageAdapter.notifyDataSetChanged();
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -407,6 +460,7 @@ public class Chat extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mRecyclerView.smoothScrollToPosition(messageAdapter.getItemCount());
                 messageAdapter.notifyDataSetChanged();
             }
         });

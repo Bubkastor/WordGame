@@ -3,10 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Activity.Chat"
     android:id="@+id/container">
 
@@ -15,7 +11,10 @@
         android:layout_height="200dp"
         android:id="@+id/contMedia"
         android:windowSoftInputMode="adjustResize"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
         <ImageButton
             android:layout_width="match_parent"
@@ -53,14 +52,10 @@
         android:layout_above="@+id/llSend"
         android:layout_below="@+id/contMedia">
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/listViewCheat"
-            android:transcriptMode="alwaysScroll"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true" />
+            android:layout_height="match_parent" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -69,7 +64,7 @@
         android:layout_width="match_parent"
         android:paddingTop="5dp"
         android:paddingBottom="10dp"
-        android:paddingLeft="0dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="0dp"
         android:layout_height="wrap_content" >
         <EditText

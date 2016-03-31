@@ -60,7 +60,7 @@ public class UserAdapter extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.user_row_layout, parent, false);
+            row = inflater.inflate(R.layout.row_user_layout, parent, false);
         }
 
         ImageView avatar = (ImageView) row.findViewById(R.id.imageViewAvatar);
