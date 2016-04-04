@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import bubok.wordgame.Adapter.MessageAdapter;
+import bubok.wordgame.AsyncTasks.DownloadImageTask;
 import bubok.wordgame.Class.Message;
 import bubok.wordgame.R;
 import bubok.wordgame.Service.SocketService;
@@ -326,7 +328,7 @@ public class Chat extends AppCompatActivity {
 
         final ImageView expandedImageView = (ImageView) findViewById(R.id.fullScreenView);
         expandedImageView.setPadding(0, heightDiff, 0, 0);
-//        expandedImageView.setImageBitmap(bMap);
+        expandedImageView.setImageBitmap(((BitmapDrawable) imageView.getDrawable()).getBitmap());
 
         final Rect startBounds = new Rect();
         final Rect finalBounds = new Rect();
@@ -495,8 +497,8 @@ public class Chat extends AppCompatActivity {
 
                 switch (mediaType) {
                     case "image":
-                        imageView.setImageURI(uri);
                         imageView.setVisibility(View.VISIBLE);
+                        new DownloadImageTask(imageView).execute(uri.toString());
                         break;
                     case "audio":
                     case "video":
