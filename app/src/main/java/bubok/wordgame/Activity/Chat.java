@@ -84,7 +84,7 @@ public class Chat extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
+    private ItemTouchHelper itemTouchHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,9 +184,8 @@ public class Chat extends AppCompatActivity {
                 messageAdapter.notifyDataSetChanged();
             }
         };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
 
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -264,9 +263,12 @@ public class Chat extends AppCompatActivity {
 
                         String id = jsonObject.getString("mediaId");
                         String url = getString(R.string.URL) + "/file/" + id;
-                        Boolean isAdmin = jsonObject.getBoolean("admin");
                         String leaderId = jsonObject.getString("leaderId");
+                        Boolean isAdmin = jsonObject.getBoolean("admin");
+
                         String mediaType = jsonObject.getString("mediaType").split("/")[0];
+
+                        if (isAdmin) itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
                         messageAdapter.setLeaderId(leaderId);
                         messageAdapter.setOptionPanel(isAdmin);
