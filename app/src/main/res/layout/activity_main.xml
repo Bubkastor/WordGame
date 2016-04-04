@@ -147,15 +147,33 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#a5000000"
         android:gravity="center"
         android:id="@+id/progressBarLayout"
+        android:focusableInTouchMode="false"
+        android:background="#a5000000"
+        android:clickable="true"
         android:visibility="gone">
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/waitGame" />
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/activity_Main_text_wait"
+                android:id="@+id/textInfoWait"
+                android:textColor="#efe1e1" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/waitGame" />
+        </LinearLayout>
+
     </RelativeLayout>
 </RelativeLayout>

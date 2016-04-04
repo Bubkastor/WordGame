@@ -115,7 +115,7 @@ public class Main extends AppCompatActivity {
                     JSONObject sendUserInfo = new JSONObject();
                     try {
                         sendUserInfo.put("NAME", profile.getName());
-                        sendUserInfo.put("AVATAR", profile.getProfilePictureUri(800, 600).toString());
+                        sendUserInfo.put("AVATAR", profile.getProfilePictureUri(500, 500).toString());
                         sendUserInfo.put("USER_ID_FB", profile.getId());
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());

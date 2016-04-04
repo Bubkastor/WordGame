@@ -264,10 +264,11 @@ public class Chat extends AppCompatActivity {
                         String url = getString(R.string.URL) + "/file/" + id;
                         Boolean isAdmin = jsonObject.getBoolean("admin");
                         String leaderId = jsonObject.getString("leaderId");
+                        String mediaType = jsonObject.getString("mediaType").split("/")[0];
 
                         messageAdapter.setLeaderId(leaderId);
                         messageAdapter.setOptionPanel(isAdmin);
-                        setMediaContainer(url);
+                        setMediaContainer(url, mediaType);
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                     }
@@ -482,29 +483,42 @@ public class Chat extends AppCompatActivity {
         }
     }
 
-    private void setMediaContainer(final String url) {
+    private void setMediaContainer(final String url, final String mediaType) {
         Handler handler = new Handler(getBaseContext().getMainLooper());
         handler.post(new Runnable() {
             @Override
             public void run() {
-                //webView.setVisibility(WebView.VISIBLE);
-                //webView.loadUrl(url);
-
+                imageView.setVisibility(View.GONE);
+                video.setVisibility(View.GONE);
                 Uri uri = Uri.parse(url);
                 Log.i(TAG, "uri " + uri.toString());
-                try {
-                    video.setVideoURI(uri);
-                } catch (Exception ex) {
-                    Log.i(TAG, ex.getMessage());
+
+                switch (mediaType) {
+                    case "image":
+                        imageView.setImageURI(uri);
+                        imageView.setVisibility(View.VISIBLE);
+                        break;
+                    case "audio":
+                    case "video":
+                        video.setVisibility(View.VISIBLE);
+                        try {
+                            video.setVideoURI(uri);
+                        } catch (Exception ex) {
+                            Log.i(TAG, ex.getMessage());
+                        }
+
+                        video.requestFocus();
+                        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            // Close the progress bar and play the video
+                            public void onPrepared(MediaPlayer mp) {
+                                video.start();
+                            }
+                        });
+                        break;
+                    default:
+                        return;
                 }
 
-                video.requestFocus();
-                video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    // Close the progress bar and play the video
-                    public void onPrepared(MediaPlayer mp) {
-                        video.start();
-                    }
-                });
 
             }
         });

@@ -2,7 +2,7 @@
     <string name="facebook_app_id">1683999828523747</string>
     <string name="app_name">WordGame</string>
 
-    <string name="URL">http://192.168.1.6:3000</string>
+    <string name="URL">http://serverwordgame.azurewebsites.net</string>
     <string name="URL_Ffile">/file/</string>
     <string name="URL_Upload">/upload/</string>
     <string name="URL_Raiting">http://serverwordgame.azurewebsites.net/raiting/</string>
@@ -54,6 +54,7 @@
     <string name="activity_Main_start_game">начать игру</string>
     <string name="activity_Main_statistics">статистика</string>
     <string name="activity_Main_friends">Друзья из </string>
+    <string name="activity_Main_text_wait">Ожидайте начала игры</string>
     <string name="activity_Main_"></string>
 
     <!--activity Chat-->
