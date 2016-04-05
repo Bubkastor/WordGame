@@ -268,7 +268,10 @@ public class Chat extends AppCompatActivity {
 
                         String mediaType = jsonObject.getString("mediaType").split("/")[0];
 
-                        if (isAdmin) itemTouchHelper.attachToRecyclerView(mRecyclerView);
+                        if (isAdmin) {
+                            Log.i(TAG, "i'm admin");
+                            itemTouchHelper.attachToRecyclerView(mRecyclerView);
+                        }
 
                         messageAdapter.setLeaderId(leaderId);
                         messageAdapter.setOptionPanel(isAdmin);

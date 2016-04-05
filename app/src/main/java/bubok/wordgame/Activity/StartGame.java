@@ -11,6 +11,11 @@ import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -72,9 +77,15 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
     private MediaController mediaController;
 
+    private MediaRecorder mediaRecorder;
+    private MediaPlayer mediaPlayer;
+    private String fileName;
+
     private TYPE_MEDIA media;
     private ArrayList<String> usersInvite = new ArrayList<>();
     private AlertDialog.Builder builder;
+
+    private boolean firstClick = true;
 
     private Context context;
 
@@ -100,6 +111,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
         service = new Intent(this, SocketService.class);
 
+        fileName = Environment.getExternalStorageDirectory() + "/record.3gpp";
+
         initView();
         initButton();
         initDialog();
@@ -107,7 +120,66 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
     }
 
+    private boolean isPlay = false;
+
     private void initButton() {
+        findViewById(R.id.buttonAddAudio).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.audioLayout).setVisibility(View.VISIBLE);
+            }
+        });
+        findViewById(R.id.voiceButtons).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (firstClick) {
+                    ((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_black_48dp));
+                    recordStart();
+                    firstClick = false;
+                } else {
+                    ((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_voice_black_48dp));
+                    recordStop();
+                    firstClick = true;
+                    findViewById(R.id.recordLayout).setVisibility(View.GONE);
+                    findViewById(R.id.playLayout).setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        findViewById(R.id.playButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playAudio(v);
+            }
+        });
+
+        findViewById(R.id.deleteButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((at.markushi.ui.CircleButton) findViewById(R.id.playButton)).setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_black_48dp));
+                isPlay = false;
+                playStop();
+                findViewById(R.id.recordLayout).setVisibility(View.VISIBLE);
+                findViewById(R.id.playLayout).setVisibility(View.GONE);
+            }
+        });
+
+        findViewById(R.id.confirmButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                findViewById(R.id.audioLayout).setVisibility(View.GONE);
+                setAudio();
+            }
+        });
+
+        findViewById(R.id.playButtonPrev).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playAudio(v);
+            }
+        });
+
+
         findViewById(R.id.buttonAddPhoto).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,6 +215,13 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             }
         });
     }
+
+    private void setAudio() {
+        changeVisibleMediaContainer();
+        mediaLinear.setVisibility(View.VISIBLE);
+        findViewById(R.id.buttonAddPhoto).setVisibility(View.VISIBLE);
+    }
+
 
     private void initView() {
         titleLinear = findViewById(R.id.titleLinear);
@@ -186,6 +265,78 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
                         Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void playAudio(View v) {
+        if (!isPlay) {
+            ((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_black_48dp));
+            playStart();
+            isPlay = true;
+        } else {
+            ((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_black_48dp));
+            isPlay = false;
+            playStop();
+        }
+    }
+
+    public void recordStart() {
+        try {
+            releaseRecorder();
+
+            File outFile = new File(fileName);
+            if (outFile.exists()) {
+                outFile.delete();
+            }
+
+            mediaRecorder = new MediaRecorder();
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mediaRecorder.setOutputFile(fileName);
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void recordStop() {
+        if (mediaRecorder != null) {
+            mediaRecorder.stop();
+        }
+    }
+
+    public void playStart() {
+        try {
+            releasePlayer();
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(fileName);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void playStop() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+    }
+
+    private void releaseRecorder() {
+        if (mediaRecorder != null) {
+            mediaRecorder.release();
+            mediaRecorder = null;
+        }
+    }
+
+    private void releasePlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
     @Override
@@ -413,6 +564,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         mediaLinear.setVisibility(View.GONE);
         imageViewPrev.setVisibility(View.GONE);
         videoViewPrev.setVisibility(View.GONE);
+        findViewById(R.id.playButtonPrev).setVisibility(View.GONE);
         media = null;
     }
 

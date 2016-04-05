@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tib="http://schemas.android.com/apk/res-auto"
     android:screenOrientation="portrait"
     tools:context=".Activity.StartGame"
     android:scrollIndicators="right"
@@ -15,7 +17,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
@@ -95,7 +97,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="200dp"
                             android:id="@+id/videoViewPrev"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            android:layout_gravity="center" />
 
                         <ImageView
                             android:layout_width="fill_parent"
@@ -103,7 +106,21 @@
                             android:id="@+id/imageViewPrev"
                             android:scaleType="fitCenter"
                             android:adjustViewBounds="true"
-                            android:visibility="visible" />
+                            android:visibility="visible"
+                            android:foregroundGravity="center"
+                            android:layout_gravity="center" />
+
+                        <at.markushi.ui.CircleButton
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:src="@drawable/ic_play_arrow_black_48dp"
+                            app:cb_color="#99CC00"
+                            app:cb_pressedRingWidth="8dip"
+                            android:id="@+id/playButtonPrev"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:foregroundGravity="center"
+                            android:layout_gravity="center" />
 
                         <ImageButton
                             android:layout_width="wrap_content"
@@ -252,6 +269,85 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/audioLayout"
+        android:clickable="true"
+        android:background="#b15252"
+        android:gravity="center_vertical|center_horizontal"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/recordLayout"
+            android:visibility="visible">
+
+            <at.markushi.ui.CircleButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/voiceButtons"
+                android:src="@drawable/ic_keyboard_voice_black_48dp"
+                app:cb_color="#99CC00"
+                app:cb_pressedRingWidth="8dip"
+                android:baselineAlignBottom="false"
+                android:layout_alignEnd="@+id/recordLayout"
+                android:layout_below="@+id/textView6" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/textView6" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/playLayout"
+            android:visibility="gone"
+            android:gravity="center_horizontal">
+
+            <at.markushi.ui.CircleButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_play_arrow_black_48dp"
+                app:cb_color="#99CC00"
+                app:cb_pressedRingWidth="8dip"
+                android:id="@+id/playButton"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/playButton">
+
+                <at.markushi.ui.CircleButton
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_delete_black_48dp"
+                    app:cb_color="#99CC00"
+                    app:cb_pressedRingWidth="8dip"
+                    android:id="@+id/deleteButton" />
+
+                <at.markushi.ui.CircleButton
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_done_black_48dp"
+                    app:cb_color="#99CC00"
+                    app:cb_pressedRingWidth="8dip"
+                    android:id="@+id/confirmButton" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
 </RelativeLayout>

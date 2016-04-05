@@ -30,4 +30,5 @@ dependencies {
     compile 'net.gotev:uploadservice:2.0.1@aar'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.github.markushi:circlebutton:1.1'
 }
