@@ -126,6 +126,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         findViewById(R.id.buttonAddAudio).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                findViewById(R.id.recordLayout).setVisibility(View.VISIBLE);
+                findViewById(R.id.playLayout).setVisibility(View.GONE);
                 findViewById(R.id.audioLayout).setVisibility(View.VISIBLE);
             }
         });
@@ -168,6 +170,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             @Override
             public void onClick(View v) {
                 findViewById(R.id.audioLayout).setVisibility(View.GONE);
+                ((at.markushi.ui.CircleButton) findViewById(R.id.playButton)).setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_black_48dp));
                 setAudio();
             }
         });
@@ -219,7 +222,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     private void setAudio() {
         changeVisibleMediaContainer();
         mediaLinear.setVisibility(View.VISIBLE);
-        findViewById(R.id.buttonAddPhoto).setVisibility(View.VISIBLE);
+        findViewById(R.id.playButtonPrev).setVisibility(View.VISIBLE);
     }
 
 
@@ -314,6 +317,21 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             mediaPlayer.setDataSource(fileName);
             mediaPlayer.prepare();
             mediaPlayer.start();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+
+                    View v;
+                    if (findViewById(R.id.audioLayout).getVisibility() == View.VISIBLE) {
+                        v = findViewById(R.id.playButton);
+                    } else {
+                        v = findViewById(R.id.playButtonPrev);
+                    }
+
+                    playAudio(v);
+
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
