@@ -44,6 +44,8 @@
 
     <string name="toast_game_cancel">Ведуший отменил игру</string>
 
+    <string name="toast_game_started">Вы не успели принять приглошение</string>
+
     <!--activity Win Game-->
     <string name="activity_WG_description_word">отгаданое слово</string>
     <string name="activity_WG_rating">Вам понравился ведущий?</string>

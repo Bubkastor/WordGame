@@ -176,6 +176,19 @@ public class Main extends AppCompatActivity {
                 }
 
                 @Override
+                public void onGameIsStarted() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showProgress(false);
+                            Toast toast = Toast.makeText(getApplicationContext(),
+                                    getString(R.string.toast_game_started), Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    });
+                }
+
+                @Override
                 public void onDisconnect() {
 
                 }

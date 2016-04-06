@@ -133,6 +133,14 @@ public class SocketService extends Service {
             }
         });
 
+        mainSocket.on("game is started", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                if (mainListener != null) {
+                    mainListener.onGameIsStarted();
+                }
+            }
+        });
     }
 
     private void setupSocketChat(){
@@ -208,7 +216,7 @@ public class SocketService extends Service {
             }
         });
 
-    };
+    }
 
     private void setupStartGame() {
         mainSocket.on("initialize game", new Emitter.Listener() {
@@ -306,36 +314,50 @@ public class SocketService extends Service {
     }
 
     public interface SocketMainListener{
-        public void onConnected();
-        public void onNotFound();
-        public void onInfo(JSONObject jsonObject);
-        public void onOpenChat(JSONObject jsonObject);
-        public void onInviteChat(JSONObject jsonObject);
+        void onConnected();
 
-        public void onCancelGame();
+        void onNotFound();
 
-        public void onDisconnect();
+        void onInfo(JSONObject jsonObject);
+
+        void onOpenChat(JSONObject jsonObject);
+
+        void onInviteChat(JSONObject jsonObject);
+
+        void onCancelGame();
+
+        void onGameIsStarted();
+
+        void onDisconnect();
     }
 
     public interface SocketStartGameListener {
-        public void onInitializeGame(JSONObject jsonObject);
+        void onInitializeGame(JSONObject jsonObject);
 
-        public void onInvAccept(JSONObject jsonObject);
+        void onInvAccept(JSONObject jsonObject);
 
-        public void onInvCancel(JSONObject jsonObject);
+        void onInvCancel(JSONObject jsonObject);
 
-        public void onOpenChat(JSONObject jsonObject);
-        public void onUserOnline(JSONArray jsonArray);
+        void onOpenChat(JSONObject jsonObject);
+
+        void onUserOnline(JSONArray jsonArray);
     }
 
     public interface SocketChatListener{
-        public void onConnected();
-        public void onMessage(JSONObject jsonObject);
-        public void onJoined(JSONObject jsonObject);
-        public void onUserLeft(JSONObject jsonObject);
-        public void onCloseGame(JSONObject jsonObject);
-        public void onInfoGame(JSONObject jsonObject);
-        public void onChangeStatusMessage(JSONObject jsonObject);
-        public void onDisconnect();
+        void onConnected();
+
+        void onMessage(JSONObject jsonObject);
+
+        void onJoined(JSONObject jsonObject);
+
+        void onUserLeft(JSONObject jsonObject);
+
+        void onCloseGame(JSONObject jsonObject);
+
+        void onInfoGame(JSONObject jsonObject);
+
+        void onChangeStatusMessage(JSONObject jsonObject);
+
+        void onDisconnect();
     }
 }

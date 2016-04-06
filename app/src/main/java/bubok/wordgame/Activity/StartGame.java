@@ -704,7 +704,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
                 break;
             case VIDEO:
                 idx = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
-
                 folderPath = "video";
                 mediaPath = cursor.getString(idx);
                 break;
