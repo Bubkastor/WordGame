@@ -223,6 +223,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         changeVisibleMediaContainer();
         mediaLinear.setVisibility(View.VISIBLE);
         findViewById(R.id.playButtonPrev).setVisibility(View.VISIBLE);
+        File f = new File(fileName);
+        mediaUri = Uri.fromFile(f);
+        media = TYPE_MEDIA.AUDIO;
     }
 
 
@@ -688,27 +691,30 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     public void sendServer() {
         showProgress(true);
         Cursor cursor = getContentResolver().query(mediaUri, null, null, null, null);
-        cursor.moveToFirst();
+        if (cursor != null)
+            cursor.moveToFirst();
         String folderPath = "";
         int idx = 0;
-
+        String mediaPath;
         switch (media){
             case IMAGE:
                 idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
                 folderPath = "img";
+                mediaPath = cursor.getString(idx);
                 break;
             case VIDEO:
                 idx = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
+
                 folderPath = "video";
+                mediaPath = cursor.getString(idx);
                 break;
             case AUDIO:
-                idx = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+                mediaPath = fileName;
                 folderPath = "audio";
                 break;
             default:
                 return;
         }
-        String mediaPath = cursor.getString(idx);
         try {
             File f = new File(mediaPath);
 

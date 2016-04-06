@@ -270,9 +270,15 @@ public class Chat extends AppCompatActivity {
 
                         if (isAdmin) {
                             Log.i(TAG, "i'm admin");
-                            itemTouchHelper.attachToRecyclerView(mRecyclerView);
-                        }
 
+                            Handler handler = new Handler(getBaseContext().getMainLooper());
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    itemTouchHelper.attachToRecyclerView(mRecyclerView);
+                                }
+                            });
+                        }
                         messageAdapter.setLeaderId(leaderId);
                         messageAdapter.setOptionPanel(isAdmin);
                         setMediaContainer(url, mediaType);
