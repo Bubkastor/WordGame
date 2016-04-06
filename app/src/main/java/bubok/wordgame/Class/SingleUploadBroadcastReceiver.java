@@ -6,6 +6,7 @@ import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
  * Created by bubok on 29.03.2016.
  */
 public class SingleUploadBroadcastReceiver extends UploadServiceBroadcastReceiver {
+
     public interface Delegate {
         void onCompleted(int serverResponseCode, byte[] serverResponseBody);
     }

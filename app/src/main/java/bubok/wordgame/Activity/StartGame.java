@@ -122,6 +122,22 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
     private boolean isPlay = false;
 
+    private void initView() {
+        titleLinear = findViewById(R.id.titleLinear);
+        buttonMediaLinear = findViewById(R.id.buttonMediaLinear);
+        mediaLinear = findViewById(R.id.mediaLayout);
+        imageViewPrev = findViewById(R.id.imageViewPrev);
+        editTextSrcWord = findViewById(R.id.editTextSrcWord);
+        videoViewPrev = findViewById(R.id.videoViewPrev);
+        startGameProgress = findViewById(R.id.startGameProgress);
+        progressBarLayout = findViewById(R.id.progressBarLayout);
+        countInvSend = findViewById(R.id.countInvSend);
+        countInvAccept = findViewById(R.id.countInvAccept);
+        mediaController = new MediaController(this);
+        mediaController.setAnchorView(videoViewPrev);
+
+        ((VideoView) videoViewPrev).setMediaController(mediaController);
+    }
     private void initButton() {
         findViewById(R.id.buttonAddAudio).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,34 +234,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             }
         });
     }
-
-    private void setAudio() {
-        changeVisibleMediaContainer();
-        mediaLinear.setVisibility(View.VISIBLE);
-        findViewById(R.id.playButtonPrev).setVisibility(View.VISIBLE);
-        File f = new File(fileName);
-        mediaUri = Uri.fromFile(f);
-        media = TYPE_MEDIA.AUDIO;
-    }
-
-
-    private void initView() {
-        titleLinear = findViewById(R.id.titleLinear);
-        buttonMediaLinear = findViewById(R.id.buttonMediaLinear);
-        mediaLinear = findViewById(R.id.mediaLayout);
-        imageViewPrev = findViewById(R.id.imageViewPrev);
-        editTextSrcWord = findViewById(R.id.editTextSrcWord);
-        videoViewPrev = findViewById(R.id.videoViewPrev);
-        startGameProgress = findViewById(R.id.startGameProgress);
-        progressBarLayout = findViewById(R.id.progressBarLayout);
-        countInvSend = findViewById(R.id.countInvSend);
-        countInvAccept = findViewById(R.id.countInvAccept);
-        mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoViewPrev);
-
-        ((VideoView) videoViewPrev).setMediaController(mediaController);
-    }
-
     private void initDialog() {
 
         builder = new AlertDialog.Builder(context);
@@ -273,6 +261,15 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         });
     }
 
+    private void setAudio() {
+        changeVisibleMediaContainer();
+        mediaLinear.setVisibility(View.VISIBLE);
+        findViewById(R.id.playButtonPrev).setVisibility(View.VISIBLE);
+        File f = new File(fileName);
+        mediaUri = Uri.fromFile(f);
+        media = TYPE_MEDIA.AUDIO;
+    }
+
     private void playAudio(View v) {
         if (!isPlay) {
             ((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_black_48dp));
@@ -285,7 +282,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
-    public void recordStart() {
+    private void recordStart() {
         try {
             releaseRecorder();
 
@@ -307,13 +304,13 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
     }
 
-    public void recordStop() {
+    private void recordStop() {
         if (mediaRecorder != null) {
             mediaRecorder.stop();
         }
     }
 
-    public void playStart() {
+    private void playStart() {
         try {
             releasePlayer();
             mediaPlayer = new MediaPlayer();
@@ -340,7 +337,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
-    public void playStop() {
+    private void playStop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
@@ -363,9 +360,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     @Override
     public void onStart() {
         Log.i(TAG, "onStart");
-        super.onStart();
         uploadReceiver.register(this);
         bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+        super.onStart();
     }
 
     @Override

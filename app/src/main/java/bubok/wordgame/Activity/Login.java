@@ -62,8 +62,6 @@ public class Login extends AppCompatActivity {
         accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                // Set the access token using
-                // currentAccessToken when it's loaded or set.
                 Profile.fetchProfileForCurrentAccessToken();
                 AccessToken.setCurrentAccessToken(currentAccessToken);
             }
@@ -74,7 +72,6 @@ public class Login extends AppCompatActivity {
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                // App code
                 if (currentProfile != null) {
                     Profile.setCurrentProfile(currentProfile);
                     profile = currentProfile;
