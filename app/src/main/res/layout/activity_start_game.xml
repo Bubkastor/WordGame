@@ -110,18 +110,33 @@
                             android:foregroundGravity="center"
                             android:layout_gravity="center" />
 
-                        <at.markushi.ui.CircleButton
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:src="@drawable/ic_play_arrow_black_48dp"
-                            app:cb_color="#99CC00"
-                            app:cb_pressedRingWidth="8dip"
-                            android:id="@+id/playButtonPrev"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerHorizontal="true"
-                            android:foregroundGravity="center"
-                            android:layout_gravity="center"
-                            android:visibility="gone" />
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/audiPrev"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:id="@+id/timePrev"
+                                android:layout_gravity="center" />
+
+                            <at.markushi.ui.CircleButton
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:src="@drawable/ic_play_arrow_black_48dp"
+                                app:cb_color="#99CC00"
+                                app:cb_pressedRingWidth="8dip"
+                                android:id="@+id/playButtonPrev"
+                                android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true"
+                                android:foregroundGravity="center"
+                                android:layout_gravity="center"
+                                android:visibility="visible" />
+                        </LinearLayout>
 
                         <ImageButton
                             android:layout_width="wrap_content"
@@ -287,23 +302,28 @@
             android:id="@+id/recordLayout"
             android:visibility="visible">
 
-            <at.markushi.ui.CircleButton
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:id="@+id/voiceButtons"
-                android:src="@drawable/ic_keyboard_voice_black_48dp"
-                app:cb_color="#99CC00"
-                app:cb_pressedRingWidth="8dip"
-                android:baselineAlignBottom="false"
-                android:layout_alignEnd="@+id/recordLayout"
-                android:layout_below="@+id/textView6" />
-
-            <TextView
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
-                android:id="@+id/textView6" />
+                android:gravity="center">
+
+                <Chronometer
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/chronometer"
+                    android:layout_marginBottom="10dp" />
+
+                <at.markushi.ui.CircleButton
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/voiceButtons"
+                    android:src="@drawable/ic_keyboard_voice_black_48dp"
+                    app:cb_color="#99CC00"
+                    app:cb_pressedRingWidth="8dip"
+                    android:baselineAlignBottom="false" />
+
+            </LinearLayout>
 
         </RelativeLayout>
 

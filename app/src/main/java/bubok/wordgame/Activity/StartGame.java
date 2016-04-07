@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -44,6 +46,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import bubok.wordgame.Class.SingleUploadBroadcastReceiver;
@@ -74,6 +78,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     private View editTextSrcWord;
     private View imageViewPrev;
     private View videoViewPrev;
+    private View timePrev;
 
     private MediaController mediaController;
 
@@ -102,6 +107,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     private static SocketService mService;
     private boolean mBound;
 
+    private Chronometer chronometer;
+    private Timer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -133,6 +140,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         progressBarLayout = findViewById(R.id.progressBarLayout);
         countInvSend = findViewById(R.id.countInvSend);
         countInvAccept = findViewById(R.id.countInvAccept);
+        timePrev = findViewById(R.id.timePrev);
+        chronometer = (Chronometer) findViewById(R.id.chronometer);
         mediaController = new MediaController(this);
         mediaController.setAnchorView(videoViewPrev);
 
@@ -261,10 +270,20 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         });
     }
 
+    private void startChrono() {
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+    }
+
+    private void stopChrono() {
+        chronometer.stop();
+        chronometer.setBase(SystemClock.elapsedRealtime());
+    }
+
     private void setAudio() {
         changeVisibleMediaContainer();
         mediaLinear.setVisibility(View.VISIBLE);
-        findViewById(R.id.playButtonPrev).setVisibility(View.VISIBLE);
+        findViewById(R.id.audiPrev).setVisibility(View.VISIBLE);
         File f = new File(fileName);
         mediaUri = Uri.fromFile(f);
         media = TYPE_MEDIA.AUDIO;
@@ -285,7 +304,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     private void recordStart() {
         try {
             releaseRecorder();
-
+            startChrono();
             File outFile = new File(fileName);
             if (outFile.exists()) {
                 outFile.delete();
@@ -307,6 +326,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     private void recordStop() {
         if (mediaRecorder != null) {
             mediaRecorder.stop();
+            stopChrono();
         }
     }
 
@@ -317,6 +337,28 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             mediaPlayer.setDataSource(fileName);
             mediaPlayer.prepare();
             mediaPlayer.start();
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                timePrev.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ((TextView) timePrev).setText(getTimeString(mediaPlayer.getCurrentPosition()));
+                                    }
+                                });
+                            } else {
+                                timer.cancel();
+                                timer.purge();
+                            }
+                        }
+                    });
+                }
+            }, 0, 1000);
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
@@ -335,6 +377,18 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String getTimeString(long millis) {
+        StringBuffer buf = new StringBuffer();
+        int minutes = (int) ((millis % (1000 * 60 * 60)) / (1000 * 60));
+        int seconds = (int) (((millis % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
+
+        buf.append(String.format("%02d", minutes))
+                .append(":")
+                .append(String.format("%02d", seconds));
+
+        return buf.toString();
     }
 
     private void playStop() {
@@ -582,7 +636,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         mediaLinear.setVisibility(View.GONE);
         imageViewPrev.setVisibility(View.GONE);
         videoViewPrev.setVisibility(View.GONE);
-        findViewById(R.id.playButtonPrev).setVisibility(View.GONE);
+        findViewById(R.id.audiPrev).setVisibility(View.GONE);
+        ((TextView) timePrev).setText("00:00");
         media = null;
     }
 
