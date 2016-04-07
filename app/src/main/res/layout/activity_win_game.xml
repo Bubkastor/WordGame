@@ -185,35 +185,59 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/activity_WG_rating"
-                    android:id="@+id/textView3" />
-
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/textView3">
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/ratingLayout">
 
-                    <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:id="@+id/imageButtonLike"
-                        android:src="@drawable/like"
-                        android:layout_marginRight="20dp"
-                        android:scaleType="fitCenter" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/activity_WG_rating"
+                        android:id="@+id/textView3" />
 
-                    <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:id="@+id/imageButtonDislike"
-                        android:src="@drawable/dislike"
-                        android:layout_marginLeft="20dp"
-                        android:scaleType="fitCenter" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textView3">
+
+                        <ImageButton
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:id="@+id/imageButtonLike"
+                            android:src="@drawable/like"
+                            android:layout_marginRight="20dp"
+                            android:scaleType="fitCenter" />
+
+                        <ImageButton
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:id="@+id/imageButtonDislike"
+                            android:src="@drawable/dislike"
+                            android:layout_marginLeft="20dp"
+                            android:scaleType="fitCenter" />
+                    </LinearLayout>
                 </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:id="@+id/afterRatingLayout"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/activity_WG_thk"
+                        android:id="@+id/thkText" />
+                </RelativeLayout>
+
             </LinearLayout>
 
             <View

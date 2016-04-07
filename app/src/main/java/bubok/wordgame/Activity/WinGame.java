@@ -50,7 +50,7 @@ public class WinGame extends AppCompatActivity {
         imageButtonLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                hideRaiting();
                 new ServerRequestTask(likeSendDate).execute(url);
             }
         });
@@ -60,7 +60,7 @@ public class WinGame extends AppCompatActivity {
         imageButtonDislike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                hideRaiting();
                 new ServerRequestTask(disLikeSendDate).execute(url);
             }
         });
@@ -71,6 +71,11 @@ public class WinGame extends AppCompatActivity {
     public void buttonMainMenuClick(View v){
         Log.i(TAG, "buttonMainMenuClick");
         finish();
+    }
+
+    private void hideRaiting() {
+        findViewById(R.id.afterRatingLayout).setVisibility(View.VISIBLE);
+        findViewById(R.id.ratingLayout).setVisibility(View.GONE);
     }
 
 

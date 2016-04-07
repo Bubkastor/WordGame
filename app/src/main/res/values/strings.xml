@@ -51,6 +51,7 @@
     <string name="activity_WG_rating">Вам понравился ведущий?</string>
     <string name="activity_WG_winer">Победитель</string>
     <string name="activity_WG_enigma">Загадывал</string>
+    <string name="activity_WG_thk">Спасибо за оценку</string>
 
     <!--activity Main-->
     <string name="activity_Main_start_game">начать игру</string>
