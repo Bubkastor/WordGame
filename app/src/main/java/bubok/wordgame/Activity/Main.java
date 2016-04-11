@@ -3,16 +3,21 @@ package bubok.wordgame.Activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,25 +32,15 @@ import android.widget.Toast;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.Profile;
-
-
-import net.gotev.uploadservice.MultipartUploadRequest;
-import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
-
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import bubok.wordgame.AsyncTasks.DownloadImageTask;
-import bubok.wordgame.Class.SingleUploadBroadcastReceiver;
+import bubok.wordgame.Class.QuickstartPreferences;
 import bubok.wordgame.R;
+import bubok.wordgame.RegistrationIntentService;
 import bubok.wordgame.Service.SocketService;
 
 
@@ -62,6 +57,8 @@ public class Main extends AppCompatActivity {
     private static SocketService mService;
     private AlertDialog.Builder builder;
 
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +66,25 @@ public class Main extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
         setContentView(R.layout.activity_main);
         context = Main.this;
+
+        mRegistrationBroadcastReceiver= new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences
+                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                if (sentToken) {
+                    Log.i("BROAD", "true");
+                   // mInformationTextView.setText(getString(R.string.gcm_send_message));
+                } else {
+                    Log.i("BROAD", "false");
+                   // mInformationTextView.setText(getString(R.string.token_error_message));
+                }
+
+            }
+        };
+        registerReceiver();
 
         initService();
         checkToken();
@@ -79,7 +95,39 @@ public class Main extends AppCompatActivity {
         }
         profile = Profile.getCurrentProfile();
         initButton();
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent2 = new Intent(this, RegistrationIntentService.class);
+            startService(intent2);
+        }
         Log.i(TAG, "onCreate");
+    }
+
+    private boolean isReceiverRegistered;
+
+    private void registerReceiver(){
+        if(!isReceiverRegistered) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                    new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
+            isReceiverRegistered = true;
+        }
+    }
+
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     private void initService() {
@@ -279,7 +327,7 @@ public class Main extends AppCompatActivity {
     @Override
     public void onResume() {
         Log.i(TAG, "onResume");
-
+        registerReceiver();
         bindService(service, mConnection, Context.BIND_AUTO_CREATE);
         super.onResume();
     }
@@ -384,6 +432,8 @@ public class Main extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        isReceiverRegistered = false;
         Log.i(TAG, "onStop");
         if (mBound) {
             mService.deleteMainListener();
@@ -400,4 +450,5 @@ public class Main extends AppCompatActivity {
         Log.i(TAG, "onDestroy");
         super.onDestroy();
     }
+
 }
