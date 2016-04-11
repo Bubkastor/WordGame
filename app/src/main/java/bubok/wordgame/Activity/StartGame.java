@@ -23,12 +23,15 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,6 +44,7 @@ import net.gotev.uploadservice.MultipartUploadRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -156,6 +160,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
                 findViewById(R.id.audioLayout).setVisibility(View.VISIBLE);
             }
         });
+
         findViewById(R.id.voiceButtons).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -218,7 +223,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         findViewById(R.id.buttonAddFrends).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mService.send("user online");
+                mService.send("user online", gameId);
             }
         });
 
@@ -240,8 +245,10 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             @Override
             public void onClick(View v) {
                 buttonAddVideoClick();
-            }
+        }
         });
+
+
     }
     private void initDialog() {
 
