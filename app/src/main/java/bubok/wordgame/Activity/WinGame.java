@@ -1,6 +1,7 @@
 package bubok.wordgame.Activity;
 
 import android.content.Intent;
+import android.support.annotation.BoolRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import bolts.Bolts;
 import bubok.wordgame.AsyncTasks.DownloadImageTask;
 import bubok.wordgame.AsyncTasks.ServerRequestTask;
 import bubok.wordgame.R;
@@ -42,9 +44,13 @@ public class WinGame extends AppCompatActivity {
         ImageView imageViewLeader = (ImageView) findViewById(R.id.imageViewLeader);
         new DownloadImageTask(imageViewLeader).execute(intent.getStringExtra(Chat.EXTRA_MESSAGE_LEAD_AVATAR));
 
+        Boolean isAdmin = intent.getExtras().getBoolean(Chat.EXTRA_MESSAGE_LEAD_IS_ADMIN);
+        if (isAdmin){
+            hideRaiting();
+        }
+
         sendDate.append(intent.getStringExtra(Chat.EXTRA_MESSAGE_LEAD_ID));
         final String likeSendDate = sendDate.toString() + getString(R.string.Raiting_plus);
-
         final String url = getString(R.string.URL_Raiting);
         ImageButton imageButtonLike = (ImageButton) findViewById(R.id.imageButtonLike);
         imageButtonLike.setOnClickListener(new View.OnClickListener() {

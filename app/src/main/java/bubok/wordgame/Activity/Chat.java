@@ -61,6 +61,8 @@ public class Chat extends AppCompatActivity {
     public final static String EXTRA_MESSAGE_LEAD_AVATAR = "bubok.wordgame.LEAD.AVATAR";
     public final static String EXTRA_MESSAGE_TIME = "bubok.wordgame.TIME";
     public final static String EXTRA_MESSAGE_WORD = "bubok.wordgame.WORD";
+    public final static String EXTRA_MESSAGE_LEAD_IS_ADMIN = "bubok.wordgame.IS.ADMIN";
+
     private static final String TAG = "CHAT";
     private Context context;
     private ImageView imageView;
@@ -70,6 +72,8 @@ public class Chat extends AppCompatActivity {
     private String idUser;
 
     private VideoView video;
+
+    private Boolean isAdmin;
 
     private int heightDiff = 0;
     private Animator mCurrentAnimator;
@@ -264,7 +268,7 @@ public class Chat extends AppCompatActivity {
                         String id = jsonObject.getString("mediaId");
                         String url = getString(R.string.URL) + "/file/" + id;
                         String leaderId = jsonObject.getString("leaderId");
-                        Boolean isAdmin = jsonObject.getBoolean("admin");
+                        isAdmin = jsonObject.getBoolean("admin");
 
                         String mediaType = jsonObject.getString("mediaType").split("/")[0];
 
@@ -461,6 +465,7 @@ public class Chat extends AppCompatActivity {
         intent.putExtra(EXTRA_MESSAGE_LEAD_AVATAR, leaderAvatar);
         intent.putExtra(EXTRA_MESSAGE_LEAD_NAME, leaderName);
         intent.putExtra(EXTRA_MESSAGE_LEAD_ID, leaderId);
+        intent.putExtra(EXTRA_MESSAGE_LEAD_IS_ADMIN, isAdmin);
 
         intent.putExtra(EXTRA_MESSAGE_TIME, timeGame);
         intent.putExtra(EXTRA_MESSAGE_WORD, word);
