@@ -159,7 +159,7 @@ public class Chat extends AppCompatActivity {
                     case ItemTouchHelper.LEFT:
                         try {
                             sendData.put("id", messageAdapter.getItem(viewHolder.getAdapterPosition()).getIDMessage());
-                            sendData.put("status", "1");
+                            sendData.put("status", 1);
                         } catch (Exception ex) {
                             Log.i("JSON", ex.getMessage());
                         }
@@ -170,7 +170,7 @@ public class Chat extends AppCompatActivity {
                         Log.i(TAG, "Swipe RIGHT");
                         try {
                             sendData.put("id", messageAdapter.getItem(viewHolder.getAdapterPosition()).getIDMessage());
-                            sendData.put("status", "2");
+                            sendData.put("status", -1);
                         } catch (Exception ex) {
                             Log.i("JSON", ex.getMessage());
                         }
@@ -539,7 +539,7 @@ public class Chat extends AppCompatActivity {
 
 
     public void onBackPressed() {
-        finish();
+        //finish();
     }
     @Override
     public void onStop(){

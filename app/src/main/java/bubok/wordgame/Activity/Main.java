@@ -5,16 +5,15 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -23,7 +22,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.content.Context;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,6 +37,7 @@ import org.json.JSONObject;
 
 import bubok.wordgame.AsyncTasks.DownloadImageTask;
 import bubok.wordgame.Class.QuickstartPreferences;
+import bubok.wordgame.Class.Storage;
 import bubok.wordgame.R;
 import bubok.wordgame.RegistrationIntentService;
 import bubok.wordgame.Service.SocketService;
@@ -59,6 +58,7 @@ public class Main extends AppCompatActivity {
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
+    public static Storage storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +67,7 @@ public class Main extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         context = Main.this;
 
+        storage = new Storage(context);
         mRegistrationBroadcastReceiver= new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {

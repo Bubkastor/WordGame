@@ -2,19 +2,20 @@ package bubok.wordgame.AsyncTasks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
 import java.net.URL;
 
-import bubok.wordgame.Activity.Login;
+import bubok.wordgame.Activity.Main;
 
 /**
  * Created by bubok on 22.03.2016.
  */
 
-public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+public class DownloadImageTask extends AsyncTask<String, Void, String> {
 
     private ImageView viewImage;
 
@@ -22,26 +23,28 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         this.viewImage = viewImage;
     }
 
-    protected Bitmap doInBackground(String... urls) {
+    protected String doInBackground(String... urls) {
         String key = urls[0];
-        Bitmap result = null;
-        if (Login.mMemoryCache.get(key) == null) {
+        String result = null;
+        if (Main.storage.get(key) == null) {
             try {
                 URL newUrl = new URL(urls[0]);
-                result = BitmapFactory.decodeStream(newUrl.openConnection().getInputStream());
-                Login.mMemoryCache.put(key, result);
+                Bitmap bitmap = BitmapFactory.decodeStream(newUrl.openConnection().getInputStream());
+                Main.storage.put(key, bitmap);
+                result = Main.storage.get(key);
+
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
         } else {
-            result = Login.mMemoryCache.get(key);
+            result = Main.storage.get(key);
         }
         return result;
     }
 
-    protected void onPostExecute(Bitmap result) {
-        viewImage.setImageBitmap(result);
+    protected void onPostExecute(String filePath) {
+        viewImage.setImageURI(Uri.parse(filePath));
     }
 }
 

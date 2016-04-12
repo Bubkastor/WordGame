@@ -32,7 +32,6 @@
         <activity
             android:name=".Activity.Chat"
             android:configChanges="orientation|screenSize|fontScale"
-            android:parentActivityName=".Activity.Main"
             android:screenOrientation="locked"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity

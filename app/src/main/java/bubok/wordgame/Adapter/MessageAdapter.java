@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -18,9 +17,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import bubok.wordgame.AsyncTasks.DownloadImageTask;
 import bubok.wordgame.Activity.Chat;
-import bubok.wordgame.Class.*;
+import bubok.wordgame.AsyncTasks.DownloadImageTask;
+import bubok.wordgame.Class.Message;
 import bubok.wordgame.R;
 
 /**
@@ -28,6 +27,9 @@ import bubok.wordgame.R;
  */
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+
+    private final int RED = -1;
+    private final int GREEN = 1;
 
     private Context context;
     private List<Message> messages;
@@ -66,11 +68,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         holder.name.setText(messages.get(position).getUsername());
         holder.message.setText(messages.get(position).getMessage());
-        switch (messages.get(position).getStatus()) {
-            case "1":
+        switch (Integer.parseInt(messages.get(position).getStatus())) {
+            case GREEN:
                 holder.background.setBackgroundColor(Color.GREEN);
                 break;
-            case "2":
+            case RED:
                 //dislike
                 holder.background.setBackgroundColor(Color.RED);
                 break;
