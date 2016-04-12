@@ -11,8 +11,9 @@ public class Message {
         Message = message;
         Avatar = avatar;
         IDMessage = idMessage;
-        Status= status;
-        IdUser = idUser;
+        this.Status= status;
+        this.IdUser = idUser;
+        this.Update = true;
     }
 
     public String getMessage() {
@@ -45,6 +46,17 @@ public class Message {
     private String IDMessage;
     private String Status;
     private String IdUser;
+    private Boolean Update;
+    public Boolean getUpdate() {
+        return Update;
+    }
+
+    public void setUpdate(Boolean update) {
+        Update = update;
+    }
+
+
+
 
     public String getIdUser() {
         return IdUser;

@@ -61,7 +61,7 @@
                         android:layout_height="100dp"
                         android:id="@+id/imageViewAvatar"
                         android:layout_marginTop="20dp"
-                        android:src="@drawable/cat" />
+                        />
 
                     <RelativeLayout
                         android:layout_width="wrap_content"

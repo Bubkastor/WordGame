@@ -64,8 +64,7 @@
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:id="@+id/imageViewWiner"
-                    android:src="@drawable/cat" />
+                    android:id="@+id/imageViewWiner"/>
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -135,7 +134,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:id="@+id/imageViewLeader"
-                    android:src="@drawable/cat" />
+                    />
 
                 <RelativeLayout
                     android:layout_width="wrap_content"

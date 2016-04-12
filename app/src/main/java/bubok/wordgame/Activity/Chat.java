@@ -81,7 +81,7 @@ public class Chat extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+
     private ItemTouchHelper itemTouchHelper;
 
     @Override
@@ -135,10 +135,10 @@ public class Chat extends AppCompatActivity {
 
         video.setMediaController(mc);
 
-        mRecyclerView.setHasFixedSize(false);
 
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        final LinearLayoutManager linearLayoutManager  = new LinearLayoutManager (this);
+        linearLayoutManager.setStackFromEnd(true);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
 
         ArrayList<Message> arrayList = new ArrayList<>();
 
@@ -473,8 +473,15 @@ public class Chat extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mRecyclerView.smoothScrollToPosition(messageAdapter.getItemCount());
+                Log.i(TAG, Integer.toString(messageAdapter.getItemCount()));
                 messageAdapter.notifyDataSetChanged();
+                mRecyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRecyclerView.smoothScrollToPosition(messageAdapter.getItemCount());
+                    }
+                });
+
             }
         });
     }
