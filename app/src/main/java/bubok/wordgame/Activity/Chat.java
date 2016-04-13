@@ -238,8 +238,13 @@ public class Chat extends AppCompatActivity {
                 public void onCloseGame(JSONObject jsonObject) {
                     Log.i(TAG, "close chat");
                     try {
-                        String winerName = jsonObject.getString("winerName");
-                        String winerAvatar = jsonObject.getString("winerAvatar");
+                        String winerName = null;
+                        if (jsonObject.has("winerName"))
+                            winerName = jsonObject.getString("winerName");
+
+                        String winerAvatar = null;
+                        if (jsonObject.has("winerAvatar"))
+                            winerAvatar = jsonObject.getString("winerAvatar");
                         String leaderAvatar = jsonObject.getString("leaderAvatar");
                         String leaderId = jsonObject.getString("leaderId");
                         String leaderName = jsonObject.getString("leaderName");

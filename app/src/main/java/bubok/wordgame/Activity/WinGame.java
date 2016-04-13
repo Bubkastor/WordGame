@@ -1,17 +1,14 @@
 package bubok.wordgame.Activity;
 
 import android.content.Intent;
-import android.support.annotation.BoolRes;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import bolts.Bolts;
 import bubok.wordgame.AsyncTasks.DownloadImageTask;
 import bubok.wordgame.AsyncTasks.ServerRequestTask;
 import bubok.wordgame.R;
@@ -32,14 +29,22 @@ public class WinGame extends AppCompatActivity {
         TextView textViewLeadName = (TextView) findViewById(R.id.textViewLeadName);
         textViewLeadName.setText(intent.getStringExtra(Chat.EXTRA_MESSAGE_LEAD_NAME));
 
-        TextView textViewWinerName = (TextView) findViewById(R.id.textViewWinerName);
-        textViewWinerName.setText(intent.getStringExtra(Chat.EXTRA_MESSAGE_WIN_NAME));
+
+
+        if (intent.getStringExtra(Chat.EXTRA_MESSAGE_WIN_NAME) != null){
+            TextView textViewWinerName = (TextView) findViewById(R.id.textViewWinerName);
+            textViewWinerName.setText(intent.getStringExtra(Chat.EXTRA_MESSAGE_WIN_NAME));
+            ImageView imageViewWiner = (ImageView) findViewById(R.id.imageViewWiner);
+            new DownloadImageTask(imageViewWiner).execute(intent.getStringExtra(Chat.EXTRA_MESSAGE_WIN_AVATAR));
+        } else {
+            leaveAdmin();
+        }
+
 
         TextView textViewTime = (TextView) findViewById(R.id.textViewTime);
         textViewTime.setText(intent.getStringExtra(Chat.EXTRA_MESSAGE_TIME));
 
-        ImageView imageViewWiner = (ImageView) findViewById(R.id.imageViewWiner);
-        new DownloadImageTask(imageViewWiner).execute(intent.getStringExtra(Chat.EXTRA_MESSAGE_WIN_AVATAR));
+
 
         ImageView imageViewLeader = (ImageView) findViewById(R.id.imageViewLeader);
         new DownloadImageTask(imageViewLeader).execute(intent.getStringExtra(Chat.EXTRA_MESSAGE_LEAD_AVATAR));
@@ -72,6 +77,11 @@ public class WinGame extends AppCompatActivity {
         });
 
         Log.i(TAG, "onCreate");
+    }
+
+    private void leaveAdmin() {
+        findViewById(R.id.winerContent).setVisibility(View.GONE);
+        findViewById(R.id.leaveContent).setVisibility(View.VISIBLE);
     }
 
     public void buttonMainMenuClick(View v){
