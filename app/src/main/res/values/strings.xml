@@ -5,7 +5,7 @@
     <string name="URL">http://serverwordgame.azurewebsites.net</string>
     <string name="URL_File">/file/</string>
     <string name="URL_Upload">/upload/</string>
-    <string name="URL_Raiting">http://serverwordgame.azurewebsites.net/raiting/</string>
+    <string name="URL_Raiting">/raiting/</string>
     <string name="URL_Statistic">/statistic/</string>
     <string name="Raiting_plus">/1</string>
     <string name="Raiting_minus">/-1</string>

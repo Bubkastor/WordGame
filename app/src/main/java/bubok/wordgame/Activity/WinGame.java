@@ -56,7 +56,7 @@ public class WinGame extends AppCompatActivity {
 
         sendDate.append(intent.getStringExtra(Chat.EXTRA_MESSAGE_LEAD_ID));
         final String likeSendDate = sendDate.toString() + getString(R.string.Raiting_plus);
-        final String url = getString(R.string.URL_Raiting);
+        final String url = getString(R.string.URL) + getString(R.string.URL_Raiting);
         ImageButton imageButtonLike = (ImageButton) findViewById(R.id.imageButtonLike);
         imageButtonLike.setOnClickListener(new View.OnClickListener() {
             @Override
