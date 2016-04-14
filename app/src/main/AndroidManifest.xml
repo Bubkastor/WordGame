@@ -92,7 +92,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".RegistrationIntentService"
+            android:name=".Service.RegistrationIntentService"
             android:exported="false"></service>
 
     </application>

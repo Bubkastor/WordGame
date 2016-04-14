@@ -7,8 +7,6 @@ import android.content.Intent;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
 
-import bubok.wordgame.RegistrationIntentService;
-
 
 public class MyInstanceIDListenerService extends InstanceIDListenerService {
     private static final String TAG = "MyInstanceIDLS";

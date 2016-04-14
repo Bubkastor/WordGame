@@ -39,7 +39,7 @@ import bubok.wordgame.AsyncTasks.DownloadImageTask;
 import bubok.wordgame.Class.QuickstartPreferences;
 import bubok.wordgame.Class.Storage;
 import bubok.wordgame.R;
-import bubok.wordgame.RegistrationIntentService;
+import bubok.wordgame.Service.RegistrationIntentService;
 import bubok.wordgame.Service.SocketService;
 
 
@@ -267,6 +267,7 @@ public class Main extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Main.this, Statistics.class);
+                intent.putExtra(EXTRA_MESSAGE_USED_ID_USER, profile.getId());
                 startActivity(intent);
             }
         });
