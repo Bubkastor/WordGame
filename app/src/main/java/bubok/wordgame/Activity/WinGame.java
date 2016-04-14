@@ -51,7 +51,8 @@ public class WinGame extends AppCompatActivity {
 
         Boolean isAdmin = intent.getExtras().getBoolean(Chat.EXTRA_MESSAGE_LEAD_IS_ADMIN);
         if (isAdmin){
-            hideRaiting();
+            findViewById(R.id.afterRatingLayout).setVisibility(View.GONE);
+            findViewById(R.id.ratingLayout).setVisibility(View.GONE);
         }
 
         sendDate.append(intent.getStringExtra(Chat.EXTRA_MESSAGE_LEAD_ID));
