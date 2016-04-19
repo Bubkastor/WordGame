@@ -17,9 +17,9 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by bubok on 14.04.2016.
  */
-public class ServerRequesJSONTask extends AsyncTask<String, Void, JSONObject> {
+class ServerRequesJSONTask extends AsyncTask<String, Void, JSONObject> {
     private final static String TAG = "ServerRequesJSONTask";
-    private String sendDate;
+    private final String sendDate;
     private JSONObject answer;
 
     public ServerRequesJSONTask(String sendDate, JSONObject answer) {

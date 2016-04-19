@@ -11,6 +11,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="bubok.wordgame.permission.C2D_MESSAGE" />
 
+    //TODO GCM
+    // Problem synopsis      On SDK version 23 and up, your app data will be automatically backed up, and restored on app install. Your GCM regid will not work across restores, so you must ensure that it is excluded from the back-up set. Use the attribute android:fullBackupContent to specify an @xml resource which configures which files to backup. More info: https://developer.android.com/preview/backup/index.html (at line 14)
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -33,7 +36,7 @@
             android:name=".Activity.Chat"
             android:configChanges="orientation|screenSize|fontScale"
             android:screenOrientation="locked"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".Activity.Main"
             android:configChanges="orientation|screenSize|fontScale"

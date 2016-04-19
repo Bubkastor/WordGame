@@ -13,7 +13,7 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class ServerRequestTask extends AsyncTask<String, Void, Boolean> {
     private final static String TAG = "ServerRequestTask";
-    private String sendDate;
+    private final String sendDate;
 
     public ServerRequestTask(String sendDate) {
         this.sendDate = sendDate;

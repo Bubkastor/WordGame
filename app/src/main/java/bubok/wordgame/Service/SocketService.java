@@ -5,7 +5,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -27,13 +26,12 @@ public class SocketService extends Service {
 
     private static Socket mainSocket;
     private static Socket chatSocket;
-    private static Manager manager;
 
     private SocketChatListener chatListener;
     private SocketMainListener mainListener;
     private SocketStartGameListener gameListener;
 
-    private SocketIOBinder mBinder = new SocketIOBinder();
+    private final SocketIOBinder mBinder = new SocketIOBinder();
 
     public SocketService(){
         Log.i(TAG, "SocketService");
@@ -44,7 +42,7 @@ public class SocketService extends Service {
         String url = intent.getStringExtra("url");
         String chatNamespace = intent.getStringExtra("chatNamespace");
         try{
-            manager = new Manager(new URI(url));
+            Manager manager = new Manager(new URI(url));
             mainSocket = manager.socket("/");
             chatSocket = manager.socket(chatNamespace);
         } catch (Exception ex){

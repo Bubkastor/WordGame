@@ -58,7 +58,6 @@ public class Chat extends AppCompatActivity {
     public final static String EXTRA_MESSAGE_LEAD_IS_ADMIN = "bubok.wordgame.IS.ADMIN";
 
     private static final String TAG = "CHAT";
-    private Context context;
     private ImageView imageView;
     private EditText editTextMessage;
     private MessageAdapter messageAdapter;
@@ -73,14 +72,11 @@ public class Chat extends AppCompatActivity {
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
 
-    private WebView webView;
-
     private Intent service;
     public static SocketService mService;
     private boolean mBound;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
 
     private ItemTouchHelper itemTouchHelper;
 
@@ -88,7 +84,7 @@ public class Chat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        context = Chat.this;
+        Context context = Chat.this;
         service = new Intent(this, SocketService.class);
         final View activityRootView = findViewById(android.R.id.content);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -99,7 +95,7 @@ public class Chat extends AppCompatActivity {
             }
         });
 
-        webView = (WebView) findViewById(R.id.webView);
+        WebView webView = (WebView) findViewById(R.id.webView);
         WebChromeClient chromeClient = new WebChromeClient();
         webView.setWebChromeClient(chromeClient);
 
@@ -108,7 +104,7 @@ public class Chat extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    buttonSendClick(v);
+                    buttonSendClick();
                     return true;
                 }
                 return false;
@@ -186,7 +182,7 @@ public class Chat extends AppCompatActivity {
 
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(TAG, "onServiceConnected");
@@ -229,7 +225,7 @@ public class Chat extends AppCompatActivity {
                     try {
                         Log.i(TAG, "USER LEFT: " + jsonObject.getString("username"));
                     } catch (Exception ex) {
-
+                        Log.i(TAG, ex.getMessage());
                     }
 
                 }
@@ -491,7 +487,7 @@ public class Chat extends AppCompatActivity {
         });
     }
 
-    public void buttonSendClick(View v) {
+    private void buttonSendClick() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         Log.i(TAG, "send");
         String message = editTextMessage.getText().toString();
@@ -540,10 +536,8 @@ public class Chat extends AppCompatActivity {
                         });
                         break;
                     default:
-                        return;
+                        break;
                 }
-
-
             }
         });
     }

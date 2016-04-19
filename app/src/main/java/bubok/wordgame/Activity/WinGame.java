@@ -15,7 +15,7 @@ import bubok.wordgame.R;
 
 public class WinGame extends AppCompatActivity {
     private static final String TAG = "WIN_GAME";
-    private StringBuilder sendDate = new StringBuilder();
+    private final StringBuilder sendDate = new StringBuilder();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

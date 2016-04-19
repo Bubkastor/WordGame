@@ -76,14 +76,11 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     private View videoViewPrev;
     private View timePrev;
 
-    private MediaController mediaController;
-
     private MediaRecorder mediaRecorder;
     private MediaPlayer mediaPlayer;
     private String fileName;
 
     private TYPE_MEDIA media;
-    private ArrayList<String> usersInvite = new ArrayList<>();
     private AlertDialog.Builder builder;
 
     private boolean firstClick = true;
@@ -138,7 +135,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         countInvAccept = findViewById(R.id.countInvAccept);
         timePrev = findViewById(R.id.timePrev);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
-        mediaController = new MediaController(this);
+        MediaController mediaController = new MediaController(this);
         mediaController.setAnchorView(videoViewPrev);
 
         ((VideoView) videoViewPrev).setMediaController(mediaController);
@@ -379,7 +376,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     }
 
     private String getTimeString(long millis) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int minutes = (int) ((millis % (1000 * 60 * 60)) / (1000 * 60));
         int seconds = (int) (((millis % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
 
@@ -454,7 +451,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     protected void onNewIntent(Intent intent) {
         Log.i(TAG, "onNewIntent");
         if (intent.getExtras() != null) {
-            usersInvite = intent.getExtras().getStringArrayList(EXTRA_MESSAGE_USERS_INVITE);
+            ArrayList<String> usersInvite = intent.getExtras().getStringArrayList(EXTRA_MESSAGE_USERS_INVITE);
             try {
                 ((TextView) countInvSend).setText(Integer.toString(usersInvite.size()));
                 JSONObject sendData = new JSONObject();
@@ -471,7 +468,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         super.onNewIntent(intent);
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private final ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -622,11 +619,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
                     progressBarLayout.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            //mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            //mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -739,7 +731,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         sendServer();
     }
 
-    public void sendServer() {
+    private void sendServer() {
         showProgress(true);
         Cursor cursor = getContentResolver().query(mediaUri, null, null, null, null);
         if (cursor != null)
@@ -765,6 +757,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             default:
                 return;
         }
+        //TODO Возможна ошибка проверить
+        cursor.close();
         try {
             File f = new File(mediaPath);
 

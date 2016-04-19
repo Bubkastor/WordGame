@@ -152,7 +152,7 @@ public class Main extends AppCompatActivity {
         };
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private final ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -408,19 +408,21 @@ public class Main extends AppCompatActivity {
                     progressBarLayout.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            //mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            //mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
     private String getMessageDialog(String leader, String leaderRaiting, String countInvite) {
         StringBuilder result = new StringBuilder();
-        result.append(leader + " " + getString(R.string.invite_message1) + " " +
-                leaderRaiting + " " + getString(R.string.invite_message2) + " " +
-                countInvite + " " + getString(R.string.invite_message3));
+        result.append(leader).append(" ")
+                .append(getString(R.string.invite_message1))
+                .append(" ")
+                .append(leaderRaiting)
+                .append(" ")
+                .append(getString(R.string.invite_message2))
+                .append(" ")
+                .append(countInvite)
+                .append(" ")
+                .append(getString(R.string.invite_message3));
         return result.toString();
     }
 

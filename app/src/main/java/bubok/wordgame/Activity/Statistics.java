@@ -55,7 +55,7 @@ public class Statistics extends AppCompatActivity {
 
     public class ServerRequestJSONTask extends AsyncTask<String, Void, JSONObject> {
         private final static String TAG = "ServerRequestJSONTask";
-        private String sendDate;
+        private final String sendDate;
 
         public ServerRequestJSONTask(String sendDate) {
             this.sendDate = sendDate;
@@ -98,18 +98,26 @@ public class Statistics extends AppCompatActivity {
                 if (result.has("AVATAR"))
                     new DownloadImageTask((ImageView) avatar).execute(result.getString("AVATAR"));
 
-                if (result.has("TOTAL_GAME"))
-                    ((TextView) totalGame).setText(getString(R.string.activity_Statistics_total_game) + result.get("TOTAL_GAME"));
+                if (result.has("TOTAL_GAME")){
+                    String text = getString(R.string.activity_Statistics_total_game) + result.get("TOTAL_GAME");
+                    ((TextView) totalGame).setText(text);
+                }
 
-                if(result.has("TOTAL_WINS"))
-                    ((TextView) totalWins).setText(getString(R.string.activity_Statistics_total_wins) + result.get("TOTAL_WINS"));
 
-                if(result.has("LEADING_RAITING"))
-                    ((TextView) leaderRaiting).setText(getString(R.string.activity_Statistics_leader_rating) + result.get("LEADING_RAITING"));
+                if(result.has("TOTAL_WINS")) {
+                    String text = getString(R.string.activity_Statistics_total_wins) + result.get("TOTAL_WINS");
+                    ((TextView) totalWins).setText(text);
+                }
 
-                if(result.has("TOTAL_TIME"))
-                    ((TextView) totalTime).setText(getString(R.string.activity_Statistics_total_time) + result.get("TOTAL_TIME"));
+                if(result.has("LEADING_RAITING")) {
+                    String text = getString(R.string.activity_Statistics_leader_rating) + result.get("LEADING_RAITING");
+                    ((TextView) leaderRaiting).setText(text);
+                }
 
+                if(result.has("TOTAL_TIME")){
+                    String text = getString(R.string.activity_Statistics_total_time) + result.get("TOTAL_TIME");
+                    ((TextView) totalTime).setText(text);
+                }
 
             }catch (Exception ex){
                 Log.i(TAG, ex.getMessage());

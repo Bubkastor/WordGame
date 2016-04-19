@@ -54,7 +54,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/listViewCheat"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </RelativeLayout>
 
@@ -82,15 +82,29 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="@string/activity_Chat_send"
-            android:onClick="buttonSendClick"
             android:textSize="18sp" >
         </Button>
     </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/wrapLaouyt"
+        android:visibility="visible">
+
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imageButton"
+            style="?android:attr/borderlessButtonStyle"
+            android:src="@drawable/photo"
+            android:scaleType="fitXY" />
+    </FrameLayout>
+
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/fullScreenView"
-        android:contentDescription=""
         android:visibility="invisible"
         android:scaleType="fitCenter"
         android:layout_marginBottom="50dp" />

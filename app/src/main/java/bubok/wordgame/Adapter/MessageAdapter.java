@@ -28,11 +28,8 @@ import bubok.wordgame.R;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
-    private final int RED = -1;
-    private final int GREEN = 1;
-
     private Context context;
-    private List<Message> messages;
+    private final List<Message> messages;
     private boolean optionPanel;
     private String leaderId;
 
@@ -42,14 +39,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.row_chat_layout, parent, false);
 
-        ViewHolder vh = new ViewHolder(v,
+        return new ViewHolder(v,
                 (ImageButton) v.findViewById(R.id.buttonCorrect),
                 (ImageView) v.findViewById(R.id.avatar),
                 (TextView) v.findViewById(R.id.textViewName),
                 (TextView) v.findViewById(R.id.textViewMessage),
                 (RelativeLayout) v.findViewById(R.id.optionLayout),
                 (RelativeLayout) v.findViewById(R.id.backgroundLayout));
-        return vh;
     }
 
     @Override
@@ -68,11 +64,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         holder.name.setText(messages.get(position).getUsername());
         holder.message.setText(messages.get(position).getMessage());
+
         switch (Integer.parseInt(messages.get(position).getStatus())) {
-            case GREEN:
+            case 1: //GREEN
                 holder.background.setBackgroundColor(Color.GREEN);
                 break;
-            case RED:
+            case -1: //RED
                 //dislike
                 holder.background.setBackgroundColor(Color.RED);
                 break;
@@ -120,19 +117,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             this.background = background;
         }
 
-        public ImageButton buttonCorrect;
-        public ImageView avatar;
-        public TextView name;
-        public TextView message;
-        public RelativeLayout optionPanel;
-        public RelativeLayout background;
+        public final ImageButton buttonCorrect;
+        public final ImageView avatar;
+        public final TextView name;
+        public final TextView message;
+        public final RelativeLayout optionPanel;
+        public final RelativeLayout background;
     }
 
     public void add(Message message) {
         messages.add(message);
     }
 
-    public String getLeaderId() {
+    private String getLeaderId() {
         return leaderId;
     }
 
@@ -140,7 +137,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         this.leaderId = leaderId;
     }
 
-    public boolean isOptionPanel() {
+    private boolean isOptionPanel() {
         return optionPanel;
     }
 

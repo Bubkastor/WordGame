@@ -14,8 +14,8 @@ import java.util.Map;
 
 public class Storage {
     private static final String TAG = "Storage";
-    private Context context;
-    private Map<String, String> map;
+    private final Context context;
+    private final Map<String, String> map;
 
     public Storage(Context context){
         map = new HashMap<>();

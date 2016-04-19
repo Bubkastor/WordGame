@@ -29,9 +29,7 @@ public class Login extends AppCompatActivity {
     private static final String TAG = "LOGIN";
     private CallbackManager callbackManager;
     private AccessToken accessToken;
-    private Profile mProfile;
-    public static  LruCache<String, Bitmap> mMemoryCache;
-    private String idUser;
+    private static  LruCache<String, Bitmap> mMemoryCache;
     private Profile profile;
     private ProfileTracker profileTracker;
 
@@ -102,7 +100,7 @@ public class Login extends AppCompatActivity {
                     Log.i(TAG, "onError");
                 }
             });
-        mProfile = Profile.getCurrentProfile();
+        Profile mProfile = Profile.getCurrentProfile();
         if (accessToken != null) {
 
             OpenMainScreen();
@@ -111,7 +109,7 @@ public class Login extends AppCompatActivity {
 
     private void OpenMainScreen() {
         Intent intent = new Intent(Login.this, Main.class);
-        idUser = accessToken.getUserId();
+        String idUser = accessToken.getUserId();
         intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
         startActivity(intent);
         finish();

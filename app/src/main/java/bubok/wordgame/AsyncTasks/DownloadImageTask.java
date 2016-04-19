@@ -17,7 +17,7 @@ import bubok.wordgame.Activity.Main;
 
 public class DownloadImageTask extends AsyncTask<String, Void, String> {
 
-    private ImageView viewImage;
+    private final ImageView viewImage;
 
     public DownloadImageTask(ImageView viewImage) {
         this.viewImage = viewImage;

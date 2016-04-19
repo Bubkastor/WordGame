@@ -21,8 +21,8 @@ import bubok.wordgame.Class.User;
 public class UserAdapter extends BaseAdapter {
 
     private static final String TAG = "USER_ADAPTER";
-    private ArrayList<User> userArrayList;
-    private Context context;
+    private final ArrayList<User> userArrayList;
+    private final Context context;
 
     public UserAdapter(Context context, ArrayList<User> userArrayList) {
         this.context = context;
