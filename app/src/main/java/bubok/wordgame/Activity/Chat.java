@@ -35,12 +35,13 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import bubok.wordgame.Adapter.MessageAdapter;
-import bubok.wordgame.AsyncTasks.DownloadImageTask;
 import bubok.wordgame.Class.Message;
 import bubok.wordgame.R;
 import bubok.wordgame.Service.SocketService;
@@ -58,6 +59,7 @@ public class Chat extends AppCompatActivity {
     public final static String EXTRA_MESSAGE_LEAD_IS_ADMIN = "bubok.wordgame.IS.ADMIN";
 
     private static final String TAG = "CHAT";
+    private Context context;
     private ImageView imageView;
     private EditText editTextMessage;
     private MessageAdapter messageAdapter;
@@ -84,7 +86,7 @@ public class Chat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        Context context = Chat.this;
+        context = Chat.this;
         service = new Intent(this, SocketService.class);
         final View activityRootView = findViewById(android.R.id.content);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -108,6 +110,13 @@ public class Chat extends AppCompatActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+
+        findViewById(R.id.buttonSend).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonSendClick();
             }
         });
 
@@ -337,7 +346,6 @@ public class Chat extends AppCompatActivity {
         }
 
         final ImageView expandedImageView = (ImageView) findViewById(R.id.fullScreenView);
-        expandedImageView.setPadding(0, heightDiff, 0, 0);
         expandedImageView.setImageBitmap(((BitmapDrawable) imageView.getDrawable()).getBitmap());
 
         final Rect startBounds = new Rect();
@@ -516,7 +524,8 @@ public class Chat extends AppCompatActivity {
                 switch (mediaType) {
                     case "image":
                         imageView.setVisibility(View.VISIBLE);
-                        new DownloadImageTask(imageView).execute(uri.toString());
+                        Picasso.with(context).load(uri.toString()).into(imageView);
+
                         break;
                     case "audio":
                     case "video":

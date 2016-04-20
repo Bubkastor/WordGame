@@ -86,21 +86,6 @@
         </Button>
     </RelativeLayout>
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/wrapLaouyt"
-        android:visibility="visible">
-
-        <ImageButton
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/imageButton"
-            style="?android:attr/borderlessButtonStyle"
-            android:src="@drawable/photo"
-            android:scaleType="fitXY" />
-    </FrameLayout>
-
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

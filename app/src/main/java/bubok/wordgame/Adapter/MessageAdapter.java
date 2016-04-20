@@ -7,10 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -18,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bubok.wordgame.Activity.Chat;
-import bubok.wordgame.AsyncTasks.DownloadImageTask;
+
 import bubok.wordgame.Class.Message;
 import bubok.wordgame.R;
 
@@ -39,12 +42,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.row_chat_layout, parent, false);
 
+
         return new ViewHolder(v,
                 (ImageButton) v.findViewById(R.id.buttonCorrect),
                 (ImageView) v.findViewById(R.id.avatar),
                 (TextView) v.findViewById(R.id.textViewName),
                 (TextView) v.findViewById(R.id.textViewMessage),
-                (RelativeLayout) v.findViewById(R.id.optionLayout),
                 (RelativeLayout) v.findViewById(R.id.backgroundLayout));
     }
 
@@ -52,15 +55,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, final int position) {
         if (isOptionPanel()) {
             if (!getLeaderId().equals(messages.get(position).getIdUser())) {
-                holder.optionPanel.setVisibility(RelativeLayout.VISIBLE);
+                holder.buttonCorrect.setVisibility(RelativeLayout.VISIBLE);
             } else {
-                holder.optionPanel.setVisibility(RelativeLayout.GONE);
+                holder.buttonCorrect.setVisibility(RelativeLayout.GONE);
             }
         }
 
-        new DownloadImageTask(holder.avatar)
-                .execute(messages.get(position).getAvatar());
-
+        Picasso.with(holder.itemView.getContext())
+                .load(messages.get(position).getAvatar())
+                .resize(50,50)
+                .into(holder.avatar);
 
         holder.name.setText(messages.get(position).getUsername());
         holder.message.setText(messages.get(position).getMessage());
@@ -106,14 +110,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                           ImageView avatar,
                           TextView name,
                           TextView message,
-                          RelativeLayout optionPanel,
                           RelativeLayout background) {
             super(itemView);
             this.buttonCorrect = buttonCorrect;
             this.avatar = avatar;
             this.name = name;
             this.message = message;
-            this.optionPanel = optionPanel;
             this.background = background;
         }
 
@@ -121,7 +123,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public final ImageView avatar;
         public final TextView name;
         public final TextView message;
-        public final RelativeLayout optionPanel;
         public final RelativeLayout background;
     }
 

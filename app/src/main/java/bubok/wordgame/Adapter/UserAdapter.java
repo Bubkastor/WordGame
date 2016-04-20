@@ -9,9 +9,10 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
-import bubok.wordgame.AsyncTasks.DownloadImageTask;
 import bubok.wordgame.R;
 import bubok.wordgame.Class.User;
 
@@ -76,7 +77,7 @@ public class UserAdapter extends BaseAdapter {
             }
         });
 
-        new DownloadImageTask(avatar).execute(userArrayList.get(position).getAvatar());
+        Picasso.with(context).load(userArrayList.get(position).getAvatar()).into(avatar);
 
         return row;
     }

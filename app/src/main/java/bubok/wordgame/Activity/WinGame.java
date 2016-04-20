@@ -1,5 +1,6 @@
 package bubok.wordgame.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,18 +10,20 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import bubok.wordgame.AsyncTasks.DownloadImageTask;
+import com.squareup.picasso.Picasso;
+
 import bubok.wordgame.AsyncTasks.ServerRequestTask;
 import bubok.wordgame.R;
 
 public class WinGame extends AppCompatActivity {
     private static final String TAG = "WIN_GAME";
     private final StringBuilder sendDate = new StringBuilder();
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_win_game);
-
+        context = this;
         Intent intent = getIntent();
 
         TextView textViewWord = (TextView) findViewById(R.id.textViewWord);
@@ -35,7 +38,7 @@ public class WinGame extends AppCompatActivity {
             TextView textViewWinerName = (TextView) findViewById(R.id.textViewWinerName);
             textViewWinerName.setText(intent.getStringExtra(Chat.EXTRA_MESSAGE_WIN_NAME));
             ImageView imageViewWiner = (ImageView) findViewById(R.id.imageViewWiner);
-            new DownloadImageTask(imageViewWiner).execute(intent.getStringExtra(Chat.EXTRA_MESSAGE_WIN_AVATAR));
+            Picasso.with(context).load(intent.getStringExtra(Chat.EXTRA_MESSAGE_WIN_AVATAR)).into(imageViewWiner);
         } else {
             leaveAdmin();
         }
@@ -47,7 +50,7 @@ public class WinGame extends AppCompatActivity {
 
 
         ImageView imageViewLeader = (ImageView) findViewById(R.id.imageViewLeader);
-        new DownloadImageTask(imageViewLeader).execute(intent.getStringExtra(Chat.EXTRA_MESSAGE_LEAD_AVATAR));
+        Picasso.with(context).load(intent.getStringExtra(Chat.EXTRA_MESSAGE_LEAD_AVATAR)).into(imageViewLeader);
 
         Boolean isAdmin = intent.getExtras().getBoolean(Chat.EXTRA_MESSAGE_LEAD_IS_ADMIN);
         if (isAdmin){

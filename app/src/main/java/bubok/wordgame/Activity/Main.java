@@ -33,9 +33,14 @@ import com.facebook.Profile;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONObject;
 
-import bubok.wordgame.AsyncTasks.DownloadImageTask;
+
 import bubok.wordgame.Class.QuickstartPreferences;
 import bubok.wordgame.Class.Storage;
 import bubok.wordgame.R;
@@ -55,8 +60,11 @@ public class Main extends AppCompatActivity {
     private Context context;
     private static SocketService mService;
     private AlertDialog.Builder builder;
-
+    private ImageView avatar;
+    private Picasso picasso;
+    private OkHttpClient okHttpClient;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+
 
     public static Storage storage;
 
@@ -65,8 +73,12 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
         setContentView(R.layout.activity_main);
-        context = Main.this;
+        context = this;
 
+        okHttpClient = new OkHttpClient();
+        picasso = new Picasso.Builder(this)
+                .downloader(new OkHttpDownloader(okHttpClient))
+                .build();
         storage = new Storage(context);
         mRegistrationBroadcastReceiver= new BroadcastReceiver() {
             @Override
@@ -91,6 +103,9 @@ public class Main extends AppCompatActivity {
         checkToken();
 
         Intent intent = getIntent();
+
+        avatar = (ImageView) findViewById(R.id.imageViewAvatar);
+
         if (intent.getExtras() != null) {
             idUSer = intent.getStringExtra(Login.EXTRA_MESSAGE_ID_USER);
         }
@@ -101,6 +116,8 @@ public class Main extends AppCompatActivity {
             Intent intent2 = new Intent(this, RegistrationIntentService.class);
             startService(intent2);
         }
+        DrawerBuilder drawerBuilder = new DrawerBuilder();
+        drawerBuilder.withActivity(this). build();
         Log.i(TAG, "onCreate");
     }
 
@@ -184,9 +201,8 @@ public class Main extends AppCompatActivity {
                     Log.i(TAG, "info");
                     try {
                         setName(jsonObject.getString("username"));
-                        String avatarUrl = jsonObject.getString("avatar");
-                        new DownloadImageTask((ImageView) findViewById(R.id.imageViewAvatar))
-                                .execute(avatarUrl);
+                        setAvatar(jsonObject.getString("avatar"));
+
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                     }
@@ -260,6 +276,15 @@ public class Main extends AppCompatActivity {
             mBound = false;
         }
     };
+
+    private void setAvatar(final String url) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Picasso.with(context).load(url).into(avatar);
+            }
+        });
+    }
 
     private void initButton() {
 

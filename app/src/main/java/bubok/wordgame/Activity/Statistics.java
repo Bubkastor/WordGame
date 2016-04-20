@@ -1,5 +1,6 @@
 package bubok.wordgame.Activity;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -19,7 +22,6 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import bubok.wordgame.AsyncTasks.DownloadImageTask;
 import bubok.wordgame.R;
 
 public class Statistics extends AppCompatActivity {
@@ -29,12 +31,14 @@ public class Statistics extends AppCompatActivity {
     private View totalTime;
     private View totalWins;
     private View leaderRaiting;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
 
+        context = this;
         initView();
 
         Bundle intent =  getIntent().getExtras();
@@ -96,7 +100,7 @@ public class Statistics extends AppCompatActivity {
             Log.i(TAG, "Result: " + result);
             try {
                 if (result.has("AVATAR"))
-                    new DownloadImageTask((ImageView) avatar).execute(result.getString("AVATAR"));
+                    Picasso.with(context).load(result.getString("AVATAR")).into((ImageView) avatar);
 
                 if (result.has("TOTAL_GAME")){
                     String text = getString(R.string.activity_Statistics_total_game) + result.get("TOTAL_GAME");
