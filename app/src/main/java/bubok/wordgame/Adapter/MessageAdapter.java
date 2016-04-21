@@ -1,4 +1,4 @@
-package bubok.wordgame.Adapter;
+package bubok.wordgame.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -20,9 +19,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import bubok.wordgame.Activity.Chat;
+import bubok.wordgame.activity.Chat;
 
-import bubok.wordgame.Class.Message;
+import bubok.wordgame.other.Message;
 import bubok.wordgame.R;
 
 /**

@@ -1,4 +1,4 @@
-package bubok.wordgame.Activity;
+package bubok.wordgame.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -41,10 +41,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import bubok.wordgame.Adapter.MessageAdapter;
-import bubok.wordgame.Class.Message;
+import bubok.wordgame.adapter.MessageAdapter;
+import bubok.wordgame.other.Message;
 import bubok.wordgame.R;
-import bubok.wordgame.Service.SocketService;
+import bubok.wordgame.service.SocketService;
 
 
 public class Chat extends AppCompatActivity {
@@ -556,14 +556,20 @@ public class Chat extends AppCompatActivity {
     public void onBackPressed() {
         //finish();
     }
+
     @Override
-    public void onStop(){
-        Log.i(TAG, "onStop");
+    protected void onDestroy() {
+        super.onDestroy();
         mService.chatSend("leave chat");
         if (mBound) {
             unbindService(mConnection);
             mBound = false;
         }
+    }
+
+    @Override
+    public void onStop(){
+        Log.i(TAG, "onStop");
         super.onStop();
     }
 

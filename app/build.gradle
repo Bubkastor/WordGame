@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "bubok.wordgame"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -37,6 +37,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
+    compile 'com.github.rtoshiro.fullscreenvideoview:fullscreenvideoview:1.1.0'
 }
 
 

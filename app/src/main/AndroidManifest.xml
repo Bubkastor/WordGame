@@ -11,9 +11,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="bubok.wordgame.permission.C2D_MESSAGE" />
 
-    //TODO GCM
-    // Problem synopsis      On SDK version 23 and up, your app data will be automatically backed up, and restored on app install. Your GCM regid will not work across restores, so you must ensure that it is excluded from the back-up set. Use the attribute android:fullBackupContent to specify an @xml resource which configures which files to backup. More info: https://developer.android.com/preview/backup/index.html (at line 14)
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,7 +22,7 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".Activity.Login">
+        <activity android:name=".activity.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,20 +30,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.Chat"
+            android:name=".activity.Chat"
             android:configChanges="orientation|screenSize|fontScale"
             android:screenOrientation="locked"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".Activity.Main"
+            android:name=".activity.Main"
             android:configChanges="orientation|screenSize|fontScale"
             android:launchMode="singleTop"
             android:screenOrientation="locked" />
         <activity
-            android:name=".Activity.StartGame"
+            android:name=".activity.StartGame"
             android:configChanges="orientation|screenSize|fontScale"
             android:launchMode="singleTop"
-            android:parentActivityName=".Activity.Main"
+            android:parentActivityName=".activity.Main"
             android:screenOrientation="locked"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
@@ -55,20 +52,20 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".Activity.WinGame"
+            android:name=".activity.WinGame"
             android:configChanges="orientation|screenSize|fontScale"
-            android:parentActivityName=".Activity.Main"
+            android:parentActivityName=".activity.Main"
             android:screenOrientation="locked" />
 
         <service
-            android:name=".Service.SocketService"
+            android:name=".service.SocketService"
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".Activity.UserList" />
-        <activity android:name=".Activity.About" />
-        <activity android:name=".Activity.Statistics" />
-        <activity android:name=".Activity.SocialFriends" />
+        <activity android:name=".activity.UserList" />
+        <activity android:name=".activity.About" />
+        <activity android:name=".activity.Statistics" />
+        <activity android:name=".activity.SocialFriends" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -81,21 +78,21 @@
         </receiver>
 
         <service
-            android:name=".Class.MyGcmListenerService"
+            android:name=".other.MyGcmListenerService"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
-            android:name=".Service.MyInstanceIDListenerService"
+            android:name=".service.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID"/>
             </intent-filter>
         </service>
         <service
-            android:name=".Service.RegistrationIntentService"
+            android:name=".service.RegistrationIntentService"
             android:exported="false"></service>
 
     </application>

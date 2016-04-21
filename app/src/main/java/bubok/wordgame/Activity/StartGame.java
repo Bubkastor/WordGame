@@ -1,4 +1,4 @@
-package bubok.wordgame.Activity;
+package bubok.wordgame.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -46,10 +46,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-import bubok.wordgame.Class.SingleUploadBroadcastReceiver;
-import bubok.wordgame.Class.User;
+import bubok.wordgame.other.SingleUploadBroadcastReceiver;
+import bubok.wordgame.other.User;
 import bubok.wordgame.R;
-import bubok.wordgame.Service.SocketService;
+import bubok.wordgame.service.SocketService;
 
 
 public class StartGame extends AppCompatActivity implements SingleUploadBroadcastReceiver.Delegate {

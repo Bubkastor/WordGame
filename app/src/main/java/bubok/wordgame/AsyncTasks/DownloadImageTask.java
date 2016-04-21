@@ -1,4 +1,4 @@
-package bubok.wordgame.AsyncTasks;
+package bubok.wordgame.asyncTasks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import java.net.URL;
 
-import bubok.wordgame.Activity.Main;
+import bubok.wordgame.activity.Main;
 
 /**
  * Created by bubok on 22.03.2016.

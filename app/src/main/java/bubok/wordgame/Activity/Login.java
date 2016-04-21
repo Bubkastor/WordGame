@@ -1,4 +1,4 @@
-package bubok.wordgame.Activity;
+package bubok.wordgame.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;

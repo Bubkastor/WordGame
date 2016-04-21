@@ -1,7 +1,7 @@
 /**
  * Created by bubok on 4/12/2016.
  */
-package bubok.wordgame.Class;
+package bubok.wordgame.other;
 
 import android.content.Context;
 import android.graphics.Bitmap;

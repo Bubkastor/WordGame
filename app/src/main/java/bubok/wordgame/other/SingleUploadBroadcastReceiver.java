@@ -1,4 +1,4 @@
-package bubok.wordgame.Class;
+package bubok.wordgame.other;
 
 import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 

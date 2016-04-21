@@ -1,4 +1,4 @@
-package bubok.wordgame.Activity;
+package bubok.wordgame.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -41,11 +41,11 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 
-import bubok.wordgame.Class.QuickstartPreferences;
-import bubok.wordgame.Class.Storage;
+import bubok.wordgame.other.QuickstartPreferences;
+import bubok.wordgame.other.Storage;
 import bubok.wordgame.R;
-import bubok.wordgame.Service.RegistrationIntentService;
-import bubok.wordgame.Service.SocketService;
+import bubok.wordgame.service.RegistrationIntentService;
+import bubok.wordgame.service.SocketService;
 
 
 public class Main extends AppCompatActivity {
