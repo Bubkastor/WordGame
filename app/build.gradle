@@ -38,7 +38,9 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.2.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
     compile 'com.github.rtoshiro.fullscreenvideoview:fullscreenvideoview:1.1.0'
+    compile project(':fullscreenimageview')
 }
+
 
 
 apply plugin: 'com.google.gms.google-services'
