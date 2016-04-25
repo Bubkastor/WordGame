@@ -21,6 +21,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,6 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.github.rtoshiro.view.video.FullscreenVideoLayout;
+
 import net.gotev.uploadservice.MultipartUploadRequest;
 
 import org.json.JSONArray;
@@ -46,6 +49,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import bubok.wordgame.other.ImageFullscreen;
 import bubok.wordgame.other.SingleUploadBroadcastReceiver;
 import bubok.wordgame.other.User;
 import bubok.wordgame.R;
@@ -73,7 +77,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     private View mediaLinear;
     private View editTextSrcWord;
     private View imageViewPrev;
-    private View videoViewPrev;
+    private FullscreenVideoLayout videoViewPrev;
     private View timePrev;
 
     private MediaRecorder mediaRecorder;
@@ -128,7 +132,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         mediaLinear = findViewById(R.id.mediaLayout);
         imageViewPrev = findViewById(R.id.imageViewPrev);
         editTextSrcWord = findViewById(R.id.editTextSrcWord);
-        videoViewPrev = findViewById(R.id.videoViewPrev);
+        videoViewPrev = (FullscreenVideoLayout) findViewById(R.id.videoViewPrev);
+        videoViewPrev.setActivity(this);
         startGameProgress = findViewById(R.id.startGameProgress);
         progressBarLayout = findViewById(R.id.progressBarLayout);
         countInvSend = findViewById(R.id.countInvSend);
@@ -138,7 +143,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         MediaController mediaController = new MediaController(this);
         mediaController.setAnchorView(videoViewPrev);
 
-        ((VideoView) videoViewPrev).setMediaController(mediaController);
+        //videoViewPrev.setMediaController(mediaController);
     }
     private void initButton() {
         findViewById(R.id.buttonAddAudio).setOnClickListener(new View.OnClickListener() {
@@ -688,7 +693,12 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         mediaLinear.setVisibility(View.VISIBLE);
         videoViewPrev.setVisibility(View.VISIBLE);
         Uri videoUri = data.getData();
-        ((VideoView) videoViewPrev).setVideoURI(videoUri);
+        try {
+            videoViewPrev.setVideoURI(videoUri);
+        }
+        catch (Exception ex){
+            Log.i(TAG, ex.getMessage());
+        }
         mediaUri = videoUri;
         media = TYPE_MEDIA.VIDEO;
     }
@@ -700,7 +710,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         imageViewPrev.setVisibility(View.VISIBLE);
 
         Uri selectedImage = data.getData();
-        ((ImageView) imageViewPrev).setImageURI(selectedImage);
+        ((ImageFullscreen) imageViewPrev).setImageURI(selectedImage);
         mediaUri = selectedImage;
         media = TYPE_MEDIA.IMAGE;
     }
@@ -711,7 +721,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         imageViewPrev.setVisibility(View.VISIBLE);
 
         Bitmap photo = (Bitmap) data.getExtras().get("data");
-        ((ImageView) imageViewPrev).setImageBitmap(photo);
+        ((ImageFullscreen) imageViewPrev).setImageBitmap(photo);
         mediaUri = getImageUri(getApplicationContext(), photo);
 
         media = TYPE_MEDIA.IMAGE;
