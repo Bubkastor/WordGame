@@ -21,7 +21,6 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,7 +32,6 @@ import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.github.rtoshiro.view.video.FullscreenVideoLayout;
 
@@ -49,11 +47,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-import bubok.wordgame.other.ImageFullscreen;
 import bubok.wordgame.other.SingleUploadBroadcastReceiver;
 import bubok.wordgame.other.User;
 import bubok.wordgame.R;
 import bubok.wordgame.service.SocketService;
+import com.bubok.fullscreenimageview.FullScreenImageView;
 
 
 public class StartGame extends AppCompatActivity implements SingleUploadBroadcastReceiver.Delegate {
@@ -710,7 +708,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         imageViewPrev.setVisibility(View.VISIBLE);
 
         Uri selectedImage = data.getData();
-        ((ImageFullscreen) imageViewPrev).setImageURI(selectedImage);
+        ((FullScreenImageView) imageViewPrev).setImageURI(selectedImage);
         mediaUri = selectedImage;
         media = TYPE_MEDIA.IMAGE;
     }
@@ -721,7 +719,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         imageViewPrev.setVisibility(View.VISIBLE);
 
         Bitmap photo = (Bitmap) data.getExtras().get("data");
-        ((ImageFullscreen) imageViewPrev).setImageBitmap(photo);
+        ((FullScreenImageView) imageViewPrev).setImageBitmap(photo);
         mediaUri = getImageUri(getApplicationContext(), photo);
 
         media = TYPE_MEDIA.IMAGE;
