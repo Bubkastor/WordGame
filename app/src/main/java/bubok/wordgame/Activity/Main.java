@@ -21,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -30,20 +31,30 @@ import android.widget.Toast;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.Profile;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
+import com.vk.sdk.VKSdk;
+import com.vk.sdk.api.VKApi;
+import com.vk.sdk.api.VKApiConst;
+import com.vk.sdk.api.VKError;
+import com.vk.sdk.api.VKParameters;
+import com.vk.sdk.api.VKRequest;
+import com.vk.sdk.api.VKResponse;
+import com.vk.sdk.api.model.VKApiPlace;
+import com.vk.sdk.api.model.VKList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-
+import bubok.wordgame.R;
 import bubok.wordgame.other.QuickstartPreferences;
 import bubok.wordgame.other.Storage;
-import bubok.wordgame.R;
 import bubok.wordgame.service.RegistrationIntentService;
 import bubok.wordgame.service.SocketService;
 
@@ -67,6 +78,15 @@ public class Main extends AppCompatActivity {
 
 
     public static Storage storage;
+
+    public void VKLogOut(View v){
+        VKSdk.logout();
+
+        if (!VKSdk.isLoggedIn()) {
+            Intent intent = new Intent(Main.this, Login.class);
+            startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +139,54 @@ public class Main extends AppCompatActivity {
         DrawerBuilder drawerBuilder = new DrawerBuilder();
         drawerBuilder.withActivity(this). build();
         Log.i(TAG, "onCreate");
+
+        if (intent.getExtras() != null) {
+            String social = intent.getStringExtra(Login.EXTRA_MESSAGE_ID_SOCIAL);
+
+            if (social.equals("vk")) {
+                View fbButton = findViewById(R.id.login_button_exit);
+                fbButton.setClickable(false);
+                fbButton.setVisibility(View.INVISIBLE);
+                View vkButton = findViewById(R.id.login_button_exit_vk);
+                vkButton.setClickable(true);
+                vkButton.setVisibility(View.VISIBLE);
+
+                VKRequest request = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS, "first_name, last_name, photo_50"));
+                request.executeWithListener(new VKRequest.VKRequestListener() {
+                    @Override
+                    public void onComplete(VKResponse response) {
+                        super.onComplete(response);
+                        try {
+                            JSONArray jArr = response.json.getJSONArray("response");
+                            JSONObject oneObject = jArr.getJSONObject(0);
+                            String lastName = oneObject.getString("last_name");
+                            String firstName = oneObject.getString("first_name");
+                            String avatar = oneObject.getString("photo_50");
+                            setAvatar(avatar);
+                            setName(lastName + " " + firstName);
+                        } catch (JSONException ex) {
+                            Log.i(TAG, "too bad");
+                        }
+                    }
+
+                    @Override
+                    public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
+                        super.attemptFailed(request, attemptNumber, totalAttempts);
+                    }
+
+                    @Override
+                    public void onError(VKError error) {
+                        super.onError(error);
+                    }
+
+                    @Override
+                    public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
+                        super.onProgress(progressType, bytesLoaded, bytesTotal);
+                    }
+                });
+            } else if (social.equals("fb")) {
+            }
+        }
     }
 
     private boolean isReceiverRegistered;

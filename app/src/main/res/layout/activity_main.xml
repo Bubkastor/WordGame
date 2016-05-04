@@ -135,6 +135,16 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal" />
+
+                        <ImageView
+                            android:clickable="false"
+                            android:visibility="invisible"
+                            android:id="@+id/login_button_exit_vk"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:src="@drawable/button_vk"
+                            android:onClick="VKLogOut" />
                     </RelativeLayout>
 
                 </LinearLayout>

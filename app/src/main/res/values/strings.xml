@@ -1,4 +1,6 @@
 <resources>
+    <integer name="com_vk_sdk_AppId">5404025</integer>
+
     <string name="facebook_app_id">1683999828523747</string>
     <string name="app_name">WordGame</string>
 
@@ -55,6 +57,7 @@
     <string name="activity_WG_leader_live">Администратор покинул игру</string>
 
     <!--activity Main-->
+    <string name="activity_Main_log_out">Сменить аккаунт</string>
     <string name="activity_Main_start_game">начать игру</string>
     <string name="activity_Main_statistics">статистика</string>
     <string name="activity_Main_friends">Друзья из </string>
@@ -72,8 +75,6 @@
     <string name="activity_Statistics_total_wins">Количество побед: </string>
     <string name="activity_Statistics_leader_rating">Рейтинг пользователя как ведущего: </string>
     <string name="activity_Statistics_total_time">Общие время, проведённое в игре: </string>
-
-
 
 
 
