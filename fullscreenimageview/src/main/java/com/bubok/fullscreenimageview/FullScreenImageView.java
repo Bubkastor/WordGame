@@ -77,9 +77,7 @@ public class FullScreenImageView extends ImageView {
             View rootView = getRootView();
             View v = rootView.findViewById(android.R.id.content);
             if (v instanceof ViewGroup) {
-                if (viewInflate == null)
-                    initInflate((ViewGroup) v);
-
+                initInflate((ViewGroup) v);
                 ((ViewGroup) v).addView(viewInflate);
             }
 
@@ -89,7 +87,6 @@ public class FullScreenImageView extends ImageView {
             if (v instanceof ViewGroup) {
                 ((ViewGroup) v).removeView(viewInflate);
             }
-
         }
 
         isFullScreen = !isFullScreen;
