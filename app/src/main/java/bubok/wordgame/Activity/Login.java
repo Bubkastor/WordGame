@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.LruCache;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -18,6 +21,11 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.VKCallback;
+import com.vk.sdk.VKScope;
+import com.vk.sdk.VKSdk;
+import com.vk.sdk.api.VKError;
 
 import bubok.wordgame.R;
 
@@ -26,12 +34,21 @@ public class Login extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE_TOKEN = "bubok.wordgame.TOKEN";
     public final static String EXTRA_MESSAGE_ID_USER = "bubok.wordgame.id.user";
+    public final static String EXTRA_MESSAGE_ID_SOCIAL = "bubok.wordgame.social";
     private static final String TAG = "LOGIN";
     private CallbackManager callbackManager;
     private AccessToken accessToken;
     private static  LruCache<String, Bitmap> mMemoryCache;
     private Profile profile;
     private ProfileTracker profileTracker;
+
+    private String[] scope = new String[] {
+            VKScope.FRIENDS, VKScope.EMAIL, VKScope.STATUS
+    };
+
+    public void VKLogIn(View v){
+        VKSdk.login(this, scope);
+    }
 
     private AccessTokenTracker accessTokenTracker;
     @Override
@@ -87,7 +104,7 @@ public class Login extends AppCompatActivity {
 
                     accessToken = loginResult.getAccessToken();
 
-                    OpenMainScreen();
+                    OpenMainScreen("fb");
                 }
 
                 @Override
@@ -98,27 +115,54 @@ public class Login extends AppCompatActivity {
                 @Override
                 public void onError(FacebookException exception) {
                     Log.i(TAG, "onError");
+                    Log.i(TAG, exception.getMessage());
                 }
             });
         Profile mProfile = Profile.getCurrentProfile();
         if (accessToken != null) {
-
-            OpenMainScreen();
+            OpenMainScreen("fb");
+        } else if (VKSdk.isLoggedIn()) {
+            OpenMainScreen("vk");
         }
     }
 
-    private void OpenMainScreen() {
+    private void OpenMainScreen(String socialNetwork) {
         Intent intent = new Intent(Login.this, Main.class);
-        String idUser = accessToken.getUserId();
-        intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
+
+        if (socialNetwork.equals("fb")) {
+            String idUser = accessToken.getUserId();
+            intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
+            intent.putExtra(EXTRA_MESSAGE_ID_SOCIAL, socialNetwork);
+        } else if (socialNetwork.equals("vk")) {
+            //String idUser = accessToken.getUserId();
+            //intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
+            intent.putExtra(EXTRA_MESSAGE_ID_SOCIAL, socialNetwork);
+        } else {
+            return;
+        }
         startActivity(intent);
         finish();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
+
+            @Override
+            public void onResult(VKAccessToken res) {
+                OpenMainScreen("vk");
+                Toast.makeText(getApplicationContext(), "Good", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(VKError error) {
+                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+            }
+        }))
+        {
+            super.onActivityResult(requestCode, resultCode, data);
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

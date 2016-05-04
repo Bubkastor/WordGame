@@ -127,14 +127,12 @@ public class Chat extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.listViewCheat);
 
         imageView = (ImageView) findViewById(R.id.imageViewChat);
-        /*
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 zoomImageFromThumb(imageView);
             }
         });
-        */
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         video = (VideoView) findViewById(R.id.videoView);

@@ -92,14 +92,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <com.github.rtoshiro.view.video.FullscreenVideoLayout
+                        <VideoView
                             android:layout_width="wrap_content"
                             android:layout_height="200dp"
                             android:id="@+id/videoViewPrev"
                             android:visibility="gone"
                             android:layout_gravity="center" />
 
-                        <com.bubok.fullscreenimageview.FullScreenImageView
+                        <ImageView
                             android:layout_width="fill_parent"
                             android:layout_height="200dp"
                             android:id="@+id/imageViewPrev"
