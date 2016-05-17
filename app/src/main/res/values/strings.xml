@@ -1,5 +1,5 @@
 <resources>
-    <integer name="com_vk_sdk_AppId">5404025</integer>
+    <integer name="com_vk_sdk_AppId">5466773</integer>
 
     <string name="facebook_app_id">1683999828523747</string>
     <string name="app_name">WordGame</string>
