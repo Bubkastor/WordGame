@@ -21,17 +21,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.Profile;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -45,16 +42,11 @@ import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
-import com.vk.sdk.api.model.VKApiPlace;
-import com.vk.sdk.api.model.VKList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import bubok.wordgame.R;
 import bubok.wordgame.other.QuickstartPreferences;
-import bubok.wordgame.other.Storage;
 import bubok.wordgame.service.RegistrationIntentService;
 import bubok.wordgame.service.SocketService;
 
@@ -77,7 +69,6 @@ public class Main extends AppCompatActivity {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
 
-    public static Storage storage;
 
     public void VKLogOut(View v){
         VKSdk.logout();
@@ -99,7 +90,6 @@ public class Main extends AppCompatActivity {
         picasso = new Picasso.Builder(this)
                 .downloader(new OkHttpDownloader(okHttpClient))
                 .build();
-        storage = new Storage(context);
         mRegistrationBroadcastReceiver= new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -385,6 +375,22 @@ public class Main extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Main.this, StartGame.class);
                 startActivity(intent);
+            }
+        });
+
+        View buttonShare = findViewById(R.id.buttonShare);
+        if(buttonShare != null)
+        buttonShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                intent.setType("*/*");
+
+                intent.putExtra(Intent.EXTRA_TEXT,"\n Смотри в приложении \"Скорей Сюда\" \n" + "https://play.google.com/store/apps/details?id=com.shazam.android" );
+                try {
+                    context.startActivity(Intent.createChooser(intent, "Поделиться с помощью").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                } catch (android.content.ActivityNotFoundException ex) {
+                }
             }
         });
 

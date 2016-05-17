@@ -147,6 +147,12 @@
                             android:onClick="VKLogOut" />
                     </RelativeLayout>
 
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Shared example"
+                        android:id="@+id/buttonShare" />
+
                 </LinearLayout>
             </RelativeLayout>
 

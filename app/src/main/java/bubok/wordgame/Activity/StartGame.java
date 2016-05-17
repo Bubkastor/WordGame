@@ -29,10 +29,9 @@ import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
+import com.github.rtoshiro.view.video.FullscreenVideoLayout;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 
@@ -135,10 +134,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         countInvAccept = findViewById(R.id.countInvAccept);
         timePrev = findViewById(R.id.timePrev);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
-        MediaController mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoViewPrev);
-
-        ((VideoView) videoViewPrev).setMediaController(mediaController);
     }
     private void initButton() {
         findViewById(R.id.buttonAddAudio).setOnClickListener(new View.OnClickListener() {
@@ -239,6 +234,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
 
     }
+
     private void initDialog() {
 
         builder = new AlertDialog.Builder(context);
@@ -688,7 +684,12 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         mediaLinear.setVisibility(View.VISIBLE);
         videoViewPrev.setVisibility(View.VISIBLE);
         Uri videoUri = data.getData();
-        ((VideoView) videoViewPrev).setVideoURI(videoUri);
+        try {
+            ((FullscreenVideoLayout)videoViewPrev).setVideoURI(videoUri);
+        } catch (Exception e){
+            Log.i(TAG, e.getMessage());
+        }
+
         mediaUri = videoUri;
         media = TYPE_MEDIA.VIDEO;
     }
