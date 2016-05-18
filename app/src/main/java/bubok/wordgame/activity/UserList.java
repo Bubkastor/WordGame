@@ -1,4 +1,4 @@
-package bubok.wordgame.activity2;
+package bubok.wordgame.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +8,9 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import bubok.wordgame.adapter2.UserAdapter;
+import bubok.wordgame.adapter.UserAdapter;
 import bubok.wordgame.R;
-import bubok.wordgame.other2.User;
+import bubok.wordgame.other.User;
 
 public class UserList extends AppCompatActivity {
     private UserAdapter userAdapter;

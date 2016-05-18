@@ -1,4 +1,4 @@
-package bubok.wordgame.adapter2;
+package bubok.wordgame.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import bubok.wordgame.R;
-import bubok.wordgame.other2.User;
+import bubok.wordgame.other.User;
 
 /**
  * Created by bubok on 21.03.2016.

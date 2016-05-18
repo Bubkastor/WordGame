@@ -1,4 +1,4 @@
-package bubok.wordgame.other2;
+package bubok.wordgame.other;
 
 import android.content.Intent;
 
@@ -15,7 +15,7 @@ public class Application extends  android.app.Application {
         @Override
         public void onVKAccessTokenChanged(VKAccessToken oldToken, VKAccessToken newToken) {
             if (newToken == null) {
-                Intent intent = new Intent(Application.this, bubok.wordgame.activity2.Login.class);
+                Intent intent = new Intent(Application.this, bubok.wordgame.activity.Login.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }

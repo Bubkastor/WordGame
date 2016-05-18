@@ -1,4 +1,4 @@
-package bubok.wordgame.asyncTasks3;
+package bubok.wordgame.asyncTasks;
 
 import android.os.AsyncTask;
 import android.util.Log;

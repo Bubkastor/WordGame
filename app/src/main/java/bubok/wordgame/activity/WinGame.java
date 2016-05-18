@@ -1,4 +1,4 @@
-package bubok.wordgame.activity2;
+package bubok.wordgame.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import bubok.wordgame.asyncTasks3.ServerRequestTask;
+import bubok.wordgame.asyncTasks.ServerRequestTask;
 import bubok.wordgame.R;
 
 public class WinGame extends AppCompatActivity {

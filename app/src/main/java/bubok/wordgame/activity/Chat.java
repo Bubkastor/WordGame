@@ -1,4 +1,4 @@
-package bubok.wordgame.activity2;
+package bubok.wordgame.activity;
 
 import android.animation.Animator;
 import android.content.ComponentName;
@@ -35,10 +35,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import bubok.wordgame.adapter2.MessageAdapter;
-import bubok.wordgame.other2.Message;
+import bubok.wordgame.adapter.MessageAdapter;
+import bubok.wordgame.other.Message;
 import bubok.wordgame.R;
-import bubok.wordgame.service2.SocketService;
+import bubok.wordgame.service.SocketService;
 
 
 public class Chat extends AppCompatActivity {

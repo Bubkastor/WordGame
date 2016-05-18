@@ -1,7 +1,7 @@
 /**
  * Created by bubok on 08.04.2016.
  */
-package bubok.wordgame.other2;
+package bubok.wordgame.other;
 
 public class QuickstartPreferences {
 

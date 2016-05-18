@@ -1,4 +1,4 @@
-package bubok.wordgame.activity2;
+package bubok.wordgame.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

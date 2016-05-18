@@ -1,4 +1,4 @@
-package bubok.wordgame.other2;
+package bubok.wordgame.other;
 
 import android.graphics.Bitmap;
 

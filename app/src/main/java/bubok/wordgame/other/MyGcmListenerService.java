@@ -1,7 +1,7 @@
 /**
  * Created by bubok on 08.04.2016.
  */
-package bubok.wordgame.other2;
+package bubok.wordgame.other;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,7 +15,7 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
-import bubok.wordgame.activity2.Main;
+import bubok.wordgame.activity.Main;
 
 public class MyGcmListenerService extends GcmListenerService {
     private static final String TAG = "MyGcmListenerService";

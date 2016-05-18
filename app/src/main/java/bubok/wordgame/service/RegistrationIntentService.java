@@ -1,4 +1,4 @@
-package bubok.wordgame.service2;
+package bubok.wordgame.service;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import com.google.android.gms.iid.InstanceID;
 
 import java.io.IOException;
 
-import bubok.wordgame.other2.QuickstartPreferences;
+import bubok.wordgame.other.QuickstartPreferences;
 import bubok.wordgame.R;
 
 public class RegistrationIntentService extends IntentService {
