@@ -49,7 +49,7 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:gravity="center_horizontal"
                     android:id="@+id/buttonMediaLinear"
                     android:visibility="visible">
@@ -60,7 +60,8 @@
                         android:id="@+id/buttonAddPhoto"
                         android:src="@drawable/photo"
                         android:scaleType="fitCenter"
-                        style="?android:attr/borderlessButtonStyle" />
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_gravity="top" />
 
                     <ImageButton
                         android:layout_width="100dp"
@@ -69,7 +70,8 @@
                         android:src="@drawable/video"
                         android:scaleType="fitCenter"
                         style="?android:attr/borderlessButtonStyle"
-                        android:nestedScrollingEnabled="false" />
+                        android:nestedScrollingEnabled="false"
+                        android:layout_gravity="center_vertical" />
 
                     <ImageButton
                         android:layout_width="100dp"
@@ -78,9 +80,15 @@
                         android:src="@drawable/audio"
                         android:nestedScrollingEnabled="false"
                         android:scaleType="fitCenter"
-                        style="?android:attr/borderlessButtonStyle"/>
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_gravity="bottom" />
                 </LinearLayout>
 
+                <View
+                    android:layout_width="150dp"
+                    android:layout_height="2dp"
+                    android:background="@color/colorWhite"
+                    android:layout_alignParentBottom="true" />
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -160,11 +168,12 @@
 
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="30dp"
                     android:id="@+id/editTextSrcWord"
                     android:background="@color/colorWhite"
                     android:inputType="text"
-                    android:hint="@string/srcWordToltip" />
+                    android:hint="@string/srcWordToltip"
+                    android:layout_marginBottom="20dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -178,9 +187,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/AddFrends"
+                    android:textAllCaps="false"
                     android:id="@+id/buttonAddFrends"
                     android:background="@color/colorButton"
-                    android:elegantTextHeight="false" />
+                    android:elegantTextHeight="false"
+                    android:singleLine="false"
+                    android:enabled="false"
+                    android:textColor="@color/colorWhite" />
             </LinearLayout>
 
             <LinearLayout
@@ -232,6 +245,12 @@
                         android:text="0"
                         android:layout_weight="0.71" />
                 </LinearLayout>
+                <View
+                    android:layout_gravity="right"
+                    android:layout_width="200dp"
+                    android:layout_height="2dp"
+                    android:background="@color/colorWhite"
+                    android:layout_alignParentBottom="true" />
             </LinearLayout>
 
             <RelativeLayout
