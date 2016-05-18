@@ -1,4 +1,4 @@
-package bubok.wordgame.service;
+package bubok.wordgame.service2;
 
 
 import android.app.Service;

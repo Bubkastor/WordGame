@@ -1,7 +1,7 @@
 /**
  * Created by bubok on 08.04.2016.
  */
-package bubok.wordgame.service;
+package bubok.wordgame.service2;
 
 import android.content.Intent;
 

@@ -1,16 +1,11 @@
-package bubok.wordgame.activity;
+package bubok.wordgame.activity2;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,7 +20,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -41,10 +35,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import bubok.wordgame.adapter.MessageAdapter;
-import bubok.wordgame.other.Message;
+import bubok.wordgame.adapter2.MessageAdapter;
+import bubok.wordgame.other2.Message;
 import bubok.wordgame.R;
-import bubok.wordgame.service.SocketService;
+import bubok.wordgame.service2.SocketService;
 
 
 public class Chat extends AppCompatActivity {

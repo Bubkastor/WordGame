@@ -1,4 +1,4 @@
-package bubok.wordgame.activity;
+package bubok.wordgame.activity2;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -46,9 +46,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import bubok.wordgame.R;
-import bubok.wordgame.other.QuickstartPreferences;
-import bubok.wordgame.service.RegistrationIntentService;
-import bubok.wordgame.service.SocketService;
+import bubok.wordgame.other2.QuickstartPreferences;
+import bubok.wordgame.service2.RegistrationIntentService;
+import bubok.wordgame.service2.SocketService;
 
 
 public class Main extends AppCompatActivity {

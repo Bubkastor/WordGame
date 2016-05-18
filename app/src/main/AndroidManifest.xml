@@ -12,7 +12,7 @@
     <uses-permission android:name="bubok.wordgame.permission.C2D_MESSAGE" />
 
     <application
-        android:name=".other.Application"
+        android:name=".other2.Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,7 +23,7 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".activity.Login">
+        <activity android:name=".activity2.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,20 +31,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.Chat"
+            android:name=".activity2.Chat"
             android:configChanges="orientation|screenSize|fontScale"
             android:screenOrientation="locked"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".activity.Main"
+            android:name=".activity2.Main"
             android:configChanges="orientation|screenSize|fontScale"
             android:launchMode="singleTop"
             android:screenOrientation="locked" />
         <activity
-            android:name=".activity.StartGame"
+            android:name=".activity2.StartGame"
             android:configChanges="orientation|screenSize|fontScale"
             android:launchMode="singleTop"
-            android:parentActivityName=".activity.Main"
+            android:parentActivityName=".activity2.Main"
             android:screenOrientation="locked"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
@@ -53,20 +53,20 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".activity.WinGame"
+            android:name=".activity2.WinGame"
             android:configChanges="orientation|screenSize|fontScale"
-            android:parentActivityName=".activity.Main"
+            android:parentActivityName=".activity2.Main"
             android:screenOrientation="locked" />
 
         <service
-            android:name=".service.SocketService"
+            android:name=".service2.SocketService"
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".activity.UserList" />
-        <activity android:name=".activity.About" />
-        <activity android:name=".activity.Statistics" />
-        <activity android:name=".activity.SocialFriends" />
+        <activity android:name=".activity2.UserList" />
+        <activity android:name=".activity2.About" />
+        <activity android:name=".activity2.Statistics" />
+        <activity android:name=".activity2.SocialFriends" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -79,21 +79,21 @@
         </receiver>
 
         <service
-            android:name=".other.MyGcmListenerService"
+            android:name=".other2.MyGcmListenerService"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
-            android:name=".service.MyInstanceIDListenerService"
+            android:name=".service2.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID"/>
             </intent-filter>
         </service>
         <service
-            android:name=".service.RegistrationIntentService"
+            android:name=".service2.RegistrationIntentService"
             android:exported="false"></service>
 
     </application>

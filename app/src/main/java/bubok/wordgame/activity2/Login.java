@@ -1,4 +1,4 @@
-package bubok.wordgame.activity;
+package bubok.wordgame.activity2;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;

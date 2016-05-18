@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:screenOrientation="portrait"
-    tools:context=".activity.StartGame"
+    tools:context=".activity2.StartGame"
     android:scrollIndicators="right"
     android:nestedScrollingEnabled="true">
 

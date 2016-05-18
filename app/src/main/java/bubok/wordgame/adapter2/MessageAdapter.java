@@ -1,4 +1,4 @@
-package bubok.wordgame.adapter;
+package bubok.wordgame.adapter2;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -19,9 +19,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import bubok.wordgame.activity.Chat;
+import bubok.wordgame.activity2.Chat;
 
-import bubok.wordgame.other.Message;
+import bubok.wordgame.other2.Message;
 import bubok.wordgame.R;
 
 /**
