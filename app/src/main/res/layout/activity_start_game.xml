@@ -93,8 +93,8 @@
                         android:layout_height="match_parent">
 
                         <com.github.rtoshiro.view.video.FullscreenVideoLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="200dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:id="@+id/videoViewPrev"
                             android:visibility="gone"
                             android:layout_gravity="center" />
@@ -162,6 +162,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/editTextSrcWord"
+                    android:background="@color/colorWhite"
                     android:inputType="text"
                     android:hint="@string/srcWordToltip" />
             </LinearLayout>
@@ -243,20 +244,15 @@
                     android:layout_height="match_parent"
                     android:gravity="center_horizontal">
 
-                    <Button
-                        android:layout_width="200dp"
+                    <ImageButton
+                        android:layout_width="wrap_content"
                         android:layout_height="200dp"
                         android:text="@string/game"
                         android:id="@+id/buttonRunGame"
-                        android:background="@drawable/oval_button"
-                        android:layout_alignParentEnd="false"
-                        android:layout_alignParentStart="false"
-                        android:layout_alignParentTop="false"
-                        android:layout_alignParentLeft="false"
-                        android:layout_alignParentBottom="false"
-                        android:layout_alignParentRight="false"
-                        android:layout_alignWithParentIfMissing="false"
-                        android:allowUndo="false" />
+                        android:src="@drawable/start"
+                        android:allowUndo="false"
+                        android:scaleType="fitCenter"
+                        style="?android:attr/borderlessButtonStyle" />
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -267,7 +263,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/progressBarLayout"
-        android:background="#a5000000"
+        android:background="@color/colorPrimary"
         android:visibility="gone"
         android:foregroundGravity="center"
         android:gravity="center"

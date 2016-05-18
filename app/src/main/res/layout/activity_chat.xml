@@ -8,13 +8,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="100dp"
         android:id="@+id/contMedia"
         android:windowSoftInputMode="adjustResize"
         android:layout_alignParentTop="true"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin">
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:gravity="center">
 
         <com.bubok.fullscreenimageview.FullScreenImageView
             android:layout_width="match_parent"
@@ -30,17 +31,18 @@
             android:layout_alignParentRight="false"
             android:foregroundGravity="center_vertical" />
 
-        <WebView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/webView"
-            android:visibility="gone" />
-
         <VideoView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/videoView"
             android:visibility="gone" />
+
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/showMedia"
+            style="?android:attr/borderlessButtonStyle"
+            android:scaleType="fitCenter" />
 
 
     </RelativeLayout>
@@ -85,14 +87,6 @@
             android:textSize="18sp" >
         </Button>
     </RelativeLayout>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fullScreenView"
-        android:visibility="invisible"
-        android:scaleType="fitCenter"
-        android:layout_marginBottom="50dp" />
 
 
 </RelativeLayout>

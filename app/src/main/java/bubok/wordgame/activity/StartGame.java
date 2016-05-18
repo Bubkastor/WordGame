@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
@@ -568,6 +569,11 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         });
 
     }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
 
     private void openUsersOnline(JSONArray jsonArray) {
         Log.i(TAG, "openUsersOnline");
@@ -685,6 +691,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         videoViewPrev.setVisibility(View.VISIBLE);
         Uri videoUri = data.getData();
         try {
+            ((FullscreenVideoLayout)videoViewPrev).setActivity(this);
             ((FullscreenVideoLayout)videoViewPrev).setVideoURI(videoUri);
         } catch (Exception e){
             Log.i(TAG, e.getMessage());

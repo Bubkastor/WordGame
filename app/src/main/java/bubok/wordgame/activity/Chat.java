@@ -1,6 +1,5 @@
 package bubok.wordgame.activity;
 
-import android.animation.Animator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -15,26 +14,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.method.Touch;
+import android.util.EventLog;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.bubok.fullscreenimageview.FullScreenImageView;
 import com.squareup.picasso.Picasso;
-
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-
 import bubok.wordgame.adapter.MessageAdapter;
 import bubok.wordgame.other.Message;
 import bubok.wordgame.R;
@@ -54,19 +52,16 @@ public class Chat extends AppCompatActivity {
 
     private static final String TAG = "CHAT";
     private Context context;
-    private ImageView imageView;
+    private FullScreenImageView imageView;
     private EditText editTextMessage;
     private MessageAdapter messageAdapter;
+    private View showMedia;
     private String mGame;
     private String idUser;
 
     private VideoView video;
 
     private Boolean isAdmin;
-
-    private int heightDiff = 0;
-    private Animator mCurrentAnimator;
-    private int mShortAnimationDuration;
 
     private Intent service;
     public static SocketService mService;
@@ -82,18 +77,6 @@ public class Chat extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         context = Chat.this;
         service = new Intent(this, SocketService.class);
-        final View activityRootView = findViewById(android.R.id.content);
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                Rect r = new Rect();
-                activityRootView.getWindowVisibleDisplayFrame(r);
-                heightDiff = activityRootView.getRootView().getHeight() - (r.bottom - r.top);
-            }
-        });
-
-        WebView webView = (WebView) findViewById(R.id.webView);
-        WebChromeClient chromeClient = new WebChromeClient();
-        webView.setWebChromeClient(chromeClient);
 
         editTextMessage = (EditText) findViewById(R.id.editTextMessage);
         editTextMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -113,6 +96,7 @@ public class Chat extends AppCompatActivity {
                 buttonSendClick();
             }
         });
+        showMedia = findViewById(R.id.showMedia);
 
         Intent intent = getIntent();
         idUser = intent.getStringExtra(Main.EXTRA_MESSAGE_USED_ID_USER);
@@ -120,9 +104,7 @@ public class Chat extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.listViewCheat);
 
-        imageView = (ImageView) findViewById(R.id.imageViewChat);
-
-        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        imageView = (FullScreenImageView) findViewById(R.id.imageViewChat);
 
         video = (VideoView) findViewById(R.id.videoView);
         MediaController mc = new MediaController(context);
@@ -178,6 +160,10 @@ public class Chat extends AppCompatActivity {
         };
         itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
 
+    }
+
+    private void showPhoto(){
+        imageView.setFullScreen();
     }
 
     private final ServiceConnection mConnection = new ServiceConnection() {
@@ -322,7 +308,6 @@ public class Chat extends AppCompatActivity {
 
     @Override
     public void onStart() {
-        Log.i(TAG, "onStart");
         super.onStart();
         if (!mBound)
             bindService(service, mConnection, Context.BIND_AUTO_CREATE);
@@ -339,9 +324,9 @@ public class Chat extends AppCompatActivity {
         });
     }
 
-    private void closeCheat(String winerName, String winerAvatar, String leaderId, String leaderName, String leaderAvatar, String timeGame, String word) {
+    private void closeCheat(String winnerName, String winerAvatar, String leaderId, String leaderName, String leaderAvatar, String timeGame, String word) {
         Intent intent = new Intent(Chat.this, WinGame.class);
-        intent.putExtra(EXTRA_MESSAGE_WIN_NAME, winerName);
+        intent.putExtra(EXTRA_MESSAGE_WIN_NAME, winnerName);
         intent.putExtra(EXTRA_MESSAGE_WIN_AVATAR, winerAvatar);
         intent.putExtra(EXTRA_MESSAGE_LEAD_AVATAR, leaderAvatar);
         intent.putExtra(EXTRA_MESSAGE_LEAD_NAME, leaderName);
@@ -401,12 +386,20 @@ public class Chat extends AppCompatActivity {
 
                 switch (mediaType) {
                     case "image":
-                        imageView.setVisibility(View.VISIBLE);
+                        ((ImageButton)showMedia).setImageResource(R.drawable.photo);
+                        showMedia.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showPhoto();
+                            }
+                        });
                         Picasso.with(context).load(uri.toString()).into(imageView);
 
                         break;
                     case "audio":
+                        ((ImageButton)showMedia).setImageResource(R.drawable.audio);
                     case "video":
+                        ((ImageButton)showMedia).setImageResource(R.drawable.video);
                         video.setVisibility(View.VISIBLE);
                         try {
                             video.setVideoURI(uri);
@@ -425,14 +418,9 @@ public class Chat extends AppCompatActivity {
                     default:
                         break;
                 }
+
             }
         });
-    }
-
-
-
-    public void onBackPressed() {
-        //finish();
     }
 
     @Override
@@ -443,12 +431,6 @@ public class Chat extends AppCompatActivity {
             unbindService(mConnection);
             mBound = false;
         }
-    }
-
-    @Override
-    public void onStop(){
-        Log.i(TAG, "onStop");
-        super.onStop();
     }
 
 }

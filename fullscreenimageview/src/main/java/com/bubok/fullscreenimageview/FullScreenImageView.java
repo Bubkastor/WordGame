@@ -72,7 +72,7 @@ public class FullScreenImageView extends ImageView {
         mAttacher = new PhotoViewAttacher(imageView);
     }
 
-    private void setFullScreen() {
+    public void setFullScreen() {
         if (this.isFullScreen) {
             View rootView = getRootView();
             View v = rootView.findViewById(android.R.id.content);
