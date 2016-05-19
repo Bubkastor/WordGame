@@ -18,8 +18,8 @@
 
     <string name="srcWordToltip">Загадайте слово</string>
     <string name="AddFrends">Добавить/Удалить игроков</string>
-    <string name="titleInvSend">Приглашений выслано: </string>
-    <string name="TitleAcceptSend">Потвердили участие: </string>
+    <string name="TitleAccept">Потвердили участие </string>
+    <string name="TitleAccept_2"> из </string>
 
     <string name="message">asd</string>
     <string name="mainScreen">На главный экран</string>

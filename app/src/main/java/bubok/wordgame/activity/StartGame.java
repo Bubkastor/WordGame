@@ -24,7 +24,9 @@ import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Chronometer;
@@ -68,7 +70,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     private View countInvAccept;
     private View startGameProgress;
     private View progressBarLayout;
-    private View titleLinear;
     private View buttonMediaLinear;
     private View mediaLinear;
     private View editTextSrcWord;
@@ -125,7 +126,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     private boolean isPlay = false;
 
     private void initView() {
-        titleLinear = findViewById(R.id.titleLinear);
         buttonMediaLinear = findViewById(R.id.buttonMediaLinear);
         mediaLinear = findViewById(R.id.mediaLayout);
         imageViewPrev = findViewById(R.id.imageViewPrev);
@@ -660,12 +660,11 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
     private void changeVisibleMediaContainer() {
         int optVisible;
-        if (titleLinear.getVisibility() == LinearLayout.VISIBLE) {
+        if (buttonMediaLinear.getVisibility() == LinearLayout.VISIBLE) {
             optVisible = LinearLayout.GONE;
         } else {
             optVisible = LinearLayout.VISIBLE;
         }
-        titleLinear.setVisibility(optVisible);
         buttonMediaLinear.setVisibility(optVisible);
         separatorTop.setVisibility(optVisible);
     }

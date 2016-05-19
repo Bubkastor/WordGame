@@ -32,23 +32,6 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/titleLinear"
-                    android:gravity="center_horizontal"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/activity_SG_choise"
-                        android:id="@+id/textView"
-                        android:padding="10dp"
-                        android:gravity="center_horizontal" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:gravity="center_horizontal"
                     android:id="@+id/buttonMediaLinear"
@@ -85,7 +68,7 @@
                 </LinearLayout>
 
                 <View
-                    android:layout_width="150dp"
+                    android:layout_width="175dp"
                     android:layout_height="2dp"
                     android:background="@color/colorWhite"
                     android:layout_alignParentBottom="true"
@@ -186,7 +169,7 @@
 
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:text="@string/AddFrends"
                     android:textAllCaps="false"
                     android:id="@+id/buttonAddFrends"
@@ -194,7 +177,8 @@
                     android:elegantTextHeight="false"
                     android:singleLine="false"
                     android:enabled="false"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"
+                    android:layout_marginBottom="20dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -208,34 +192,15 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:weightSum="1">
+                    android:weightSum="1"
+                    android:gravity="center"
+                    android:layout_marginBottom="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/titleInvSend"
-                        android:id="@+id/titleInvSend" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:id="@+id/countInvSend"
-                        android:text="0" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:weightSum="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/TitleAcceptSend"
+                        android:text="@string/TitleAccept"
                         android:id="@+id/titleAcceptSend" />
 
                     <TextView
@@ -244,15 +209,34 @@
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:id="@+id/countInvAccept"
                         android:text="0"
-                        android:layout_weight="0.71" />
+                        android:layout_weight="0.15"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/TitleAccept_2"
+                        android:id="@+id/titleInvSend" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/countInvSend"
+                        android:text="0"
+                        android:layout_weight="0.15"
+                        android:textAlignment="center" />
                 </LinearLayout>
+
                 <View
                     android:layout_gravity="right"
-                    android:layout_width="200dp"
+                    android:layout_width="175dp"
                     android:layout_height="2dp"
                     android:background="@color/colorWhite"
                     android:layout_alignParentBottom="true"
-                    android:id="@+id/separatorBot" />
+                    android:id="@+id/separatorBot"
+                    android:layout_marginBottom="20dp" />
             </LinearLayout>
 
             <RelativeLayout
