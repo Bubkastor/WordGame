@@ -8,6 +8,18 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/contCheat"
+        android:layout_above="@+id/llSend">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listViewCheat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
         android:layout_height="100dp"
         android:id="@+id/contMedia"
         android:windowSoftInputMode="adjustResize"
@@ -42,23 +54,11 @@
             android:layout_height="100dp"
             android:id="@+id/showMedia"
             style="?android:attr/borderlessButtonStyle"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:layout_gravity="center_horizontal" />
 
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/contCheat"
-        android:layout_above="@+id/llSend"
-        android:layout_below="@+id/contMedia">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/listViewCheat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
+    </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/llSend"
