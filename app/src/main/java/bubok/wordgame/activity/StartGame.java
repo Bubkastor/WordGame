@@ -75,6 +75,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
     private View imageViewPrev;
     private View videoViewPrev;
     private View timePrev;
+    private View separatorTop;
+    private View separatorBot;
 
     private MediaRecorder mediaRecorder;
     private MediaPlayer mediaPlayer;
@@ -135,7 +137,10 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         countInvAccept = findViewById(R.id.countInvAccept);
         timePrev = findViewById(R.id.timePrev);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
+        separatorTop = findViewById(R.id.separatorTop);
+        separatorBot = findViewById(R.id.separatorBot);
     }
+
     private void initButton() {
         findViewById(R.id.buttonAddAudio).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -662,6 +667,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
         titleLinear.setVisibility(optVisible);
         buttonMediaLinear.setVisibility(optVisible);
+        separatorTop.setVisibility(optVisible);
     }
 
     @Override
@@ -700,7 +706,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         mediaUri = videoUri;
         media = TYPE_MEDIA.VIDEO;
     }
-
 
     private void showPreviewPhotoGallery(Intent data) {
         changeVisibleMediaContainer();
