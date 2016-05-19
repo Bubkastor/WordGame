@@ -53,8 +53,17 @@ import bubok.wordgame.service.SocketService;
 
 public class Main extends AppCompatActivity {
 
+    /**
+     *использется для передачи интента id_game
+     */
     public static final String EXTRA_MESSAGE_USED_GAME = "bubok.wordgame.game";
+    /**
+     *использется для передачи интента id_user
+     */
     public static final String EXTRA_MESSAGE_USED_ID_USER = "bubok.wordgame.id.user";
+    /**
+     * Для логирования
+     */
     private static final String TAG = "MAIN";
     private boolean mBound;
     private static Intent service;
@@ -99,12 +108,9 @@ public class Main extends AppCompatActivity {
                         .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
                 if (sentToken) {
                     Log.i("BROAD", "true");
-                   // mInformationTextView.setText(getString(R.string.gcm_send_message));
                 } else {
                     Log.i("BROAD", "false");
-                   // mInformationTextView.setText(getString(R.string.token_error_message));
                 }
-
             }
         };
         registerReceiver();
@@ -190,6 +196,7 @@ public class Main extends AppCompatActivity {
     }
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
     private boolean checkPlayServices() {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
@@ -235,8 +242,10 @@ public class Main extends AppCompatActivity {
             SocketService.SocketIOBinder binder = (SocketService.SocketIOBinder) service;
             mService = binder.getService();
             binder.setMainListener(new SocketService.SocketMainListener() {
+
                 @Override
                 public void onConnected() {
+
                 }
 
                 @Override

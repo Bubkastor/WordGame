@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.ExpandedMenuView;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
@@ -24,7 +25,12 @@ import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
+import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKError;
+import com.vk.sdk.api.VKRequest;
+import com.vk.sdk.api.VKResponse;
+import com.vk.sdk.api.model.VKApiUserFull;
+import com.vk.sdk.api.model.VKList;
 
 import bubok.wordgame.R;
 
@@ -113,7 +119,6 @@ public class Login extends AppCompatActivity {
 
                 @Override
                 public void onError(FacebookException exception) {
-                    Log.i(TAG, "onError");
                     Log.i(TAG, exception.getMessage());
                 }
             });
@@ -125,8 +130,8 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    private void OpenMainScreen(String socialNetwork) {
-        Intent intent = new Intent(Login.this, Main.class);
+    private void OpenMainScreen(final String socialNetwork) {
+        final Intent intent = new Intent(Login.this, Main.class);
 
         if (socialNetwork.equals("fb")) {
             String idUser = accessToken.getUserId();
@@ -134,8 +139,31 @@ public class Login extends AppCompatActivity {
             intent.putExtra(EXTRA_MESSAGE_ID_SOCIAL, socialNetwork);
         } else if (socialNetwork.equals("vk")) {
             //String idUser = accessToken.getUserId();
+            VKRequest request = VKApi.users().get();
             //intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
-            intent.putExtra(EXTRA_MESSAGE_ID_SOCIAL, socialNetwork);
+            request.executeWithListener(new VKRequest.VKRequestListener() {
+                @Override
+                public void onComplete(VKResponse response) {
+                    Log.i(TAG, "onComplete");
+                    VKList<VKApiUserFull> list = (VKList<VKApiUserFull>) response.parsedModel;
+                    try {
+                        String idUser = list.get(0).fields.getString("id");
+                        //intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
+                        intent.putExtra(EXTRA_MESSAGE_ID_SOCIAL, socialNetwork);
+                    }catch (Exception ex){
+                        Log.i(TAG, ex.getMessage());
+                    }
+                }
+                @Override
+                public void onError(VKError error) {
+                    Log.i(TAG, "onComplete");
+                }
+                @Override
+                public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
+                    Log.i(TAG, "onComplete");
+                }
+            });
+
         } else {
             return;
         }
