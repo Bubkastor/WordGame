@@ -20,6 +20,9 @@ import io.socket.emitter.Emitter;
  * Created by bubok on 17.03.2016.
  */
 
+/**
+ * Сервис используеший сокет для связи с сервером
+ */
 public class SocketService extends Service {
 
     private static final String TAG = "SOCKET_SERVICE";
@@ -37,6 +40,13 @@ public class SocketService extends Service {
         Log.i(TAG, "SocketService");
     }
 
+    /**
+     * Запуск сокета и настройка
+     * @param intent
+     * @param flags
+     * @param startId
+     * @return
+     */
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand");
         String url = intent.getStringExtra("url");
@@ -69,6 +79,9 @@ public class SocketService extends Service {
         return super.onUnbind(intent);
     }
 
+    /**
+     * Настройка комманд использеющие интерфейс  SocketMainListener
+     */
     private void setupSocketMain() {
         mainSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
@@ -141,6 +154,9 @@ public class SocketService extends Service {
         });
     }
 
+    /**
+     * Настройка комманд использеющие интерфейс  SocketChatListener
+     */
     private void setupSocketChat(){
         chatSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
@@ -216,6 +232,9 @@ public class SocketService extends Service {
 
     }
 
+    /**
+     * Настройка комманд использеющие интерфейс  SocketStartGameListener
+     */
     private void setupStartGame() {
         mainSocket.on("initialize game", new Emitter.Listener() {
             @Override
@@ -259,27 +278,55 @@ public class SocketService extends Service {
         });
     }
 
+    /**
+     * отправка евента в главный сокет
+     * с текстовым сообщением
+     * @param event
+     * @param message
+     */
     public void send(String event, String message) {
         mainSocket.emit(event, message);
     }
 
+    /**
+     * отправка евента в главный сокет с JSON объектом
+     * @param event
+     * @param message
+     */
     public void send(String event, JSONObject message) {
         mainSocket.emit(event, message);
     }
 
+    /**
+     * отправка события в главный сокет
+     * @param event
+     */
     public void send(String event) {
         mainSocket.emit(event);
     }
 
-
+    /**
+     * отправка евента в чат с сообщением
+     * @param event
+     * @param message
+     */
     public void chatSend(String event, String message) {
         chatSocket.emit(event, message);
     }
 
+    /**
+     * * отправка евента в чат с JSON объектом
+     * @param event
+     * @param message
+     */
     public void chatSend(String event, JSONObject message) {
         chatSocket.emit(event, message);
     }
 
+    /**
+     * отправка евента в чат
+     * @param event
+     */
     public void chatSend(String event) {
         chatSocket.emit(event);
     }
@@ -311,6 +358,9 @@ public class SocketService extends Service {
 
     }
 
+    /**
+     * интерфейс MainListener
+     */
     public interface SocketMainListener{
         void onConnected();
 
@@ -329,6 +379,10 @@ public class SocketService extends Service {
         void onDisconnect();
     }
 
+    /**
+     * интерфейс StartGameListener
+     *
+     * */
     public interface SocketStartGameListener {
         void onInitializeGame(JSONObject jsonObject);
 
@@ -341,6 +395,9 @@ public class SocketService extends Service {
         void onUserOnline(JSONArray jsonArray);
     }
 
+    /**
+     * интерфейс ChatListener
+     */
     public interface SocketChatListener{
         void onConnected();
 
