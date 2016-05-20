@@ -24,6 +24,10 @@ import javax.net.ssl.HttpsURLConnection;
 
 import bubok.wordgame.R;
 
+/**
+ * активити статистики
+ * отображение статики пользователя
+ */
 public class Statistics extends AppCompatActivity {
 
     private View avatar;
@@ -33,6 +37,11 @@ public class Statistics extends AppCompatActivity {
     private View leaderRaiting;
     private Context context;
 
+    /**
+     * Создание экрана
+     * инициализация и привязка данных
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +57,10 @@ public class Statistics extends AppCompatActivity {
         new ServerRequestJSONTask(user_id).execute(url);
 
     }
+
+    /**
+     * инициализация полей активити
+     */
     private void initView(){
         avatar = findViewById(R.id.avatar);
         totalGame = findViewById(R.id.totalGame);
@@ -57,6 +70,10 @@ public class Statistics extends AppCompatActivity {
 
     }
 
+    /**
+     * асинхроная задача для получения информации о пользователе
+     * заполнение информации в поля с данными
+     */
     public class ServerRequestJSONTask extends AsyncTask<String, Void, JSONObject> {
         private final static String TAG = "ServerRequestJSONTask";
         private final String sendDate;
