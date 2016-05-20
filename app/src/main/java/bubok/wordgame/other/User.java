@@ -5,6 +5,10 @@ import java.io.Serializable;
 /**
  * Created by bubok on 21.03.2016.
  */
+
+/**
+ * Пользователь для Адаптера
+ */
 public class User implements Serializable {
     private String userID;
     private String name;
