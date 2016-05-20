@@ -53,7 +53,10 @@ import bubok.wordgame.other.User;
 import bubok.wordgame.R;
 import bubok.wordgame.service.SocketService;
 
-
+/**
+ * активити StartGame
+ * создание игры
+ */
 public class StartGame extends AppCompatActivity implements SingleUploadBroadcastReceiver.Delegate {
 
     enum TYPE_MEDIA{
@@ -125,6 +128,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
     private boolean isPlay = false;
 
+    /**
+     * инициализация view элементов на странице
+     */
     private void initView() {
         buttonMediaLinear = findViewById(R.id.buttonMediaLinear);
         mediaLinear = findViewById(R.id.mediaLayout);
@@ -141,6 +147,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         separatorBot = findViewById(R.id.separatorBot);
     }
 
+    /**
+     * инициализация событий кнопок на странице
+     */
     private void initButton() {
         findViewById(R.id.buttonAddAudio).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,6 +250,10 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
     }
 
+    /**
+     * инициализация диалогового окна выбора
+     * выбора сфоткать или открыть из галерии
+     */
     private void initDialog() {
 
         builder = new AlertDialog.Builder(context);
@@ -268,16 +281,25 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         });
     }
 
+    /**
+     * запустить таймер
+     */
     private void startChrono() {
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
     }
 
+    /**
+     * остановить таймер
+     */
     private void stopChrono() {
         chronometer.stop();
         chronometer.setBase(SystemClock.elapsedRealtime());
     }
 
+    /**
+     * установить аудио контент
+     */
     private void setAudio() {
         changeVisibleMediaContainer();
         mediaLinear.setVisibility(View.VISIBLE);
@@ -287,6 +309,10 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         media = TYPE_MEDIA.AUDIO;
     }
 
+    /**
+     * воспроизвести аудио контент
+     * @param v
+     */
     private void playAudio(View v) {
         if (!isPlay) {
             ((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_black_48dp));
@@ -299,6 +325,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
+    /**
+     * начать записывать звук
+     */
     private void recordStart() {
         try {
             releaseRecorder();
@@ -321,6 +350,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
     }
 
+    /**
+     * остановить записывать звук
+     */
     private void recordStop() {
         if (mediaRecorder != null) {
             mediaRecorder.stop();
@@ -328,6 +360,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
+    /**
+     * воспроизвести звук
+     */
     private void playStart() {
         try {
             releasePlayer();
@@ -377,6 +412,11 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
+    /**
+     * Форматирование времени в строку из милесекунд
+     * @param millis
+     * @return
+     */
     private String getTimeString(long millis) {
         StringBuilder buf = new StringBuilder();
         int minutes = (int) ((millis % (1000 * 60 * 60)) / (1000 * 60));
@@ -389,12 +429,18 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         return buf.toString();
     }
 
+    /**
+     * остановить вопроизведение звука
+     */
     private void playStop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
     }
 
+    /**
+     * очистить рекордер записи
+     */
     private void releaseRecorder() {
         if (mediaRecorder != null) {
             mediaRecorder.release();
@@ -402,6 +448,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
+    /**
+     * очистать плейер
+     */
     private void releasePlayer() {
         if (mediaPlayer != null) {
             mediaPlayer.release();
@@ -409,6 +458,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
+    /**
+     * подключение к серверу
+     */
     @Override
     public void onStart() {
         Log.i(TAG, "onStart");
@@ -437,6 +489,10 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
+    /**
+     * закрыть создание игры
+     * отправить серверу запрос на отмену игры
+     */
     private void closeGame() {
         Log.i(TAG, "closeGame");
         try {
@@ -449,6 +505,12 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         finish();
     }
 
+    /**
+     * повторное открытие экрана
+     * получиение списка пользователей
+     * и отпрака им приглашения в игру
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         Log.i(TAG, "onNewIntent");
@@ -470,6 +532,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         super.onNewIntent(intent);
     }
 
+    /**
+     * обработка собыйтий сервера
+     */
     private final ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
@@ -545,6 +610,11 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     };
 
+    /**
+     * игрок отказался от приглашения
+     * @param username
+     * @param countPlayers
+     */
     private void cancelPlayer(final String username, final String countPlayers) {
         runOnUiThread(new Runnable() {
             @Override
@@ -559,6 +629,11 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         });
     }
 
+    /**
+     * игрок принял приглашение
+     * @param username
+     * @param countPlayers
+     */
     private void acceptPlayer(final String username, final String countPlayers) {
 
         runOnUiThread(new Runnable() {
@@ -579,6 +654,11 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         super.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * открытие окна
+     * со списком пользователей в сети
+     * @param jsonArray
+     */
 
     private void openUsersOnline(JSONArray jsonArray) {
         Log.i(TAG, "openUsersOnline");
@@ -599,6 +679,11 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         intent.putExtra("inviteList", inviteList);
         startActivity(intent);
     }
+
+    /**
+     * показывать прогресбар
+     * @param show
+     */
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
@@ -629,6 +714,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
+    /**
+     * очиска экрана от медиа контента
+     */
     private void clearPrevView() {
         changeVisibleMediaContainer();
         mediaLinear.setVisibility(View.GONE);
@@ -639,11 +727,17 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         media = null;
     }
 
+    /**
+     * открытие галерии
+     */
     private void galleryPhoto() {
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
     }
 
+    /**
+     * открытие фотоапарата
+     */
     private void cameraPhoto() {
         Intent takePhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePhoto.resolveActivity((getPackageManager())) != null) {
@@ -651,6 +745,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
+    /**
+     * открытие видеоапарата
+     */
     private void buttonAddVideoClick() {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         if(intent.resolveActivity((getPackageManager()))!= null){
@@ -658,6 +755,10 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
+    /**
+     * изменеие видимости медиа контейнера
+     * в частности выбора типа контента
+     */
     private void changeVisibleMediaContainer() {
         int optVisible;
         if (buttonMediaLinear.getVisibility() == LinearLayout.VISIBLE) {
@@ -669,6 +770,12 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         separatorTop.setVisibility(optVisible);
     }
 
+    /**
+     * обработка результата медиа
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK){
@@ -690,6 +797,10 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
     }
 
+    /**
+     * показать видео в медиаконтейнере
+     * @param data
+     */
     private void showPreviewVideo(Intent data) {
         changeVisibleMediaContainer();
         mediaLinear.setVisibility(View.VISIBLE);
@@ -706,6 +817,10 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         media = TYPE_MEDIA.VIDEO;
     }
 
+    /**
+     * показать фото из галрии в медиа контейнере
+     * @param data
+     */
     private void showPreviewPhotoGallery(Intent data) {
         changeVisibleMediaContainer();
         mediaLinear.setVisibility(View.VISIBLE);
@@ -717,6 +832,10 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         media = TYPE_MEDIA.IMAGE;
     }
 
+    /**
+     * показать фото из фотоапарата в медиа контейнере
+     * @param data
+     */
     private void showPreviewPhoto(Intent data) {
         changeVisibleMediaContainer();
         mediaLinear.setVisibility(View.VISIBLE);
@@ -729,6 +848,12 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         media = TYPE_MEDIA.IMAGE;
     }
 
+    /**
+     * получить uri из bitmap файла
+     * @param inContext
+     * @param inImage
+     * @return
+     */
     private Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -736,6 +861,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         return Uri.parse(path);
     }
 
+    /**
+     * запуск игры
+     */
     private void startGame() {
 
         if(media == null)
@@ -743,6 +871,9 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         sendServer();
     }
 
+    /**
+     * отпрака даныйх на сервер
+     */
     private void sendServer() {
         showProgress(true);
         Cursor cursor = getContentResolver().query(mediaUri, null, null, null, null);
@@ -786,6 +917,10 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         }
     }
 
+    /**
+     * отписываемся от событий сервера
+     * убираем прогрессбар
+     */
     @Override
     public void onStop(){
         Log.i(TAG, "onStop");
@@ -801,6 +936,11 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         super.onStop();
     }
 
+    /**
+     * данные отправились запускаем чат
+     * @param serverResponseCode
+     * @param serverResponseBody
+     */
     @Override
     public void onCompleted(int serverResponseCode, byte[] serverResponseBody) {
         Log.i(TAG, "onCompleted");

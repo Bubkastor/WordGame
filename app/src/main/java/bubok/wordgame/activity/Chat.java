@@ -38,7 +38,9 @@ import bubok.wordgame.other.Message;
 import bubok.wordgame.R;
 import bubok.wordgame.service.SocketService;
 
-
+/**
+ * активити чата
+ */
 public class Chat extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE_WIN_NAME = "bubok.wordgame.WIN.NAME";
@@ -162,10 +164,17 @@ public class Chat extends AppCompatActivity {
 
     }
 
+    /**
+     * открыть фото на весь экран
+     */
     private void showPhoto(){
         imageView.setFullScreen();
     }
 
+    /**
+     * обработка событий сервер
+     * связаных с чатом
+     */
     private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -306,6 +315,9 @@ public class Chat extends AppCompatActivity {
         }
     };
 
+    /**
+     * подключение к серверу
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -314,6 +326,11 @@ public class Chat extends AppCompatActivity {
 
     }
 
+    /**
+     * изменеия стстуса сообщения
+     * @param id
+     * @param status
+     */
     private void changeStatus(String id, String status) {
         messageAdapter.ChangeStatus(id, status);
         runOnUiThread(new Runnable() {
@@ -324,6 +341,16 @@ public class Chat extends AppCompatActivity {
         });
     }
 
+    /**
+     * закрытие чата вызов экрана победы с параметрами
+     * @param winnerName
+     * @param winerAvatar
+     * @param leaderId
+     * @param leaderName
+     * @param leaderAvatar
+     * @param timeGame
+     * @param word
+     */
     private void closeCheat(String winnerName, String winerAvatar, String leaderId, String leaderName, String leaderAvatar, String timeGame, String word) {
         Intent intent = new Intent(Chat.this, WinGame.class);
         intent.putExtra(EXTRA_MESSAGE_WIN_NAME, winnerName);
@@ -339,6 +366,15 @@ public class Chat extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * добавления сообщения в чат
+     * @param urlAvatar
+     * @param login
+     * @param message
+     * @param idMessage
+     * @param status
+     * @param userId
+     */
     private void addMessageInCheat(String urlAvatar, String login, String message, String idMessage, String status, String userId) {
         Message message1 = new Message(urlAvatar, login, message, idMessage, status, userId);
         messageAdapter.add(message1);
@@ -358,6 +394,9 @@ public class Chat extends AppCompatActivity {
         });
     }
 
+    /**
+     * отправка сообшения серверу
+     */
     private void buttonSendClick() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         Log.i(TAG, "send");
@@ -374,6 +413,12 @@ public class Chat extends AppCompatActivity {
         }
     }
 
+    /**
+     * установка медиа контента на экран
+     * взависимоти от типа контенат
+     * @param url
+     * @param mediaType
+     */
     private void setMediaContainer(final String url, final String mediaType) {
         Handler handler = new Handler(getBaseContext().getMainLooper());
         handler.post(new Runnable() {
@@ -423,6 +468,10 @@ public class Chat extends AppCompatActivity {
         });
     }
 
+    /**
+     * при уничтожение приложения отписатся от сервера
+     * отправить событие что мы покинули игру
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
