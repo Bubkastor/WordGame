@@ -11,8 +11,16 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by bubok on 25.03.2016.
  */
+
+/**
+ * Отправка запроса на сервер с параметрами
+ */
 public class ServerRequestTask extends AsyncTask<String, Void, Boolean> {
     private final static String TAG = "ServerRequestTask";
+    /**
+     * Параметр запроса.
+     * т.е. url
+     */
     private final String sendDate;
 
     public ServerRequestTask(String sendDate) {
