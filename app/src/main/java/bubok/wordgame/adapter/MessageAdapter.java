@@ -28,6 +28,9 @@ import bubok.wordgame.R;
  * Created by bubok on 01.03.2016.
  */
 
+/**
+ * Адаптер для сообщений в чате
+ */
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
     private Context context;
@@ -35,7 +38,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private boolean optionPanel;
     private String leaderId;
 
-
+    /**
+     * Создание холдера для хранения ссылок на все элементы
+     * @param parent
+     * @param viewType
+     * @return ViewHolder
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
@@ -50,6 +58,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 (RelativeLayout) v.findViewById(R.id.backgroundLayout));
     }
 
+    /**
+     * Привязка данных к ViewHolder
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         if (isOptionPanel()) {
@@ -103,6 +116,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         return messages.get(possiton);
     }
 
+    /**
+     * Создание своего холдера на основе RecyclerView.ViewHolder
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View itemView,
                           ImageButton buttonCorrect,
@@ -125,22 +141,42 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public final RelativeLayout background;
     }
 
+    /**
+     * Добавление сообщение
+     * @param message сообщение
+     */
     public void add(Message message) {
         messages.add(message);
     }
 
+    /**
+     * Получение ид лидера
+     * @return leaderId
+     */
     private String getLeaderId() {
         return leaderId;
     }
 
+    /**
+     * Задаем значение лидера
+     * @param leaderId
+     */
     public void setLeaderId(String leaderId) {
         this.leaderId = leaderId;
     }
 
+    /**
+     * Проверка панели доп. действий
+     * @return
+     */
     private boolean isOptionPanel() {
         return optionPanel;
     }
 
+    /**
+     * Задаем панель
+     * @param optionPanel bool
+     */
     public void setOptionPanel(boolean optionPanel) {
         this.optionPanel = optionPanel;
     }
@@ -155,7 +191,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         return position;
     }
 
-
+    /**
+     * Изменяем статус ообщения
+     * @param id
+     * @param status
+     */
     public  void ChangeStatus(String id, String status){
         for (Message message: messages)
             if (message.getIDMessage().equals(id)){
