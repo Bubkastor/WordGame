@@ -15,10 +15,20 @@ import com.squareup.picasso.Picasso;
 import bubok.wordgame.asyncTasks.ServerRequestTask;
 import bubok.wordgame.R;
 
+/**
+ * активити WinGame
+ * предоставляет экран победы
+ */
 public class WinGame extends AppCompatActivity {
     private static final String TAG = "WIN_GAME";
     private final StringBuilder sendDate = new StringBuilder();
     private Context context;
+
+    /**
+     * создание экрана победы
+     * привязка данных
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,16 +93,26 @@ public class WinGame extends AppCompatActivity {
         Log.i(TAG, "onCreate");
     }
 
+    /**
+     *  убирает контент победителя показать что администратор покинул игру
+     */
     private void leaveAdmin() {
         findViewById(R.id.winerContent).setVisibility(View.GONE);
         findViewById(R.id.leaveContent).setVisibility(View.VISIBLE);
     }
 
+    /**
+     * закрыть экран
+     * @param v
+     */
     public void buttonMainMenuClick(View v){
         Log.i(TAG, "buttonMainMenuClick");
         finish();
     }
 
+    /**
+     * скрыть кнопки рейтинга
+     */
     private void hideRaiting() {
         findViewById(R.id.afterRatingLayout).setVisibility(View.VISIBLE);
         findViewById(R.id.ratingLayout).setVisibility(View.GONE);
