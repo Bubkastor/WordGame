@@ -19,6 +19,10 @@ import bubok.wordgame.other.User;
 /**
  * Created by bubok on 21.03.2016.
  */
+
+/**
+ * Адптер для спика пользователей
+ */
 public class UserAdapter extends BaseAdapter {
 
     private static final String TAG = "USER_ADAPTER";
@@ -30,6 +34,10 @@ public class UserAdapter extends BaseAdapter {
         this.userArrayList = userArrayList;
     }
 
+    /**
+     * Получить список пользователей которых отметили
+     * @return список пользователей
+     */
     public ArrayList<String> getCheckedUser() {
         ArrayList<String> stringArrayList = new ArrayList<>();
         for (int i = 0; i < userArrayList.size(); i++) {
@@ -55,6 +63,13 @@ public class UserAdapter extends BaseAdapter {
         return 0;
     }
 
+    /**
+     * Привязка данных к ряду
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
