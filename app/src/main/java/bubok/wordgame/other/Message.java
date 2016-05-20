@@ -5,6 +5,10 @@ import android.graphics.Bitmap;
 /**
  * Created by bubok on 01.03.2016.
  */
+
+/**
+ * Сообщение и данные о нем
+ */
 public class Message {
     public Message(String avatar, String username, String message, String idMessage, String status, String idUser) {
         Username = username;
@@ -13,7 +17,6 @@ public class Message {
         IDMessage = idMessage;
         this.Status= status;
         this.IdUser = idUser;
-        this.Update = true;
     }
 
     public String getMessage() {
@@ -46,17 +49,6 @@ public class Message {
     private String IDMessage;
     private String Status;
     private String IdUser;
-    private Boolean Update;
-    public Boolean getUpdate() {
-        return Update;
-    }
-
-    public void setUpdate(Boolean update) {
-        Update = update;
-    }
-
-
-
 
     public String getIdUser() {
         return IdUser;
