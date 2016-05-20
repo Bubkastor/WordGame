@@ -197,6 +197,10 @@ public class Main extends AppCompatActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
+    /**
+     * Проверка сервиса google play
+     * @return True если рабоатет
+     */
     private boolean checkPlayServices() {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
@@ -213,6 +217,10 @@ public class Main extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Инициализирует сервис с сервером
+     *
+     */
     private void initService() {
         service = new Intent(this, SocketService.class);
         service.putExtra("url", getResources().getString(R.string.URL));
@@ -220,6 +228,10 @@ public class Main extends AppCompatActivity {
         startService(service);
     }
 
+    /**
+     * Проверка на сушествование Facebook токена
+     * Если нет то возрашаемся на экран Логинации
+     */
     private void checkToken() {
         new AccessTokenTracker() {
             @Override
@@ -234,6 +246,9 @@ public class Main extends AppCompatActivity {
         };
     }
 
+    /**
+     * Обработка собыйтий от сервера
+     */
     private final ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
@@ -344,6 +359,10 @@ public class Main extends AppCompatActivity {
         }
     };
 
+    /**
+     * Установка аватара
+     * @param url URL адресс аватара
+     */
     private void setAvatar(final String url) {
         runOnUiThread(new Runnable() {
             @Override
@@ -353,6 +372,9 @@ public class Main extends AppCompatActivity {
         });
     }
 
+    /**
+     * Инициализация Кнопок на экране
+     */
     private void initButton() {
 
         findViewById(R.id.buttonStatistics).setOnClickListener(new View.OnClickListener() {
@@ -406,6 +428,10 @@ public class Main extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка имени на экране
+     * @param name строка
+     */
     private void setName(final String name) {
         runOnUiThread(new Runnable() {
             @Override
@@ -416,24 +442,18 @@ public class Main extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        Log.i(TAG, "onNewIntent");
-        super.onNewIntent(intent);
-    }
-
+    /**
+     * Закрытие приложения
+     */
     @Override
     public void onBackPressed() {
         Log.i(TAG, "onBackPressed");
         finish();
     }
 
-    @Override
-    public void onStart() {
-        Log.i(TAG, "onStart");
-        super.onStart();
-    }
-
+    /**
+     * Востанавливаем связь с сервисами
+     */
     @Override
     public void onResume() {
         Log.i(TAG, "onResume");
@@ -442,6 +462,14 @@ public class Main extends AppCompatActivity {
         super.onResume();
     }
 
+    /**
+     * Обработка приглашения в игру
+     *
+     * @param leader
+     * @param gameId
+     * @param leaderRaiting
+     * @param countInvite
+     */
     private void inviteChat(String leader, final String gameId, String leaderRaiting, String countInvite) {
 
         String title = getString(R.string.invite_title);
@@ -489,6 +517,10 @@ public class Main extends AppCompatActivity {
         });
     }
 
+    /**
+     * Показать прогресс на экране
+     * @param show
+     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         final ProgressBar waitGame = (ProgressBar) findViewById(R.id.waitGame);
@@ -519,6 +551,13 @@ public class Main extends AppCompatActivity {
         }
     }
 
+    /**
+     * Создание текста сообщения в даилоге
+     * @param leader
+     * @param leaderRaiting
+     * @param countInvite
+     * @return
+     */
     private String getMessageDialog(String leader, String leaderRaiting, String countInvite) {
         StringBuilder result = new StringBuilder();
         result.append(leader).append(" ")
@@ -534,6 +573,10 @@ public class Main extends AppCompatActivity {
         return result.toString();
     }
 
+    /**
+     * Открытие окна чата
+     * @param gameId
+     */
     private void openChat(String gameId) {
 
         Intent intent = new Intent(Main.this, Chat.class);
@@ -542,6 +585,9 @@ public class Main extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Отписываемся от событий сервера
+     */
     @Override
     protected void onStop() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
@@ -555,12 +601,6 @@ public class Main extends AppCompatActivity {
         }
         showProgress(false);
         super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.i(TAG, "onDestroy");
-        super.onDestroy();
     }
 
 }
