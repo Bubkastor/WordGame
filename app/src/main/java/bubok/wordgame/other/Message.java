@@ -15,8 +15,8 @@ public class Message {
         Message = message;
         Avatar = avatar;
         IDMessage = idMessage;
-        this.Status= status;
-        this.IdUser = idUser;
+        Status= status;
+        IdUser = idUser;
     }
 
     public String getMessage() {
