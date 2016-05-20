@@ -26,7 +26,7 @@ public class WinGame extends AppCompatActivity {
 
     /**
      * создание экрана победы
-     * привязка данных
+     * инициализация и привязка данных
      * @param savedInstanceState
      */
     @Override

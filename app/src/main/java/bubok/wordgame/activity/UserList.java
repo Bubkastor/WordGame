@@ -12,8 +12,19 @@ import bubok.wordgame.adapter.UserAdapter;
 import bubok.wordgame.R;
 import bubok.wordgame.other.User;
 
+/**
+ * активити UserList
+ * показывает пользователей
+ */
 public class UserList extends AppCompatActivity {
     private UserAdapter userAdapter;
+
+    /**
+     * Создание экрана
+     * инициализация и привязка данных
+     * @param savedInstanceState
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +43,10 @@ public class UserList extends AppCompatActivity {
         });
     }
 
+    /**
+     * открытие StartGame
+     * добавляет пользователей которых выделили
+     */
     private void openStartGame() {
         Intent intent = new Intent(UserList.this, StartGame.class);
         intent.putExtra(StartGame.EXTRA_MESSAGE_USERS_INVITE, userAdapter.getCheckedUser());
