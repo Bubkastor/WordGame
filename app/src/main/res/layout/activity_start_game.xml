@@ -82,15 +82,19 @@
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="200dp">
 
-                        <com.github.rtoshiro.view.video.FullscreenVideoLayout
+                        <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/videoViewPrev"
-                            android:visibility="gone"
-                            android:layout_gravity="center" />
+                            android:layout_height="match_parent">
 
+                            <com.github.rtoshiro.view.video.FullscreenVideoLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:id="@+id/videoViewPrev"
+                                    android:visibility="gone"
+                                    android:layout_gravity="center" />
+                        </FrameLayout>
                         <com.bubok.fullscreenimageview.FullScreenImageView
                             android:layout_width="fill_parent"
                             android:layout_height="200dp"
