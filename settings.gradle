@@ -1,1 +1,1 @@
-include ':app', ':fullscreenimageview'
+include ':app', ':fullscreenimageview', ':fullscreenvideoview'
