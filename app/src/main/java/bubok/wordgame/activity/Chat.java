@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.bubok.fullscreenimageview.FullScreenImageView;
+import com.github.rtoshiro.view.video.FullscreenVideoLayout;
 import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class Chat extends AppCompatActivity {
     private String mGame;
     private String idUser;
 
-    private VideoView video;
+    private FullscreenVideoLayout video;
 
     private Boolean isAdmin;
 
@@ -108,10 +109,9 @@ public class Chat extends AppCompatActivity {
 
         imageView = (FullScreenImageView) findViewById(R.id.imageViewChat);
 
-        video = (VideoView) findViewById(R.id.videoView);
-        MediaController mc = new MediaController(context);
+        video = (FullscreenVideoLayout) findViewById(R.id.videoView);
 
-        video.setMediaController(mc);
+        video.setActivity(this);
 
 
         final LinearLayoutManager linearLayoutManager  = new LinearLayoutManager (this);
@@ -451,14 +451,6 @@ public class Chat extends AppCompatActivity {
                         } catch (Exception ex) {
                             Log.i(TAG, ex.getMessage());
                         }
-
-                        video.requestFocus();
-                        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            // Close the progress bar and play the video
-                            public void onPrepared(MediaPlayer mp) {
-                                video.start();
-                            }
-                        });
                         break;
                     default:
                         break;

@@ -43,11 +43,17 @@
             android:layout_alignParentRight="false"
             android:foregroundGravity="center_vertical" />
 
-        <VideoView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/videoView"
-            android:visibility="gone" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.github.rtoshiro.view.video.FullscreenVideoLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/videoView"
+                android:visibility="gone" />
+
+           </FrameLayout>
 
         <ImageButton
             android:layout_width="100dp"
