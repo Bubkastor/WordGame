@@ -356,7 +356,7 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
                 final Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                 intent.setType("*/*");
 
-                intent.putExtra(Intent.EXTRA_TEXT,"\n Смотри в приложении \"Скорей Сюда\" \n" + "https://play.google.com/store/apps/details?id=com.shazam.android" );
+                intent.putExtra(Intent.EXTRA_TEXT,"\n Вас друзья приглашают поиграть в WordGame \nhttps://play.google.com/store/apps/details?id=com.shazam.android" );
                 try {
                     context.startActivity(Intent.createChooser(intent, "Поделиться с помощью").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 } catch (android.content.ActivityNotFoundException ex) {
