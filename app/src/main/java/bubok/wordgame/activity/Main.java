@@ -76,7 +76,7 @@ public class Main extends AppCompatActivity {
     private Picasso picasso;
     private OkHttpClient okHttpClient;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-
+    private String social;
 
 
     public void VKLogOut(View v){
@@ -137,7 +137,7 @@ public class Main extends AppCompatActivity {
         Log.i(TAG, "onCreate");
 
         if (intent.getExtras() != null) {
-            String social = intent.getStringExtra(Login.EXTRA_MESSAGE_ID_SOCIAL);
+            social = intent.getStringExtra(Login.EXTRA_MESSAGE_ID_SOCIAL);
 
             if (social.equals("vk")) {
                 View fbButton = findViewById(R.id.login_button_exit);
@@ -270,7 +270,7 @@ public class Main extends AppCompatActivity {
                     try {
                         sendUserInfo.put("NAME", profile.getName());
                         sendUserInfo.put("AVATAR", profile.getProfilePictureUri(500, 500).toString());
-                        sendUserInfo.put("USER_ID_FB", profile.getId());
+                        sendUserInfo.put("USER_ID_" + social.toUpperCase() , profile.getId());
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                         return;
@@ -348,7 +348,14 @@ public class Main extends AppCompatActivity {
 
 
             });
-            mService.send("login", idUSer);
+            JSONObject send = new JSONObject();
+            try {
+                send.put("id", idUSer);
+                send.put("social", social);
+                mService.send("login", send);
+            } catch (Exception ex){
+                Log.d(TAG, ex.getMessage());
+            }
             mBound = true;
         }
 
