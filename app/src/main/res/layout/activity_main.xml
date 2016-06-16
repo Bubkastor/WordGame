@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:screenOrientation="locked"
+    android:id="@+id/container"
     tools:context=".activity.Main">
 
     <ScrollView
@@ -130,21 +131,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <com.facebook.login.widget.LoginButton
-                            android:id="@+id/login_button_exit"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal" />
-
-                        <ImageView
-                            android:clickable="false"
-                            android:visibility="invisible"
-                            android:id="@+id/login_button_exit_vk"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:src="@drawable/button_vk"
-                            android:onClick="VKLogOut" />
                     </RelativeLayout>
 
                     <Button

@@ -3,6 +3,7 @@ package bubok.wordgame.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -26,32 +28,24 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
-import com.facebook.Profile;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
-import com.vk.sdk.VKSdk;
-import com.vk.sdk.api.VKApi;
-import com.vk.sdk.api.VKApiConst;
-import com.vk.sdk.api.VKError;
-import com.vk.sdk.api.VKParameters;
-import com.vk.sdk.api.VKRequest;
-import com.vk.sdk.api.VKResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import bubok.wordgame.R;
+import com.github.gorbin.asne.core.SocialNetworkManager;
 import bubok.wordgame.other.QuickstartPreferences;
 import bubok.wordgame.service.RegistrationIntentService;
 import bubok.wordgame.service.SocketService;
 
+import bubok.wordgame.activity.Login;
 
-public class Main extends AppCompatActivity {
+public class Main extends AppCompatActivity  implements FragmentManager.OnBackStackChangedListener{
 
     /**
      *использется для передачи интента id_game
@@ -61,6 +55,7 @@ public class Main extends AppCompatActivity {
      *использется для передачи интента id_user
      */
     public static final String EXTRA_MESSAGE_USED_ID_USER = "bubok.wordgame.id.user";
+    public static final String SOCIAL_NETWORK_TAG = "SocialIntegrationMain.SOCIAL_NETWORK_TAG";
     /**
      * Для логирования
      */
@@ -68,7 +63,6 @@ public class Main extends AppCompatActivity {
     private boolean mBound;
     private static Intent service;
     public static String idUSer;
-    private Profile profile;
     private Context context;
     private static SocketService mService;
     private AlertDialog.Builder builder;
@@ -76,17 +70,9 @@ public class Main extends AppCompatActivity {
     private Picasso picasso;
     private OkHttpClient okHttpClient;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private String social;
 
-
-    public void VKLogOut(View v){
-        VKSdk.logout();
-
-        if (!VKSdk.isLoggedIn()) {
-            Intent intent = new Intent(Main.this, Login.class);
-            startActivity(intent);
-        }
-    }
+    private static Login frag;
+    private static FragmentTransaction fTrans;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +80,12 @@ public class Main extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
         setContentView(R.layout.activity_main);
         context = this;
+        fTrans = getSupportFragmentManager().beginTransaction();
+        frag = new Login();
+        if (savedInstanceState == null) {
+            fTrans.add(R.id.container,frag)
+                    .commit();
+        }
 
         okHttpClient = new OkHttpClient();
         picasso = new Picasso.Builder(this)
@@ -116,16 +108,15 @@ public class Main extends AppCompatActivity {
         registerReceiver();
 
         initService();
-        checkToken();
+
 
         Intent intent = getIntent();
 
         avatar = (ImageView) findViewById(R.id.imageViewAvatar);
 
         if (intent.getExtras() != null) {
-            idUSer = intent.getStringExtra(Login.EXTRA_MESSAGE_ID_USER);
+            //idUSer = intent.getStringExtra(Login.EXTRA_MESSAGE_ID_USER);
         }
-        profile = Profile.getCurrentProfile();
         initButton();
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
@@ -136,53 +127,10 @@ public class Main extends AppCompatActivity {
         drawerBuilder.withActivity(this). build();
         Log.i(TAG, "onCreate");
 
-        if (intent.getExtras() != null) {
-            social = intent.getStringExtra(Login.EXTRA_MESSAGE_ID_SOCIAL);
+    }
 
-            if (social.equals("vk")) {
-                View fbButton = findViewById(R.id.login_button_exit);
-                fbButton.setClickable(false);
-                fbButton.setVisibility(View.INVISIBLE);
-                View vkButton = findViewById(R.id.login_button_exit_vk);
-                vkButton.setClickable(true);
-                vkButton.setVisibility(View.VISIBLE);
-
-                VKRequest request = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS, "first_name, last_name, photo_50"));
-                request.executeWithListener(new VKRequest.VKRequestListener() {
-                    @Override
-                    public void onComplete(VKResponse response) {
-                        super.onComplete(response);
-                        try {
-                            JSONArray jArr = response.json.getJSONArray("response");
-                            JSONObject oneObject = jArr.getJSONObject(0);
-                            String lastName = oneObject.getString("last_name");
-                            String firstName = oneObject.getString("first_name");
-                            String avatar = oneObject.getString("photo_50");
-                            setAvatar(avatar);
-                            setName(lastName + " " + firstName);
-                        } catch (JSONException ex) {
-                            Log.i(TAG, "too bad");
-                        }
-                    }
-
-                    @Override
-                    public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
-                        super.attemptFailed(request, attemptNumber, totalAttempts);
-                    }
-
-                    @Override
-                    public void onError(VKError error) {
-                        super.onError(error);
-                    }
-
-                    @Override
-                    public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
-                        super.onProgress(progressType, bytesLoaded, bytesTotal);
-                    }
-                });
-            } else if (social.equals("fb")) {
-            }
-        }
+    public static void closeLogin(){
+        fTrans.hide(frag);
     }
 
     private boolean isReceiverRegistered;
@@ -232,19 +180,6 @@ public class Main extends AppCompatActivity {
      * Проверка на сушествование Facebook токена
      * Если нет то возрашаемся на экран Логинации
      */
-    private void checkToken() {
-        new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(
-                    AccessToken oldAccessToken,
-                    AccessToken currentAccessToken) {
-                if (currentAccessToken == null) {
-                    Intent intent = new Intent(Main.this, Login.class);
-                    startActivity(intent);
-                }
-            }
-        };
-    }
 
     /**
      * Обработка собыйтий от сервера
@@ -268,9 +203,9 @@ public class Main extends AppCompatActivity {
                     Log.i(TAG, "not found");
                     JSONObject sendUserInfo = new JSONObject();
                     try {
-                        sendUserInfo.put("NAME", profile.getName());
-                        sendUserInfo.put("AVATAR", profile.getProfilePictureUri(500, 500).toString());
-                        sendUserInfo.put("USER_ID_" + social.toUpperCase() , profile.getId());
+                        //sendUserInfo.put("NAME", profile.getName());
+                        //sendUserInfo.put("AVATAR", profile.getProfilePictureUri(500, 500).toString());
+                        //sendUserInfo.put("USER_ID_" + social.toUpperCase() , profile.getId());
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                         return;
@@ -350,9 +285,9 @@ public class Main extends AppCompatActivity {
             });
             JSONObject send = new JSONObject();
             try {
-                send.put("id", idUSer);
-                send.put("social", social);
-                mService.send("login", send);
+                //send.put("id", idUSer);
+                //send.put("social", social);
+                //mService.send("login", send);
             } catch (Exception ex){
                 Log.d(TAG, ex.getMessage());
             }
@@ -388,7 +323,7 @@ public class Main extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Main.this, Statistics.class);
-                intent.putExtra(EXTRA_MESSAGE_USED_ID_USER, profile.getId());
+                //intent.putExtra(EXTRA_MESSAGE_USED_ID_USER, profile.getId());
                 startActivity(intent);
             }
         });
@@ -587,7 +522,7 @@ public class Main extends AppCompatActivity {
     private void openChat(String gameId) {
 
         Intent intent = new Intent(Main.this, Chat.class);
-        intent.putExtra(EXTRA_MESSAGE_USED_ID_USER, profile.getId());
+        //intent.putExtra(EXTRA_MESSAGE_USED_ID_USER, profile.getId());
         intent.putExtra(EXTRA_MESSAGE_USED_GAME, gameId);
         startActivity(intent);
     }
@@ -610,4 +545,17 @@ public class Main extends AppCompatActivity {
         super.onStop();
     }
 
+    @Override
+    public void onBackStackChanged() {
+        homeAsUpByBackStack();
+    }
+
+    private void homeAsUpByBackStack() {
+        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+        if (backStackEntryCount > 0) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+    }
 }

@@ -1,208 +1,151 @@
 package bubok.wordgame.activity;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.ExpandedMenuView;
-import android.util.Log;
-import android.util.LruCache;
+import android.support.v4.app.Fragment;
+
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.vk.sdk.VKAccessToken;
-import com.vk.sdk.VKCallback;
+import com.github.gorbin.asne.core.SocialNetwork;
+import com.github.gorbin.asne.core.SocialNetworkManager;
+import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
+import com.github.gorbin.asne.vk.VkSocialNetwork;
+import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
+import com.github.gorbin.asne.twitter.TwitterSocialNetwork;
 import com.vk.sdk.VKScope;
-import com.vk.sdk.VKSdk;
-import com.vk.sdk.api.VKApi;
-import com.vk.sdk.api.VKError;
-import com.vk.sdk.api.VKRequest;
-import com.vk.sdk.api.VKResponse;
-import com.vk.sdk.api.model.VKApiUserFull;
-import com.vk.sdk.api.model.VKList;
+
+import java.util.List;
 
 import bubok.wordgame.R;
 
 
-public class Login extends AppCompatActivity {
 
-    public final static String EXTRA_MESSAGE_TOKEN = "bubok.wordgame.TOKEN";
-    public final static String EXTRA_MESSAGE_ID_USER = "bubok.wordgame.id.user";
-    public final static String EXTRA_MESSAGE_ID_SOCIAL = "bubok.wordgame.social";
+public class Login extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener,
+        OnLoginCompleteListener {
+
+    public static SocialNetworkManager mSocialNetworkManager;
+    private SocialNetwork socialNetwork;
+
     private static final String TAG = "LOGIN";
-    private CallbackManager callbackManager;
-    private AccessToken accessToken;
-    private static  LruCache<String, Bitmap> mMemoryCache;
-    private Profile profile;
-    private ProfileTracker profileTracker;
 
-    private String[] scope = new String[] {
-            VKScope.FRIENDS, VKScope.EMAIL, VKScope.STATUS
+    private Button vk;
+    private Button fb;
+    private Button tw;
+    private Button exit;
+
+    public Login(){
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_login, container, false);
+
+        vk = (Button) rootView.findViewById(R.id.vk);
+        fb = (Button) rootView.findViewById(R.id.fb);
+        tw = (Button) rootView.findViewById(R.id.tw);
+        exit = (Button) rootView.findViewById(R.id.exit);
+
+        exit.setOnClickListener(exitClick);
+        vk.setOnClickListener(loginClick);
+        fb.setOnClickListener(loginClick);
+        tw.setOnClickListener(loginClick);
+
+        String VK_KEY = getResources().getString(R.string.vk_app_id);
+
+        String[] vkScope = new String[] {
+                VKScope.FRIENDS,
+                VKScope.WALL,
+                VKScope.PHOTOS,
+                VKScope.NOHTTPS,
+                VKScope.STATUS,
+        };
+        if (mSocialNetworkManager == null){
+            mSocialNetworkManager = new SocialNetworkManager();
+
+            VkSocialNetwork vkNetwork = new VkSocialNetwork(this, VK_KEY, vkScope);
+            mSocialNetworkManager.addSocialNetwork(vkNetwork);
+
+            getFragmentManager().beginTransaction().add(mSocialNetworkManager, Main.SOCIAL_NETWORK_TAG).commit();
+            mSocialNetworkManager.setOnInitializationCompleteListener(this);
+        } else {
+            if(!mSocialNetworkManager.getInitializedSocialNetworks().isEmpty()) {
+                List<SocialNetwork> socialNetworks = mSocialNetworkManager.getInitializedSocialNetworks();
+                for (SocialNetwork socialNetwork : socialNetworks) {
+                    socialNetwork.setOnLoginCompleteListener(this);
+                    initSocialNetwork(socialNetwork);
+                }
+            }
+        }
+
+        return rootView;
+
+    }
+
+    private void initSocialNetwork(SocialNetwork socialNetwork){
+        if(socialNetwork.isConnected()){
+            switch (socialNetwork.getID()){
+                case VkSocialNetwork.ID:
+                    this.socialNetwork = socialNetwork;
+                    vk.setText("Show VK profile");
+                    //startProfile(socialNetwork.getID());
+                    break;
+            }
+        }
+    }
+    private View.OnClickListener exitClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            vk.setText("Login VK");
+            fb.setText("Login FB");
+            tw.setText("Login TW");
+            socialNetwork.logout();
+        }
     };
 
-    public void VKLogIn(View v){
-        VKSdk.login(this, scope);
-    }
-
-    private AccessTokenTracker accessTokenTracker;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
-        setContentView(R.layout.activity_login);
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("user_friends");
-        loginButton.setReadPermissions("public_profile");
-
-        accessToken = AccessToken.getCurrentAccessToken();
-        //cache image
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        final int cacheSize = maxMemory / 8;
-
-        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap bitmap) {
-
-                return bitmap.getByteCount() / 1024;
+    private View.OnClickListener  loginClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int networkId = 0;
+            switch (v.getId()){
+                case R.id.vk:
+                    networkId = VkSocialNetwork.ID;
+                    break;
+                case R.id.fb:
+                    networkId = FacebookSocialNetwork.ID;
+                    break;
+                case R.id.tw:
+                    networkId = TwitterSocialNetwork.ID;
+                    break;
             }
-        };
-
-        accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                Profile.fetchProfileForCurrentAccessToken();
-                AccessToken.setCurrentAccessToken(currentAccessToken);
-            }
-        };
-
-        accessTokenTracker.startTracking();
-
-        profileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                if (currentProfile != null) {
-                    Profile.setCurrentProfile(currentProfile);
-                    profile = currentProfile;
-                }
-
-            }
-        };
-        profileTracker.startTracking();
-
-        LoginManager.getInstance().registerCallback(callbackManager,
-            new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
-                    Log.i(TAG, "onSuccess");
-
-                    accessToken = loginResult.getAccessToken();
-
-                    OpenMainScreen("fb");
-                }
-
-                @Override
-                public void onCancel() {
-                    Log.i(TAG, "onCancel");
-                }
-
-                @Override
-                public void onError(FacebookException exception) {
-                    Log.i(TAG, exception.getMessage());
-                }
-            });
-        Profile mProfile = Profile.getCurrentProfile();
-        if (accessToken != null) {
-            OpenMainScreen("fb");
-        } else if (VKSdk.isLoggedIn()) {
-            OpenMainScreen("vk");
+            SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(networkId);
+            if(!socialNetwork.isConnected())
+                if(networkId != 0)
+                    socialNetwork.requestLogin();
         }
-    }
-
-    private void OpenMainScreen(final String socialNetwork) {
-        final Intent intent = new Intent(Login.this, Main.class);
-
-        if (socialNetwork.equals("fb")) {
-            String idUser = accessToken.getUserId();
-            intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
-            intent.putExtra(EXTRA_MESSAGE_ID_SOCIAL, socialNetwork);
-        } else if (socialNetwork.equals("vk")) {
-            //String idUser = accessToken.getUserId();
-            VKRequest request = VKApi.users().get();
-            //intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
-            request.executeWithListener(new VKRequest.VKRequestListener() {
-                @Override
-                public void onComplete(VKResponse response) {
-                    Log.i(TAG, "onComplete");
-                    VKList<VKApiUserFull> list = (VKList<VKApiUserFull>) response.parsedModel;
-                    try {
-                        String idUser = list.get(0).fields.getString("id");
-                        //intent.putExtra(EXTRA_MESSAGE_ID_USER, idUser);
-                        intent.putExtra(EXTRA_MESSAGE_ID_SOCIAL, socialNetwork);
-                    }catch (Exception ex){
-                        Log.i(TAG, ex.getMessage());
-                    }
-                }
-                @Override
-                public void onError(VKError error) {
-                    Log.i(TAG, "onComplete");
-                }
-                @Override
-                public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
-                    Log.i(TAG, "onComplete");
-                }
-            });
-
-        } else {
-            return;
-        }
-        startActivity(intent);
-        finish();
-    }
+    };
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
+    public void onSocialNetworkManagerInitialized() {
+        for (SocialNetwork socialNetwork : mSocialNetworkManager.getInitializedSocialNetworks()) {
+            socialNetwork.setOnLoginCompleteListener(this);
+            initSocialNetwork(socialNetwork);
 
-            @Override
-            public void onResult(VKAccessToken res) {
-                OpenMainScreen("vk");
-                Toast.makeText(getApplicationContext(), "Good", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(VKError error) {
-                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-            }
-        }))
-        {
-            super.onActivityResult(requestCode, resultCode, data);
-            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        profileTracker.stopTracking();
+    public void onLoginSuccess(int socialNetworkID) {
+        Main.closeLogin();
+        Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        accessTokenTracker.stopTracking();
-        profileTracker.stopTracking();
+    public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
+        Toast.makeText(getActivity(), "ERROR: " + errorMessage, Toast.LENGTH_LONG).show();
     }
 }
 

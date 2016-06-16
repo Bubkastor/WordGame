@@ -1,10 +1,10 @@
 <resources>
-    <integer name="com_vk_sdk_AppId">5466773</integer>
+    <string name="vk_app_id">5466773</string>
 
     <string name="facebook_app_id">1683999828523747</string>
     <string name="app_name">WordGame</string>
 
-    <string name="URL">http://serverwordgame.azurewebsites.net</string>
+    <string name="URL">http://192.168.1.6:3000</string>
     <string name="URL_File">/file/</string>
     <string name="URL_Upload">/upload/</string>
     <string name="URL_Raiting">/raiting/</string>
@@ -13,7 +13,7 @@
     <string name="Raiting_minus">/-1</string>
     <string name="ChatNamespace">/chat</string>
 
-    <string name="URLNamespace1">http://serverwordgame.azurewebsites.net/</string>
+    <string name="URLNamespace1">http://serverwordgame.azurewebsites.net</string>
     <string name="TestURLOnline">http://192.168.1.4:3000</string>
 
     <string name="srcWordToltip">Загадайте слово</string>
@@ -76,6 +76,8 @@
     <string name="activity_Statistics_leader_rating">Рейтинг пользователя как ведущего: </string>
     <string name="activity_Statistics_total_time">Общие время, проведённое в игре: </string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
