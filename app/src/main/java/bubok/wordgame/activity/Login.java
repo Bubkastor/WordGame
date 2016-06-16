@@ -139,7 +139,7 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
 
     @Override
     public void onLoginSuccess(int socialNetworkID) {
-        Main.closeLogin();
+        getFragmentManager().beginTransaction().hide(this).commit();
         Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_LONG).show();
     }
 

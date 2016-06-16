@@ -129,9 +129,6 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
 
     }
 
-    public static void closeLogin(){
-        fTrans.hide(frag);
-    }
 
     private boolean isReceiverRegistered;
 
