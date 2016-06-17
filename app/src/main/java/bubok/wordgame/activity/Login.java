@@ -17,6 +17,8 @@ import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
 import com.github.gorbin.asne.twitter.TwitterSocialNetwork;
 import com.vk.sdk.VKScope;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import bubok.wordgame.R;
@@ -27,7 +29,6 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
         OnLoginCompleteListener {
 
     public static SocialNetworkManager mSocialNetworkManager;
-    private SocialNetwork socialNetwork;
 
     private static final String TAG = "LOGIN";
 
@@ -63,11 +64,17 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
                 VKScope.NOHTTPS,
                 VKScope.STATUS,
         };
+
+        ArrayList<String> fbScope = new ArrayList<String>();
+        fbScope.addAll(Arrays.asList("public_profile, email, user_friends"));
         if (mSocialNetworkManager == null){
             mSocialNetworkManager = new SocialNetworkManager();
 
             VkSocialNetwork vkNetwork = new VkSocialNetwork(this, VK_KEY, vkScope);
             mSocialNetworkManager.addSocialNetwork(vkNetwork);
+
+            FacebookSocialNetwork fbNetwork = new FacebookSocialNetwork(this, fbScope);
+            mSocialNetworkManager.addSocialNetwork(fbNetwork);
 
             getFragmentManager().beginTransaction().add(mSocialNetworkManager, Main.SOCIAL_NETWORK_TAG).commit();
             mSocialNetworkManager.setOnInitializationCompleteListener(this);
@@ -89,9 +96,11 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
         if(socialNetwork.isConnected()){
             switch (socialNetwork.getID()){
                 case VkSocialNetwork.ID:
-                    this.socialNetwork = socialNetwork;
                     vk.setText("Show VK profile");
                     //startProfile(socialNetwork.getID());
+                    break;
+                case FacebookSocialNetwork.ID:
+                    fb.setText("Show FB profile");
                     break;
             }
         }
@@ -102,7 +111,11 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
             vk.setText("Login VK");
             fb.setText("Login FB");
             tw.setText("Login TW");
-            socialNetwork.logout();
+            List<SocialNetwork> socialNetworks = mSocialNetworkManager.getInitializedSocialNetworks();
+            for (SocialNetwork socialNetwork : socialNetworks) {
+                socialNetwork.logout();
+            }
+
         }
     };
 
@@ -118,7 +131,7 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
                     networkId = FacebookSocialNetwork.ID;
                     break;
                 case R.id.tw:
-                    networkId = TwitterSocialNetwork.ID;
+                    //networkId = TwitterSocialNetwork.ID;
                     break;
             }
             SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(networkId);
@@ -133,7 +146,6 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
         for (SocialNetwork socialNetwork : mSocialNetworkManager.getInitializedSocialNetworks()) {
             socialNetwork.setOnLoginCompleteListener(this);
             initSocialNetwork(socialNetwork);
-
         }
     }
 
