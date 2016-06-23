@@ -1,5 +1,6 @@
-package bubok.wordgame.activity;
+package bubok.wordgame.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -8,22 +9,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
 import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
+
+import com.github.gorbin.asne.core.listener.OnRequestSocialPersonCompleteListener;
+import com.github.gorbin.asne.core.persons.SocialPerson;
 import com.github.gorbin.asne.vk.VkSocialNetwork;
 import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
 import com.github.gorbin.asne.twitter.TwitterSocialNetwork;
 import com.vk.sdk.VKScope;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import bubok.wordgame.R;
-
-
+import bubok.wordgame.activity.Main;
 
 public class Login extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener,
         OnLoginCompleteListener {
@@ -66,7 +69,8 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
         };
 
         ArrayList<String> fbScope = new ArrayList<String>();
-        fbScope.addAll(Arrays.asList("public_profile, email, user_friends"));
+        fbScope.addAll(Arrays.asList("public_profile, email"));
+        mSocialNetworkManager = (SocialNetworkManager) getFragmentManager().findFragmentByTag(Main.SOCIAL_NETWORK_TAG);
         if (mSocialNetworkManager == null){
             mSocialNetworkManager = new SocialNetworkManager();
 
@@ -80,11 +84,7 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
             mSocialNetworkManager.setOnInitializationCompleteListener(this);
         } else {
             if(!mSocialNetworkManager.getInitializedSocialNetworks().isEmpty()) {
-                List<SocialNetwork> socialNetworks = mSocialNetworkManager.getInitializedSocialNetworks();
-                for (SocialNetwork socialNetwork : socialNetworks) {
-                    socialNetwork.setOnLoginCompleteListener(this);
-                    initSocialNetwork(socialNetwork);
-                }
+                onSocialNetworkManagerInitialized();
             }
         }
 
@@ -93,16 +93,21 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
     }
 
     private void initSocialNetwork(SocialNetwork socialNetwork){
+
         if(socialNetwork.isConnected()){
             switch (socialNetwork.getID()){
+                //TODO получить данные
                 case VkSocialNetwork.ID:
                     vk.setText("Show VK profile");
-                    //startProfile(socialNetwork.getID());
                     break;
                 case FacebookSocialNetwork.ID:
                     fb.setText("Show FB profile");
                     break;
+                case TwitterSocialNetwork.ID:
+                    tw.setText("Show TW profile");
+                    break;
             }
+            startProfile(socialNetwork.getID());
         }
     }
     private View.OnClickListener exitClick = new View.OnClickListener() {
@@ -149,15 +154,59 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
         }
     }
 
+    private void hideFragment(){
+        getFragmentManager().beginTransaction().hide(this).commit();
+    }
+
     @Override
     public void onLoginSuccess(int socialNetworkID) {
-        getFragmentManager().beginTransaction().hide(this).commit();
+        // TODO потверждение логинации
+        hideFragment();
         Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
+        // TODO Логинация не удалась
         Toast.makeText(getActivity(), "ERROR: " + errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    private void startProfile(int socialNetworkID){
+
+        final SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(socialNetworkID);
+        socialNetwork.setOnRequestCurrentPersonCompleteListener(new OnRequestSocialPersonCompleteListener() {
+            @Override
+            public void onRequestSocialPersonSuccess(int socialNetworkId, SocialPerson socialPerson) {
+                String avatar = socialPerson.avatarURL;
+                String name = socialPerson.name;
+                String id = socialPerson.id;
+                String socialNetwork = "";
+                switch (socialNetworkId){
+                    case VkSocialNetwork.ID:
+                        socialNetwork = "VK";
+                        break;
+                    case FacebookSocialNetwork.ID:
+                        socialNetwork = "FB";
+                        break;
+                    case TwitterSocialNetwork.ID:
+                        socialNetwork = "TW";
+                        break;
+                }
+                Intent intent = new Intent();
+                intent.putExtra(Main.EXTRA_MESSAGE_USED_SOCIAL, socialNetwork);
+                intent.putExtra(Main.EXTRA_MESSAGE_USED_ID, id);
+                intent.putExtra(Main.EXTRA_MESSAGE_USED_AVATAR, avatar);
+                intent.putExtra(Main.EXTRA_MESSAGE_USED_NAME, name);
+                startActivity(intent);
+                hideFragment();
+            }
+
+            @Override
+            public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
+                Toast.makeText(getActivity(), "ERROR: " + errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
+        socialNetwork.requestCurrentPerson();
     }
 }
 

@@ -34,16 +34,14 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
-import org.json.JSONArray;
-import org.json.JSONException;
+
 import org.json.JSONObject;
 import bubok.wordgame.R;
-import com.github.gorbin.asne.core.SocialNetworkManager;
 import bubok.wordgame.other.QuickstartPreferences;
 import bubok.wordgame.service.RegistrationIntentService;
 import bubok.wordgame.service.SocketService;
 
-import bubok.wordgame.activity.Login;
+import bubok.wordgame.fragment.Login;
 
 public class Main extends AppCompatActivity  implements FragmentManager.OnBackStackChangedListener{
 
@@ -54,7 +52,10 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
     /**
      *использется для передачи интента id_user
      */
-    public static final String EXTRA_MESSAGE_USED_ID_USER = "bubok.wordgame.id.user";
+    public static final String EXTRA_MESSAGE_USED_ID = "bubok.wordgame.id";
+    public static final String EXTRA_MESSAGE_USED_NAME = "bubok.wordgame.name";
+    public static final String EXTRA_MESSAGE_USED_SOCIAL = "bubok.wordgame.name.social";
+    public static final String EXTRA_MESSAGE_USED_AVATAR = "bubok.wordgame.name.avatar";
     public static final String SOCIAL_NETWORK_TAG = "SocialIntegrationMain.SOCIAL_NETWORK_TAG";
     /**
      * Для логирования
@@ -115,7 +116,7 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
         avatar = (ImageView) findViewById(R.id.imageViewAvatar);
 
         if (intent.getExtras() != null) {
-            //idUSer = intent.getStringExtra(Login.EXTRA_MESSAGE_ID_USER);
+
         }
         initButton();
         if (checkPlayServices()) {
