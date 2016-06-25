@@ -52,7 +52,7 @@ public class Statistics extends AppCompatActivity {
 
         Bundle intent =  getIntent().getExtras();
 
-        String user_id = intent.getString(Main.EXTRA_MESSAGE_USED_ID_USER);
+        String user_id = intent.getString(Main.EXTRA_MESSAGE_USED_ID);
         String url = getString(R.string.URL) + getString(R.string.URL_Statistic);
         new ServerRequestJSONTask(user_id).execute(url);
 
@@ -67,7 +67,6 @@ public class Statistics extends AppCompatActivity {
         totalTime = findViewById(R.id.totalTime);
         totalWins = findViewById(R.id.totalWins);
         leaderRaiting = findViewById(R.id.leaderRaiting);
-
     }
 
     /**

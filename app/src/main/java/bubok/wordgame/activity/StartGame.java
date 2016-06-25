@@ -584,7 +584,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
                     try {
                         String game = jsonObject.getString("gameId");
                         Intent intent = new Intent(StartGame.this, Chat.class);
-                        intent.putExtra(Main.EXTRA_MESSAGE_USED_ID_USER, Main.idUSer);
+                        intent.putExtra(Main.EXTRA_MESSAGE_USED_ID, Main.idUSer);
                         intent.putExtra(Main.EXTRA_MESSAGE_USED_GAME, game);
 
                         startActivity(intent);

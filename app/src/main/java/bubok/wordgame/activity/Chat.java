@@ -102,7 +102,7 @@ public class Chat extends AppCompatActivity {
         showMedia = findViewById(R.id.showMedia);
 
         Intent intent = getIntent();
-        idUser = intent.getStringExtra(Main.EXTRA_MESSAGE_USED_ID_USER);
+        idUser = intent.getStringExtra(Main.EXTRA_MESSAGE_USED_ID);
         mGame = intent.getStringExtra(Main.EXTRA_MESSAGE_USED_GAME);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.listViewCheat);
