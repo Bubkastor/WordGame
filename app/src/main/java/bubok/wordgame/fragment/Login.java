@@ -107,9 +107,10 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
                     tw.setText("Show TW profile");
                     break;
             }
-            startProfile(socialNetwork.getID());
+            //startProfile(socialNetwork.getID());
         }
     }
+
     private View.OnClickListener exitClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -161,7 +162,7 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
     @Override
     public void onLoginSuccess(int socialNetworkID) {
         // TODO потверждение логинации
-        hideFragment();
+        //hideFragment();
         Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_LONG).show();
     }
 
@@ -198,7 +199,7 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
                 intent.putExtra(Main.EXTRA_MESSAGE_USED_AVATAR, avatar);
                 intent.putExtra(Main.EXTRA_MESSAGE_USED_NAME, name);
                 startActivity(intent);
-                hideFragment();
+                //hideFragment();
             }
 
             @Override
