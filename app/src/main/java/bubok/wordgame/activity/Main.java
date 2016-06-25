@@ -38,6 +38,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 import bubok.wordgame.R;
 import bubok.wordgame.other.QuickstartPreferences;
+import bubok.wordgame.other.User;
 import bubok.wordgame.service.RegistrationIntentService;
 import bubok.wordgame.service.SocketService;
 
@@ -52,6 +53,7 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
     /**
      *использется для передачи интента id_user
      */
+    public static final String EXTRA_MESSAGE_USER = "bubok.wordgame.user";
     public static final String EXTRA_MESSAGE_USED_ID = "bubok.wordgame.id";
     public static final String EXTRA_MESSAGE_USED_NAME = "bubok.wordgame.name";
     public static final String EXTRA_MESSAGE_USED_SOCIAL = "bubok.wordgame.name.social";
@@ -74,6 +76,8 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
 
     private static Login frag;
     private static FragmentTransaction fTrans;
+
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,14 +114,8 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
 
         initService();
 
-
-        Intent intent = getIntent();
-
         avatar = (ImageView) findViewById(R.id.imageViewAvatar);
 
-        if (intent.getExtras() != null) {
-
-        }
         initButton();
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
@@ -130,6 +128,11 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
 
     }
 
+    protected void onNewIntent(Intent intent) {
+        if (intent.getExtras() != null) {
+            currentUser = (User)intent.getExtras().get(EXTRA_MESSAGE_USER);
+        }
+    }
 
     private boolean isReceiverRegistered;
 
@@ -201,9 +204,10 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
                     Log.i(TAG, "not found");
                     JSONObject sendUserInfo = new JSONObject();
                     try {
-                        //sendUserInfo.put("NAME", profile.getName());
-                        //sendUserInfo.put("AVATAR", profile.getProfilePictureUri(500, 500).toString());
-                        //sendUserInfo.put("USER_ID_" + social.toUpperCase() , profile.getId());
+                        sendUserInfo.put("NAME", currentUser.getName());
+                        sendUserInfo.put("AVATAR", currentUser.getAvatar());
+                        sendUserInfo.put("USER_ID_" + currentUser.getSocialNetwork().toUpperCase()
+                                , currentUser.getUserID());
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                         return;
@@ -217,7 +221,6 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
                     try {
                         setName(jsonObject.getString("username"));
                         setAvatar(jsonObject.getString("avatar"));
-
                     } catch (Exception ex) {
                         Log.i(TAG, ex.getMessage());
                     }
@@ -283,9 +286,9 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
             });
             JSONObject send = new JSONObject();
             try {
-                //send.put("id", idUSer);
-                //send.put("social", social);
-                //mService.send("login", send);
+                send.put("id", currentUser.getUserID());
+                send.put("social", currentUser.getSocialNetwork());
+                mService.send("login", send);
             } catch (Exception ex){
                 Log.d(TAG, ex.getMessage());
             }
@@ -383,23 +386,23 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
     }
 
     /**
+     * Востанавливаем связь с сервисами
+     */
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "onResume");
+        registerReceiver();
+        bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+        super.onResume();
+    }
+
+    /**
      * Закрытие приложения
      */
     @Override
     public void onBackPressed() {
         Log.i(TAG, "onBackPressed");
         finish();
-    }
-
-    /**
-     * Востанавливаем связь с сервисами
-     */
-    @Override
-    public void onResume() {
-        Log.i(TAG, "onResume");
-        registerReceiver();
-        bindService(service, mConnection, Context.BIND_AUTO_CREATE);
-        super.onResume();
     }
 
     /**

@@ -7,12 +7,14 @@ import java.io.Serializable;
  */
 
 /**
- * Пользователь для Адаптера
+ * Пользователь для Адаптера и логинации
  */
 public class User implements Serializable {
     private String userID;
     private String name;
     private String avatar;
+    private String socialNetwork;
+    private boolean isSelected;
 
     public boolean isSelected() {
         return isSelected;
@@ -21,8 +23,6 @@ public class User implements Serializable {
     public void setIsSelected(boolean isSelected) {
         this.isSelected = isSelected;
     }
-
-    private boolean isSelected;
 
     public String getUserID() {
         return userID;
@@ -48,11 +48,29 @@ public class User implements Serializable {
         this.avatar = avatar;
     }
 
+    public String getSocialNetwork() {
+        return socialNetwork;
+    }
+
+    public void setSocialNetwork(String socialNetwork) {
+        this.socialNetwork = socialNetwork;
+    }
+
+    public User(String userID, String name, String avatar, String socialNetwork){
+        this.userID = userID;
+        this.name = name;
+        this.avatar = avatar;
+        this.isSelected = false;
+        this.socialNetwork = socialNetwork;
+    }
 
     public User(String userID, String name, String avatar) {
         this.userID = userID;
         this.name = name;
         this.avatar = avatar;
         this.isSelected = false;
+        this.socialNetwork = "";
     }
+
+
 }

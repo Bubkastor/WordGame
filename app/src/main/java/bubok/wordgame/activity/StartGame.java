@@ -108,6 +108,7 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
 
     private Chronometer chronometer;
     private Timer timer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -485,7 +486,6 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
         }
     }
 

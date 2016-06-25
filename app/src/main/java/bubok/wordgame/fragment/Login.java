@@ -3,7 +3,6 @@ package bubok.wordgame.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,21 +11,18 @@ import android.widget.Toast;
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
 import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
-
 import com.github.gorbin.asne.core.listener.OnRequestSocialPersonCompleteListener;
 import com.github.gorbin.asne.core.persons.SocialPerson;
 import com.github.gorbin.asne.vk.VkSocialNetwork;
 import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
 import com.github.gorbin.asne.twitter.TwitterSocialNetwork;
 import com.vk.sdk.VKScope;
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import bubok.wordgame.R;
 import bubok.wordgame.activity.Main;
+import bubok.wordgame.other.User;
 
 public class Login extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener,
         OnLoginCompleteListener {
@@ -173,7 +169,6 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
     }
 
     private void startProfile(int socialNetworkID){
-
         final SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(socialNetworkID);
         socialNetwork.setOnRequestCurrentPersonCompleteListener(new OnRequestSocialPersonCompleteListener() {
             @Override
@@ -194,10 +189,8 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
                         break;
                 }
                 Intent intent = new Intent();
-                intent.putExtra(Main.EXTRA_MESSAGE_USED_SOCIAL, socialNetwork);
-                intent.putExtra(Main.EXTRA_MESSAGE_USED_ID, id);
-                intent.putExtra(Main.EXTRA_MESSAGE_USED_AVATAR, avatar);
-                intent.putExtra(Main.EXTRA_MESSAGE_USED_NAME, name);
+                User currentUser = new User(id, name, avatar, socialNetwork);
+                intent.putExtra(Main.EXTRA_MESSAGE_USER, currentUser);
                 startActivity(intent);
                 //hideFragment();
             }
