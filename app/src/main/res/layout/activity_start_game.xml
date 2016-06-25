@@ -44,7 +44,8 @@
                         android:src="@drawable/photo"
                         android:scaleType="fitCenter"
                         style="?android:attr/borderlessButtonStyle"
-                        android:layout_gravity="top" />
+                        android:layout_gravity="top"
+                        tools:ignore="ContentDescription" />
 
                     <ImageButton
                         android:layout_width="100dp"
@@ -54,7 +55,8 @@
                         android:scaleType="fitCenter"
                         style="?android:attr/borderlessButtonStyle"
                         android:nestedScrollingEnabled="false"
-                        android:layout_gravity="center_vertical" />
+                        android:layout_gravity="center_vertical"
+                        tools:ignore="ContentDescription" />
 
                     <ImageButton
                         android:layout_width="100dp"
@@ -64,7 +66,8 @@
                         android:nestedScrollingEnabled="false"
                         android:scaleType="fitCenter"
                         style="?android:attr/borderlessButtonStyle"
-                        android:layout_gravity="bottom" />
+                        android:layout_gravity="bottom"
+                        tools:ignore="ContentDescription" />
                 </LinearLayout>
 
                 <View
@@ -139,7 +142,8 @@
                             android:id="@+id/resetPrevView"
                             android:src="@android:drawable/ic_delete"
                             android:scaleType="fitCenter"
-                            android:layout_gravity="right|top" />
+                            android:layout_gravity="right|top"
+                            tools:ignore="ContentDescription" />
                     </FrameLayout>
 
                 </LinearLayout>
@@ -261,7 +265,8 @@
                         android:src="@drawable/start"
                         android:allowUndo="false"
                         android:scaleType="fitCenter"
-                        style="?android:attr/borderlessButtonStyle" />
+                        style="?android:attr/borderlessButtonStyle"
+                        tools:ignore="ContentDescription" />
                 </RelativeLayout>
 
             </RelativeLayout>

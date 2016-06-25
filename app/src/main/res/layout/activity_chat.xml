@@ -61,7 +61,8 @@
             android:id="@+id/showMedia"
             style="?android:attr/borderlessButtonStyle"
             android:scaleType="fitCenter"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            tools:ignore="ContentDescription" />
 
 
     </FrameLayout>

@@ -25,10 +25,6 @@ import bubok.wordgame.other.Message;
 import bubok.wordgame.R;
 
 /**
- * Created by bubok on 01.03.2016.
- */
-
-/**
  * Адаптер для сообщений в чате
  */
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
@@ -40,8 +36,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     /**
      * Создание холдера для хранения ссылок на все элементы
-     * @param parent
-     * @param viewType
+     * @param parent родитель
+     * @param viewType тип view
      * @return ViewHolder
      */
     @Override
@@ -60,11 +56,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     /**
      * Привязка данных к ViewHolder
-     * @param holder
-     * @param position
+     * @param holder холдер
+     * @param pos позиция
      */
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, final int pos) {
+        //TODO проверить работает ли эта замена
+        final int position = holder.getAdapterPosition();
         if (isOptionPanel()) {
             if (!getLeaderId().equals(messages.get(position).getIdUser())) {
                 holder.buttonCorrect.setVisibility(RelativeLayout.VISIBLE);
@@ -112,8 +110,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         return messages.size();
     }
 
-    public Message getItem(int possiton) {
-        return messages.get(possiton);
+    public Message getItem(int position) {
+        return messages.get(position);
     }
 
     /**
@@ -159,7 +157,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     /**
      * Задаем значение лидера
-     * @param leaderId
+     * @param leaderId id лидера
      */
     public void setLeaderId(String leaderId) {
         this.leaderId = leaderId;
@@ -167,7 +165,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     /**
      * Проверка панели доп. действий
-     * @return
+     * @return нужна ли панель
      */
     private boolean isOptionPanel() {
         return optionPanel;
@@ -193,8 +191,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     /**
      * Изменяем статус ообщения
-     * @param id
-     * @param status
+     * @param id id сообщения
+     * @param status статус сообщения
      */
     public  void ChangeStatus(String id, String status){
         for (Message message: messages)
