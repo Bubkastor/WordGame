@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:screenOrientation="locked"
-    tools:context=".fragment.Login"
+    tools:context=".Login"
     android:background="#e8a2a2">
 
 

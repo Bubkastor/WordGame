@@ -15,7 +15,7 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
-import bubok.wordgame.activity.Main;
+import bubok.wordgame.Main;
 
 public class MyGcmListenerService extends GcmListenerService {
     private static final String TAG = "MyGcmListenerService";

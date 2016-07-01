@@ -24,7 +24,7 @@
             android:screenOrientation="locked"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".activity.Main"
+            android:name=".Main"
             android:configChanges="orientation|screenSize|fontScale"
             android:launchMode="singleTop"
             android:screenOrientation="locked" >
@@ -38,13 +38,13 @@
             android:name=".activity.StartGame"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
-            android:parentActivityName=".activity.Main"
+            android:parentActivityName=".Main"
             android:screenOrientation="locked"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.WinGame"
             android:configChanges="orientation|screenSize|fontScale"
-            android:parentActivityName=".activity.Main"
+            android:parentActivityName=".Main"
             android:screenOrientation="locked" />
 
         <service

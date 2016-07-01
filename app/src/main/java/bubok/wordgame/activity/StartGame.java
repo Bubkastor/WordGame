@@ -24,9 +24,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Chronometer;
@@ -48,6 +46,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import bubok.wordgame.Main;
 import bubok.wordgame.other.SingleUploadBroadcastReceiver;
 import bubok.wordgame.other.User;
 import bubok.wordgame.R;

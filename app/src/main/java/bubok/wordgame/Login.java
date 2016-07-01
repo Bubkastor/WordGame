@@ -1,8 +1,13 @@
-package bubok.wordgame.fragment;
+package bubok.wordgame;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +22,14 @@ import com.github.gorbin.asne.vk.VkSocialNetwork;
 import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
 import com.github.gorbin.asne.twitter.TwitterSocialNetwork;
 import com.vk.sdk.VKScope;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import bubok.wordgame.R;
-import bubok.wordgame.activity.Main;
+import bubok.wordgame.Main;
 import bubok.wordgame.other.User;
 
 public class Login extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener,
@@ -53,6 +61,8 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
         vk.setOnClickListener(loginClick);
         fb.setOnClickListener(loginClick);
         tw.setOnClickListener(loginClick);
+
+        //printHashKey();
 
         String VK_KEY = getResources().getString(R.string.vk_app_id);
 
@@ -166,6 +176,24 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
     public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
         // TODO Логинация не удалась
         Toast.makeText(getActivity(), "ERROR: " + errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    public void printHashKey() {
+        try {
+            PackageInfo info = getActivity().getPackageManager().getPackageInfo("bubok.wordgame",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("TEMPTAGHASH KEY:",
+                        Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.d("TEMPTAGHASH KEY:", e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            Log.d("TEMPTAGHASH KEY:", "failed");
+        }
+
     }
 
     private void startProfile(int socialNetworkID){

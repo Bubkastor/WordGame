@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:screenOrientation="locked"
     android:id="@+id/container"
-    tools:context=".activity.Main">
+    tools:context="bubok.wordgame.Main">
 
     <ScrollView
         android:layout_width="wrap_content"

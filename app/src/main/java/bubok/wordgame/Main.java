@@ -1,4 +1,4 @@
-package bubok.wordgame.activity;
+package bubok.wordgame;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -17,11 +17,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -36,15 +39,18 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
-import bubok.wordgame.R;
+
+import bubok.wordgame.activity.About;
+import bubok.wordgame.activity.Chat;
+import bubok.wordgame.activity.SocialFriends;
+import bubok.wordgame.activity.StartGame;
+import bubok.wordgame.activity.Statistics;
 import bubok.wordgame.other.QuickstartPreferences;
 import bubok.wordgame.other.User;
 import bubok.wordgame.service.RegistrationIntentService;
 import bubok.wordgame.service.SocketService;
 
-import bubok.wordgame.fragment.Login;
-
-public class Main extends AppCompatActivity  implements FragmentManager.OnBackStackChangedListener{
+public class Main extends AppCompatActivity implements android.support.v4.app.FragmentManager.OnBackStackChangedListener {
 
     /**
      *использется для передачи интента id_game
@@ -79,16 +85,22 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
 
     private User currentUser;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
         setContentView(R.layout.activity_main);
+
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+        homeAsUpByBackStack();
+
         context = this;
-        fTrans = getSupportFragmentManager().beginTransaction();
-        frag = new Login();
         if (savedInstanceState == null) {
-            fTrans.add(R.id.container,frag)
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new Login())
                     .commit();
         }
 
@@ -127,6 +139,28 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
         Log.i(TAG, "onCreate");
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        homeAsUpByBackStack();
+    }
+    private void homeAsUpByBackStack() {
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getSupportFragmentManager().popBackStack();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     protected void onNewIntent(Intent intent) {
         if (intent.getExtras() != null) {
@@ -177,10 +211,6 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
         startService(service);
     }
 
-    /**
-     * Проверка на сушествование Facebook токена
-     * Если нет то возрашаемся на экран Логинации
-     */
 
     /**
      * Обработка собыйтий от сервера
@@ -285,12 +315,14 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
 
             });
             JSONObject send = new JSONObject();
-            try {
-                send.put("id", currentUser.getUserID());
-                send.put("social", currentUser.getSocialNetwork());
-                mService.send("login", send);
-            } catch (Exception ex){
-                Log.d(TAG, ex.getMessage());
+            if (currentUser != null) {
+                try {
+                    send.put("id", currentUser.getUserID());
+                    send.put("social", currentUser.getSocialNetwork());
+                    mService.send("login", send);
+                } catch (Exception ex) {
+                    Log.d(TAG, ex.getMessage());
+                }
             }
             mBound = true;
         }
@@ -547,16 +579,12 @@ public class Main extends AppCompatActivity  implements FragmentManager.OnBackSt
     }
 
     @Override
-    public void onBackStackChanged() {
-        homeAsUpByBackStack();
-    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    private void homeAsUpByBackStack() {
-        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-        if (backStackEntryCount > 0) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        } else {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(SOCIAL_NETWORK_TAG);
+        if (fragment != null) {
+            fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 }
