@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
@@ -39,10 +40,9 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
 
     private static final String TAG = "LOGIN";
 
-    private Button vk;
-    private Button fb;
-    private Button tw;
-    private Button exit;
+    private ImageButton vk;
+    private ImageButton fb;
+    private ImageButton tw;
 
     public Login(){
     }
@@ -52,12 +52,10 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_login, container, false);
 
-        vk = (Button) rootView.findViewById(R.id.vk);
-        fb = (Button) rootView.findViewById(R.id.fb);
-        tw = (Button) rootView.findViewById(R.id.tw);
-        exit = (Button) rootView.findViewById(R.id.exit);
+        vk = (ImageButton) rootView.findViewById(R.id.vk);
+        fb = (ImageButton) rootView.findViewById(R.id.fb);
+        tw = (ImageButton) rootView.findViewById(R.id.tw);
 
-        exit.setOnClickListener(exitClick);
         vk.setOnClickListener(loginClick);
         fb.setOnClickListener(loginClick);
         tw.setOnClickListener(loginClick);
@@ -101,35 +99,17 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
     private void initSocialNetwork(SocialNetwork socialNetwork){
 
         if(socialNetwork.isConnected()){
-            switch (socialNetwork.getID()){
-                //TODO получить данные
-                case VkSocialNetwork.ID:
-                    vk.setText("Show VK profile");
-                    break;
-                case FacebookSocialNetwork.ID:
-                    fb.setText("Show FB profile");
-                    break;
-                case TwitterSocialNetwork.ID:
-                    tw.setText("Show TW profile");
-                    break;
-            }
             //startProfile(socialNetwork.getID());
         }
     }
 
-    private View.OnClickListener exitClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            vk.setText("Login VK");
-            fb.setText("Login FB");
-            tw.setText("Login TW");
-            List<SocialNetwork> socialNetworks = mSocialNetworkManager.getInitializedSocialNetworks();
-            for (SocialNetwork socialNetwork : socialNetworks) {
-                socialNetwork.logout();
-            }
-
-        }
-    };
+// TODO EXIT
+    /*
+    * List<SocialNetwork> socialNetworks = mSocialNetworkManager.getInitializedSocialNetworks();
+    * for (SocialNetwork socialNetwork : socialNetworks) {
+    *     socialNetwork.logout();
+    *
+    */
 
     private View.OnClickListener  loginClick = new View.OnClickListener() {
         @Override
@@ -193,7 +173,6 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
         } catch (NoSuchAlgorithmException e) {
             Log.d("TEMPTAGHASH KEY:", "failed");
         }
-
     }
 
     private void startProfile(int socialNetworkID){
