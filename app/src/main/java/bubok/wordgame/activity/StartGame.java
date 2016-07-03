@@ -164,11 +164,13 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             @Override
             public void onClick(View v) {
                 if (firstClick) {
-                    ((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_black_48dp));
+                    //todo заполнить иконку
+                    //((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_black_48dp));
                     recordStart();
                     firstClick = false;
                 } else {
-                    ((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_voice_black_48dp));
+                    //todo заполнить иконку
+                    //((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_voice_black_48dp));
                     recordStop();
                     firstClick = true;
                     findViewById(R.id.recordLayout).setVisibility(View.GONE);
@@ -187,7 +189,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
         findViewById(R.id.deleteButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((at.markushi.ui.CircleButton) findViewById(R.id.playButton)).setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_black_48dp));
+                //todo заполнить иконку
+                //((at.markushi.ui.CircleButton) findViewById(R.id.playButton)).setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_black_48dp));
                 isPlay = false;
                 playStop();
                 findViewById(R.id.recordLayout).setVisibility(View.VISIBLE);
@@ -199,7 +202,8 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
             @Override
             public void onClick(View v) {
                 findViewById(R.id.audioLayout).setVisibility(View.GONE);
-                ((at.markushi.ui.CircleButton) findViewById(R.id.playButton)).setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_black_48dp));
+                //todo заполнить иконку
+                //((at.markushi.ui.CircleButton) findViewById(R.id.playButton)).setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_black_48dp));
                 setAudio();
             }
         });
@@ -315,11 +319,13 @@ public class StartGame extends AppCompatActivity implements SingleUploadBroadcas
      */
     private void playAudio(View v) {
         if (!isPlay) {
-            ((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_black_48dp));
+            //todo заполнить иконку
+            //((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_black_48dp));
             playStart();
             isPlay = true;
         } else {
-            ((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_black_48dp));
+            //todo заполнить иконку
+            //((at.markushi.ui.CircleButton) v).setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_black_48dp));
             isPlay = false;
             playStop();
         }

@@ -41,7 +41,6 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:id="@+id/buttonAddPhoto"
-                        android:src="@drawable/photo"
                         android:scaleType="fitCenter"
                         style="?android:attr/borderlessButtonStyle"
                         android:layout_gravity="top"
@@ -51,7 +50,6 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:id="@+id/buttonAddVideo"
-                        android:src="@drawable/video"
                         android:scaleType="fitCenter"
                         style="?android:attr/borderlessButtonStyle"
                         android:nestedScrollingEnabled="false"
@@ -62,7 +60,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:id="@+id/buttonAddAudio"
-                        android:src="@drawable/audio"
+
                         android:nestedScrollingEnabled="false"
                         android:scaleType="fitCenter"
                         style="?android:attr/borderlessButtonStyle"
@@ -125,7 +123,6 @@
                             <at.markushi.ui.CircleButton
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:src="@drawable/ic_play_arrow_black_48dp"
                                 app:cb_color="#99CC00"
                                 app:cb_pressedRingWidth="8dip"
                                 android:id="@+id/playButtonPrev"
@@ -262,7 +259,6 @@
                         android:layout_height="200dp"
                         android:text="@string/game"
                         android:id="@+id/buttonRunGame"
-                        android:src="@drawable/start"
                         android:allowUndo="false"
                         android:scaleType="fitCenter"
                         style="?android:attr/borderlessButtonStyle"
@@ -326,7 +322,6 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:id="@+id/voiceButtons"
-                    android:src="@drawable/ic_keyboard_voice_black_48dp"
                     app:cb_color="#99CC00"
                     app:cb_pressedRingWidth="8dip"
                     android:baselineAlignBottom="false" />
@@ -345,7 +340,6 @@
             <at.markushi.ui.CircleButton
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/ic_play_arrow_black_48dp"
                 app:cb_color="#99CC00"
                 app:cb_pressedRingWidth="8dip"
                 android:id="@+id/playButton"
@@ -361,7 +355,6 @@
                 <at.markushi.ui.CircleButton
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/ic_delete_black_48dp"
                     app:cb_color="#99CC00"
                     app:cb_pressedRingWidth="8dip"
                     android:id="@+id/deleteButton" />
@@ -369,7 +362,6 @@
                 <at.markushi.ui.CircleButton
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/ic_done_black_48dp"
                     app:cb_color="#99CC00"
                     app:cb_pressedRingWidth="8dip"
                     android:id="@+id/confirmButton" />

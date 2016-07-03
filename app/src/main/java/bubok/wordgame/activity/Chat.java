@@ -414,6 +414,7 @@ public class Chat extends AppCompatActivity {
      * @param mediaType
      */
     private void setMediaContainer(final String url, final String mediaType) {
+        //TODO Заполнить контейнер
         Handler handler = new Handler(getBaseContext().getMainLooper());
         handler.post(new Runnable() {
             @Override
@@ -425,7 +426,7 @@ public class Chat extends AppCompatActivity {
 
                 switch (mediaType) {
                     case "image":
-                        ((ImageButton)showMedia).setImageResource(R.drawable.photo);
+                        //((ImageButton)showMedia).setImageResource(R.drawable.photo);
                         showMedia.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -436,9 +437,9 @@ public class Chat extends AppCompatActivity {
 
                         break;
                     case "audio":
-                        ((ImageButton)showMedia).setImageResource(R.drawable.audio);
+                        //((ImageButton)showMedia).setImageResource(R.drawable.audio);
                     case "video":
-                        ((ImageButton)showMedia).setImageResource(R.drawable.video);
+                        //((ImageButton)showMedia).setImageResource(R.drawable.video);
                         video.setVisibility(View.VISIBLE);
                         try {
                             video.setVideoURI(uri);

@@ -35,7 +35,6 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/buttonLogo"
                         style="?android:attr/borderlessButtonStyle"
-                        android:src="@drawable/logo"
                         android:scaleType="fitCenter"
                         tools:ignore="ContentDescription" />
 

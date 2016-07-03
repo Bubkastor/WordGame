@@ -224,7 +224,6 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:id="@+id/imageButtonLike"
-                            android:src="@drawable/like"
                             android:layout_marginRight="20dp"
                             android:scaleType="fitCenter"
                             tools:ignore="ContentDescription" />
@@ -233,7 +232,7 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:id="@+id/imageButtonDislike"
-                            android:src="@drawable/dislike"
+
                             android:layout_marginLeft="20dp"
                             android:scaleType="fitCenter"
                             tools:ignore="ContentDescription" />
