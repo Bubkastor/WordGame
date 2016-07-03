@@ -76,5 +76,8 @@
     <string name="activity_Statistics_leader_rating">Рейтинг пользователя как ведущего: </string>
     <string name="activity_Statistics_total_time">Общие время, проведённое в игре: </string>
 
+    <!--fragment Login-->
+    <string name="fragment_Login_info_text">Для начала игры выполните вход</string>
+
 
 </resources>

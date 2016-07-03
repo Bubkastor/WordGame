@@ -5,54 +5,88 @@
     android:layout_height="match_parent"
     android:screenOrientation="locked"
     tools:context=".Login"
-    android:background="#e8a2a2">
+    android:background="@drawable/background_login">
 
 
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clickable="true">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center">
+            android:touchscreenBlocksFocus="true">
 
-            <Button
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Login VK"
-                android:id="@+id/vk"
+                android:id="@+id/logo"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/tw"
-                android:layout_toEndOf="@+id/tw" />
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/logo_main" />
 
-            <Button
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Login FB"
-                android:id="@+id/fb"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:text="@string/fragment_Login_info_text"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/infoText"
+                android:layout_below="@+id/logo"
+                android:layout_centerHorizontal="true" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Login TW"
-                android:id="@+id/tw"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/fb"
-                android:layout_toEndOf="@+id/fb" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentRight="false"
+                android:layout_below="@+id/infoText"
+                android:gravity="center">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Logout"
-                android:id="@+id/exit"
-                android:layout_below="@+id/vk" />
+                <ImageButton
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/fb"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/facebook"
+                    android:scaleType="fitCenter"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignWithParentIfMissing="false"
+                    android:layout_alignParentEnd="false"
+                    android:layout_alignParentLeft="false"
+                    android:layout_centerHorizontal="true"
+                    android:adjustViewBounds="false" />
+
+                <ImageButton
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/tw"
+                    android:src="@drawable/twitter"
+                    android:scaleType="fitCenter"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_toRightOf="@+id/fb"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="false" />
+
+                <ImageButton
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/vk"
+                    android:src="@drawable/vk"
+                    android:scaleType="fitCenter"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_centerHorizontal="true"
+                    android:layout_toRightOf="@+id/tw"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
         </RelativeLayout>
     </LinearLayout>
 
