@@ -99,7 +99,7 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
     private void initSocialNetwork(SocialNetwork socialNetwork){
 
         if(socialNetwork.isConnected()){
-            //startProfile(socialNetwork.getID());
+            startProfile(socialNetwork.getID());
         }
     }
 
@@ -195,11 +195,9 @@ public class Login extends Fragment implements SocialNetworkManager.OnInitializa
                         socialNetwork = "TW";
                         break;
                 }
-                Intent intent = new Intent();
                 User currentUser = new User(id, name, avatar, socialNetwork);
-                intent.putExtra(Main.EXTRA_MESSAGE_USER, currentUser);
-                startActivity(intent);
-                //hideFragment();
+                Main.onConnection(currentUser);
+                hideFragment();
             }
 
             @Override

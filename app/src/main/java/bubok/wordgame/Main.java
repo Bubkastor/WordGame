@@ -83,10 +83,7 @@ public class Main extends AppCompatActivity implements android.support.v4.app.Fr
     private static Login frag;
     private static FragmentTransaction fTrans;
 
-    private User currentUser;
-
-
-
+    private static User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +136,20 @@ public class Main extends AppCompatActivity implements android.support.v4.app.Fr
         Log.i(TAG, "onCreate");
 
     }
+    public static void onConnection(User user){
+        currentUser = user;
+        JSONObject send = new JSONObject();
+        if (currentUser != null) {
+            try {
+                send.put("id", currentUser.getUserID());
+                send.put("social", currentUser.getSocialNetwork());
+                mService.send("login", send);
+            } catch (Exception ex) {
+                Log.d(TAG, ex.getMessage());
+            }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
@@ -165,6 +176,17 @@ public class Main extends AppCompatActivity implements android.support.v4.app.Fr
     protected void onNewIntent(Intent intent) {
         if (intent.getExtras() != null) {
             currentUser = (User)intent.getExtras().get(EXTRA_MESSAGE_USER);
+
+            JSONObject send = new JSONObject();
+            if (currentUser != null) {
+                try {
+                    send.put("id", currentUser.getUserID());
+                    send.put("social", currentUser.getSocialNetwork());
+                    mService.send("login", send);
+                } catch (Exception ex) {
+                    Log.d(TAG, ex.getMessage());
+                }
+            }
         }
     }
 
@@ -416,6 +438,8 @@ public class Main extends AppCompatActivity implements android.support.v4.app.Fr
             }
         });
     }
+
+
 
     /**
      * Востанавливаем связь с сервисами

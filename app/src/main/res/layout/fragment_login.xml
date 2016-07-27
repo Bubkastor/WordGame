@@ -8,89 +8,78 @@
     android:background="@drawable/background_login">
 
 
-
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true">
+        android:touchscreenBlocksFocus="true">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/logo"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logo_main" />
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_Login_info_text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/infoText"
+            android:layout_below="@+id/logo"
+            android:layout_centerHorizontal="true" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:touchscreenBlocksFocus="true">
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentRight="false"
+            android:layout_below="@+id/infoText"
+            android:gravity="center">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/logo"
-                android:layout_alignParentTop="true"
-                android:adjustViewBounds="true"
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/fb"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/facebook"
                 android:scaleType="fitCenter"
-                android:src="@drawable/logo_main" />
-
-            <TextView
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="@string/fragment_Login_info_text"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/infoText"
-                android:layout_below="@+id/logo"
-                android:layout_centerHorizontal="true" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="false"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_alignParentBottom="true"
+                android:layout_alignWithParentIfMissing="false"
                 android:layout_alignParentEnd="false"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentRight="false"
-                android:layout_below="@+id/infoText"
-                android:gravity="center">
+                android:layout_alignParentLeft="false"
+                android:layout_centerHorizontal="true"
+                android:adjustViewBounds="false" />
 
-                <ImageButton
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/fb"
-                    android:layout_alignParentStart="true"
-                    android:src="@drawable/facebook"
-                    android:scaleType="fitCenter"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignWithParentIfMissing="false"
-                    android:layout_alignParentEnd="false"
-                    android:layout_alignParentLeft="false"
-                    android:layout_centerHorizontal="true"
-                    android:adjustViewBounds="false" />
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/tw"
+                android:src="@drawable/twitter"
+                android:scaleType="fitCenter"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_toRightOf="@+id/fb"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="false" />
 
-                <ImageButton
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/tw"
-                    android:src="@drawable/twitter"
-                    android:scaleType="fitCenter"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_toRightOf="@+id/fb"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="false" />
-
-                <ImageButton
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/vk"
-                    android:src="@drawable/vk"
-                    android:scaleType="fitCenter"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_centerHorizontal="true"
-                    android:layout_toRightOf="@+id/tw"
-                    android:layout_alignParentBottom="true" />
-            </RelativeLayout>
-
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/vk"
+                android:src="@drawable/vk"
+                android:scaleType="fitCenter"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_centerHorizontal="true"
+                android:layout_toRightOf="@+id/tw"
+                android:layout_alignParentBottom="true" />
         </RelativeLayout>
-    </LinearLayout>
 
-
+    </RelativeLayout>
 
 
 </RelativeLayout>
